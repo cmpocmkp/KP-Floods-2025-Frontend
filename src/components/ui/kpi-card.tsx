@@ -26,8 +26,8 @@ export function KpiCard({
     <Card className="h-[140px]">
       <CardContent className="pt-6 h-full">
         <div className="flex items-start gap-4 h-full">
-          <div className={`${color} bg-white/10 p-3 rounded-full shrink-0`}>
-            <Icon className="w-5 h-5" />
+          <div className={`${color} bg-white/10 p-4 rounded-xl shrink-0`}>
+            <Icon className="w-7 h-7" />
           </div>
           <div className="min-w-0 flex flex-col">
             <p className="text-sm text-muted-foreground font-medium">{title}</p>
