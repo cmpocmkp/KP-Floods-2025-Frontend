@@ -1,6 +1,5 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { CompensationKpis } from '@/features/kpis';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Table,
@@ -10,28 +9,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Progress } from "@/components/ui/progress";
 import { formatCurrency } from '@/lib/utils';
-
-interface DistrictData {
-  district: string;
-  beneficiariesPaid: number;
-  pendingCases: number;
-  amountDisbursed: number;
-  lastUpdate: string;
-}
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 export default function CompensationPage() {
   const { data, isLoading } = useQuery({
-    queryKey: ['compensation-overview'],
+    queryKey: ['compensation-details'],
     queryFn: () => Promise.resolve({
-      totalBeneficiaries: 2160,
-      beneficiariesPaid: 840,
-      amountDisbursed: 420000000,
-      pendingCases: 1320,
-      processingRate: 28, // per day
-      estimatedCompletion: 47, // days
+      processingRate: 28,
+      estimatedCompletion: 47,
       districtData: [
         {
           district: "Peshawar",
@@ -69,32 +56,12 @@ export default function CompensationPage() {
 
   return (
     <div className="space-y-6">
-      <CompensationKpis data={data} />
-
-      {/* Progress Overview */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
             <h2 className="text-lg font-semibold">Processing Status</h2>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div>
-              <div className="flex justify-between mb-2">
-                <span className="text-sm text-muted-foreground">Cases Processed</span>
-                <span className="text-sm font-medium">
-                  {((data?.beneficiariesPaid || 0) / (data?.totalBeneficiaries || 1) * 100).toFixed(1)}%
-                </span>
-              </div>
-              <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-blue-600 rounded-full"
-                  style={{ 
-                    width: `${((data?.beneficiariesPaid || 0) / (data?.totalBeneficiaries || 1) * 100)}%` 
-                  }}
-                />
-              </div>
-            </div>
-
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-sm text-muted-foreground">Processing Rate</p>
@@ -155,7 +122,7 @@ export default function CompensationPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data?.districtData.map((district: DistrictData) => {
+              {data?.districtData.map((district) => {
                 const total = district.beneficiariesPaid + district.pendingCases;
                 const progress = (district.beneficiariesPaid / total) * 100;
                 

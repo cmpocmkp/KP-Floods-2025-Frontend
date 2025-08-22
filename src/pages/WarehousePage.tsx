@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { WarehouseKpis } from '@/features/kpis';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -10,29 +10,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
-
-interface StockItem {
-  id: number;
-  item: string;
-  available: number;
-  issued: number;
-  remaining: number;
-  status: 'In Stock' | 'Low Stock' | 'Out of Stock';
-}
 
 const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#6366F1', '#EC4899'];
 
 export default function WarehousePage() {
   const { data, isLoading } = useQuery({
-    queryKey: ['warehouse-overview'],
+    queryKey: ['warehouse-details'],
     queryFn: () => Promise.resolve({
-      totalItems: 12450,
-      itemsIssued: 8234,
-      itemsRequested: 2156,
-      lowStockItems: 18,
       stockByDivision: [
         { name: 'Peshawar', value: 3200 },
         { name: 'Mardan', value: 2800 },
@@ -93,8 +79,6 @@ export default function WarehousePage() {
 
   return (
     <div className="space-y-6">
-      <WarehouseKpis data={data} />
-
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Stock by Division */}
         <Card>
@@ -166,7 +150,7 @@ export default function WarehousePage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data?.topItems.map((item: StockItem) => (
+              {data?.topItems.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell className="font-medium">{item.item}</TableCell>
                   <TableCell className="text-right">{item.available.toLocaleString()}</TableCell>

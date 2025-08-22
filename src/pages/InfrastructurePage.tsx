@@ -1,6 +1,5 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { InfrastructureKpis } from '@/features/kpis';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Table,
@@ -10,34 +9,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-interface InfrastructureData {
-  district: string;
-  roadsDamaged: number;
-  bridgesDamaged: number;
-  culvertsDamaged: number;
-  totalLength: number;
-  restorationProgress: number;
-}
-
-interface RoadSituation {
-  id: number;
-  title: string;
-  date: string;
-  description: string;
-  status: 'In Progress' | 'Completed' | 'Pending';
-}
-
 export default function InfrastructurePage() {
   const { data, isLoading } = useQuery({
-    queryKey: ['infrastructure-overview'],
+    queryKey: ['infrastructure-details'],
     queryFn: () => Promise.resolve({
-      roadsDamaged: 342,
-      bridgesDamaged: 28,
-      culvertsDamaged: 156,
-      avgRestorationDays: 45,
       districtData: [
         {
           district: "Peshawar",
@@ -54,8 +33,7 @@ export default function InfrastructurePage() {
           culvertsDamaged: 18,
           totalLength: 52.3,
           restorationProgress: 45
-        },
-        // Add more districts as needed
+        }
       ],
       restorationStatus: [
         {
@@ -96,23 +74,8 @@ export default function InfrastructurePage() {
     })
   });
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'In Progress':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'Completed':
-        return 'bg-green-100 text-green-800';
-      case 'Pending':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
-
   return (
     <div className="space-y-6">
-      <InfrastructureKpis data={data} />
-
       {/* Restoration Status Chart */}
       <Card>
         <CardHeader>
@@ -121,10 +84,7 @@ export default function InfrastructurePage() {
         <CardContent>
           <div className="h-[400px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={data?.restorationStatus}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-              >
+              <BarChart data={data?.restorationStatus}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />
@@ -157,7 +117,7 @@ export default function InfrastructurePage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data?.districtData.map((row: InfrastructureData) => (
+              {data?.districtData.map((row) => (
                 <TableRow key={row.district}>
                   <TableCell className="font-medium">{row.district}</TableCell>
                   <TableCell className="text-right">{row.roadsDamaged}</TableCell>
@@ -184,7 +144,7 @@ export default function InfrastructurePage() {
 
       {/* Road Situations */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {data?.roadSituations.map((situation: RoadSituation) => (
+        {data?.roadSituations.map((situation) => (
           <Card key={situation.id}>
             <CardHeader>
               <div className="flex items-start justify-between">
@@ -198,7 +158,7 @@ export default function InfrastructurePage() {
                     })}
                   </p>
                 </div>
-                <Badge className={getStatusColor(situation.status)}>
+                <Badge className="bg-yellow-100 text-yellow-800">
                   {situation.status}
                 </Badge>
               </div>

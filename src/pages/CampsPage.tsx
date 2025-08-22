@@ -1,6 +1,5 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { CampsKpis } from '@/features/kpis';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Table,
@@ -14,22 +13,10 @@ import { Badge } from "@/components/ui/badge";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 
-interface CampData {
-  district: string;
-  numCamps: number;
-  estimatedCapacity: number;
-  currentOccupancy: number;
-  facilities: string[];
-}
-
 export default function CampsPage() {
   const { data, isLoading } = useQuery({
-    queryKey: ['camps-overview'],
+    queryKey: ['camps-details'],
     queryFn: () => Promise.resolve({
-      totalCamps: 86,
-      districtsWithCamps: 12,
-      totalOccupants: 12450,
-      capacityUtilization: 78,
       campsByDistrict: [
         { district: 'Peshawar', camps: 18 },
         { district: 'Charsadda', camps: 15 },
@@ -90,8 +77,6 @@ export default function CampsPage() {
 
   return (
     <div className="space-y-6">
-      <CampsKpis data={data} />
-
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Camps by District */}
         <Card>
@@ -157,7 +142,7 @@ export default function CampsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data?.campDetails.map((camp: CampData) => (
+              {data?.campDetails.map((camp) => (
                 <TableRow key={camp.district}>
                   <TableCell className="font-medium">{camp.district}</TableCell>
                   <TableCell className="text-right">{camp.numCamps}</TableCell>

@@ -1,8 +1,9 @@
 import React, { useState, useEffect, Suspense } from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
 import Login from './pages/Login';
 import { AppHeader } from './components/Layout/AppHeader';
 import { OverviewHeader } from './features/overview/OverviewHeader';
+import { OverviewKpis, IncidentKpis, InfrastructureKpis, WarehouseKpis, CampsKpis, CompensationKpis } from '@/features/kpis';
 
 // Create a client with default options
 const queryClient = new QueryClient({
@@ -52,10 +53,46 @@ interface User {
   role: string;
 }
 
-function App() {
+function AppContent() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
   const [user, setUser] = useState<User | null>(null);
+
+  const { data: kpiData } = useQuery({
+    queryKey: ['kpi-data', activeTab],
+    queryFn: () => Promise.resolve({
+      // Overview KPIs
+      deaths: 156,
+      injured: 342,
+      housesDamaged: 1245,
+      livestockLost: 789,
+      // Incidents KPIs
+      totalIncidents: 248,
+      criticalIncidents: 42,
+      floodIncidents: 156,
+      recentIncidents: 18,
+      // Infrastructure KPIs
+      roadsDamaged: 342,
+      bridgesDamaged: 28,
+      culvertsDamaged: 156,
+      avgRestorationDays: 45,
+      // Warehouse KPIs
+      totalItems: 12450,
+      itemsIssued: 8234,
+      itemsRequested: 2156,
+      lowStockItems: 18,
+      // Camps KPIs
+      totalCamps: 86,
+      districtsWithCamps: 12,
+      totalOccupants: 12450,
+      capacityUtilization: 78,
+      // Compensation KPIs
+      totalBeneficiaries: 2160,
+      beneficiariesPaid: 840,
+      amountDisbursed: 420000000,
+      pendingCases: 1320,
+    })
+  });
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -79,6 +116,25 @@ function App() {
       setIsLoggedIn(true);
     }} />;
   }
+
+  const renderKpis = () => {
+    switch (activeTab) {
+      case 'overview':
+        return <OverviewKpis data={kpiData} />;
+      case 'incidents':
+        return <IncidentKpis data={kpiData} />;
+      case 'infrastructure':
+        return <InfrastructureKpis data={kpiData} />;
+      case 'warehouse':
+        return <WarehouseKpis data={kpiData} />;
+      case 'camps':
+        return <CampsKpis data={kpiData} />;
+      case 'compensation':
+        return <CompensationKpis data={kpiData} />;
+      default:
+        return null;
+    }
+  };
 
   const renderContent = () => {
     let Component;
@@ -117,26 +173,35 @@ function App() {
   };
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <div className="min-h-screen bg-gray-50">
-        <OverviewHeader 
-          reportPeriod={{
-            start: '2025-08-14',
-            end: '2025-08-20'
-          }}
-          lastUpdated="2025-08-20T10:52:00Z"
-        />
-        <AppHeader
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-          userRole={user?.role}
-          userName={user?.user_name}
-          onLogout={handleLogout}
-        />
-        <main className="max-w-[1400px] mx-auto px-4 md:px-6 pt-4">
-          {renderContent()}
-        </main>
+    <div className="min-h-screen bg-gray-50">
+      <OverviewHeader 
+        reportPeriod={{
+          start: '2025-08-14',
+          end: '2025-08-20'
+        }}
+        lastUpdated="2025-08-20T10:52:00Z"
+      />
+      <div className="max-w-[1400px] mx-auto px-4 md:px-6 py-6">
+        {renderKpis()}
       </div>
+      <AppHeader
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        userRole={user?.role}
+        userName={user?.user_name}
+        onLogout={handleLogout}
+      />
+      <main className="max-w-[1400px] mx-auto px-4 md:px-6 pt-4">
+        {renderContent()}
+      </main>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AppContent />
     </QueryClientProvider>
   );
 }

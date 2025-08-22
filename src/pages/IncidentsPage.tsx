@@ -1,6 +1,5 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { IncidentKpis } from '@/features/kpis';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Table,
@@ -25,12 +24,8 @@ interface Incident {
 
 export default function IncidentsPage() {
   const { data, isLoading } = useQuery({
-    queryKey: ['incidents-overview'],
+    queryKey: ['incidents-details'],
     queryFn: () => Promise.resolve({
-      totalIncidents: 248,
-      criticalIncidents: 42,
-      floodIncidents: 156,
-      recentIncidents: 18,
       incidents: [
         {
           id: 1,
@@ -71,8 +66,6 @@ export default function IncidentsPage() {
 
   return (
     <div className="space-y-6">
-      <IncidentKpis data={data} />
-
       {/* Filter Chips */}
       <div className="flex flex-wrap gap-2">
         <Badge variant="outline" className="px-3 py-1 bg-white">All</Badge>
