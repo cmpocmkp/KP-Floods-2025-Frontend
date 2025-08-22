@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Login from './pages/Login';
 import { AppHeader } from './components/Layout/AppHeader';
+import { OverviewHeader } from './features/overview/OverviewHeader';
 
 // Lazy load pages
 const OverviewPage = React.lazy(() => import('./pages/OverviewPage'));
@@ -90,22 +91,21 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <AppHeader
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-        userRole={user?.role}
-        userName={user?.user_name}
-        onLogout={handleLogout}
+      <OverviewHeader 
         reportPeriod={{
           start: '2025-08-14',
           end: '2025-08-20'
         }}
         lastUpdated="2025-08-20T10:52:00Z"
       />
-      
-      <main className="max-w-[1400px] mx-auto px-4 md:px-6 py-6">
-        {renderContent()}
-      </main>
+      <AppHeader
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        userRole={user?.role}
+        userName={user?.user_name}
+        onLogout={handleLogout}
+      />
+      {renderContent()}
     </div>
   );
 }

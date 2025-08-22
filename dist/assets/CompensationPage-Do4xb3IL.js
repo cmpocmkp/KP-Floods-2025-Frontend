@@ -1,4 +1,4 @@
-import{c as k,u as c,j as e,k as n,e as t,l as u}from"./index-PNDX8dRU.js";import{K as l,R,n as q,T as L}from"./KpiCard-kbPrSqlF.js";import{D as y}from"./MapIncident-Cg0U9Kz6.js";import{U as T}from"./users-CkzwUep1.js";import{P as S,a as H}from"./PieChart-B7FVemW7.js";/**
+import{c as k,u as c,j as e,k as n,b as t,l as u}from"./index-DESRfTEM.js";import{K as l,R,C as q,T as L}from"./generateCategoricalChart-CiqiW3vC.js";import{D as y}from"./MapIncident-DBQQvLZ8.js";import{U as T}from"./users-CHw0Jx8x.js";import{P as S,a as H}from"./PieChart-DkOxhkgO.js";/**
  * @license lucide-react v0.344.0 - ISC
  *
  * This source code is licensed under the ISC license.
