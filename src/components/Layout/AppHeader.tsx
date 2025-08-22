@@ -1,5 +1,5 @@
 import React from 'react';
-import { TopTabs } from './TopTabs';
+import { TabsBar } from './TabsBar';
 import { MoreHorizontal } from 'lucide-react';
 import {
   DropdownMenu,
@@ -14,9 +14,16 @@ interface AppHeaderProps {
   userRole?: string;
   onLogout: () => void;
   userName?: string;
-  reportPeriod?: { start: string; end: string };
-  lastUpdated?: string;
 }
+
+const TABS = [
+  { id: 'overview', label: 'Overview' },
+  { id: 'incidents', label: 'Incident Reports' },
+  { id: 'infrastructure', label: 'Infrastructure' },
+  { id: 'warehouse', label: 'Warehouse' },
+  { id: 'camps', label: 'Relief Camps' },
+  { id: 'compensation', label: 'Compensation' },
+];
 
 export function AppHeader({
   activeTab,
@@ -24,39 +31,39 @@ export function AppHeader({
   userRole,
   onLogout,
   userName,
-  reportPeriod,
-  lastUpdated
 }: AppHeaderProps) {
   return (
-    <div className="w-full">
-      {/* Top Navigation */}
-      <div className="w-full bg-white/60 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b">
-        <div className="max-w-[1400px] mx-auto px-4 md:px-6 flex items-center justify-between">
-          <TopTabs activeTab={activeTab} onTabChange={onTabChange} />
-          
-          <div className="flex items-center space-x-4">
-            <span className="text-sm text-gray-600">{userName}</span>
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <MoreHorizontal className="h-5 w-5" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {(userRole === 'admin' || userRole === 'super_admin') && (
-                  <>
-                    <DropdownMenuItem onSelect={() => onTabChange('sources-management')}>
-                      Data Sources
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onSelect={() => onTabChange('settings')}>
-                      Settings
-                    </DropdownMenuItem>
-                  </>
-                )}
-                <DropdownMenuItem onSelect={onLogout} className="text-red-600">
-                  Logout
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+    <div className="relative">
+      <TabsBar
+        tabs={TABS}
+        activeTab={activeTab}
+        onTabChange={onTabChange}
+      />
+      
+      {/* User Menu - Aligned with content container */}
+      <div className="absolute right-4 md:right-6 top-1/2 -translate-y-1/2">
+        <div className="flex items-center gap-4">
+          <span className="text-sm text-muted-foreground">{userName}</span>
+          <DropdownMenu>
+            <DropdownMenuTrigger className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 rounded-lg">
+              <MoreHorizontal className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              {(userRole === 'admin' || userRole === 'super_admin') && (
+                <>
+                  <DropdownMenuItem onSelect={() => onTabChange('sources-management')}>
+                    Data Sources
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => onTabChange('settings')}>
+                    Settings
+                  </DropdownMenuItem>
+                </>
+              )}
+              <DropdownMenuItem onSelect={onLogout} className="text-red-600">
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </div>

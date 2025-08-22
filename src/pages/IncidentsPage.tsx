@@ -51,8 +51,7 @@ export default function IncidentsPage() {
           cause: "River Overflow",
           date: "2025-08-18T14:20:00Z",
           description: "River Swat overflow affected multiple villages..."
-        },
-        // Add more incidents as needed
+        }
       ]
     })
   });
@@ -73,14 +72,13 @@ export default function IncidentsPage() {
   return (
     <div className="space-y-6">
       <IncidentKpis data={data} />
-      
+
       {/* Filter Chips */}
       <div className="flex flex-wrap gap-2">
         <Badge variant="outline" className="px-3 py-1 bg-white">All</Badge>
         <Badge variant="outline" className="px-3 py-1">Peshawar</Badge>
         <Badge variant="outline" className="px-3 py-1">Charsadda</Badge>
         <Badge variant="outline" className="px-3 py-1">Nowshera</Badge>
-        {/* Add more district filters */}
       </div>
 
       {/* Incidents Table */}

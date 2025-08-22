@@ -133,7 +133,7 @@ function App() {
           userName={user?.user_name}
           onLogout={handleLogout}
         />
-        <main className="max-w-[1400px] mx-auto px-4 md:px-6 py-6">
+        <main className="max-w-[1400px] mx-auto px-4 md:px-6 pt-4">
           {renderContent()}
         </main>
       </div>

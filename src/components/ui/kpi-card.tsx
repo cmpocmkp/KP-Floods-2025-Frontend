@@ -23,27 +23,27 @@ export function KpiCard({
   trend
 }: KpiCardProps) {
   return (
-    <Card>
-      <CardContent className="pt-6">
-        <div className="flex items-center gap-4">
-          <div className={`${color} bg-white/10 p-3 rounded-full`}>
-            <Icon className="w-6 h-6" />
+    <Card className="h-[140px]">
+      <CardContent className="pt-6 h-full">
+        <div className="flex items-start gap-4 h-full">
+          <div className={`${color} bg-white/10 p-3 rounded-full shrink-0`}>
+            <Icon className="w-5 h-5" />
           </div>
-          <div>
-            <p className="text-sm text-muted-foreground">{title}</p>
-            <h3 className="text-2xl font-bold">
+          <div className="min-w-0 flex flex-col">
+            <p className="text-sm text-muted-foreground font-medium">{title}</p>
+            <h3 className="text-2xl font-semibold mt-1 truncate">
               {typeof value === 'number' ? value.toLocaleString() : value}
             </h3>
             {trend && (
-              <div className={`text-sm ${trend.isPositive ? 'text-green-600' : 'text-red-600'}`}>
+              <div className={`text-sm mt-1 ${trend.isPositive ? 'text-green-600' : 'text-red-600'}`}>
                 {trend.isPositive ? '↑' : '↓'} {Math.abs(trend.value)}%
               </div>
             )}
+            {description && (
+              <p className="mt-auto text-sm text-muted-foreground line-clamp-2">{description}</p>
+            )}
           </div>
         </div>
-        {description && (
-          <p className="mt-2 text-sm text-muted-foreground">{description}</p>
-        )}
       </CardContent>
     </Card>
   );
