@@ -1,7 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Login from './pages/Login';
 import { AppHeader } from './components/Layout/AppHeader';
 import { OverviewHeader } from './features/overview/OverviewHeader';
+
+// Create a client with default options
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 // Lazy load pages
 const OverviewPage = React.lazy(() => import('./pages/OverviewPage'));
@@ -11,7 +22,7 @@ const WarehousePage = React.lazy(() => import('./pages/WarehousePage'));
 const CampsPage = React.lazy(() => import('./pages/CampsPage'));
 const CompensationPage = React.lazy(() => import('./pages/CompensationPage'));
 
-// Placeholder components for Settings and Sources Management
+// Placeholder components
 const SourcesManagement = () => (
   <div className="p-6 bg-white rounded-lg shadow">
     <h2 className="text-2xl font-bold mb-4">Data Sources Management</h2>
@@ -28,8 +39,11 @@ const Settings = () => (
 
 // Loading spinner
 const LoadingSpinner = () => (
-  <div className="flex items-center justify-center h-64">
-    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+  <div className="flex items-center justify-center min-h-[400px]">
+    <div className="flex flex-col items-center gap-4">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+      <p className="text-sm text-gray-600">Loading...</p>
+    </div>
   </div>
 );
 
@@ -67,46 +81,63 @@ function App() {
   }
 
   const renderContent = () => {
+    let Component;
     switch (activeTab) {
       case 'overview':
-        return <React.Suspense fallback={<LoadingSpinner />}><OverviewPage /></React.Suspense>;
+        Component = OverviewPage;
+        break;
       case 'incidents':
-        return <React.Suspense fallback={<LoadingSpinner />}><IncidentsPage /></React.Suspense>;
+        Component = IncidentsPage;
+        break;
       case 'infrastructure':
-        return <React.Suspense fallback={<LoadingSpinner />}><InfrastructurePage /></React.Suspense>;
+        Component = InfrastructurePage;
+        break;
       case 'warehouse':
-        return <React.Suspense fallback={<LoadingSpinner />}><WarehousePage /></React.Suspense>;
+        Component = WarehousePage;
+        break;
       case 'camps':
-        return <React.Suspense fallback={<LoadingSpinner />}><CampsPage /></React.Suspense>;
+        Component = CampsPage;
+        break;
       case 'compensation':
-        return <React.Suspense fallback={<LoadingSpinner />}><CompensationPage /></React.Suspense>;
+        Component = CompensationPage;
+        break;
       case 'sources-management':
         return <SourcesManagement />;
       case 'settings':
         return <Settings />;
       default:
-        return <React.Suspense fallback={<LoadingSpinner />}><OverviewPage /></React.Suspense>;
+        Component = OverviewPage;
     }
+
+    return (
+      <Suspense fallback={<LoadingSpinner />}>
+        <Component />
+      </Suspense>
+    );
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <OverviewHeader 
-        reportPeriod={{
-          start: '2025-08-14',
-          end: '2025-08-20'
-        }}
-        lastUpdated="2025-08-20T10:52:00Z"
-      />
-      <AppHeader
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-        userRole={user?.role}
-        userName={user?.user_name}
-        onLogout={handleLogout}
-      />
-      {renderContent()}
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <div className="min-h-screen bg-gray-50">
+        <OverviewHeader 
+          reportPeriod={{
+            start: '2025-08-14',
+            end: '2025-08-20'
+          }}
+          lastUpdated="2025-08-20T10:52:00Z"
+        />
+        <AppHeader
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          userRole={user?.role}
+          userName={user?.user_name}
+          onLogout={handleLogout}
+        />
+        <main className="max-w-[1400px] mx-auto px-4 md:px-6 py-6">
+          {renderContent()}
+        </main>
+      </div>
+    </QueryClientProvider>
   );
 }
 

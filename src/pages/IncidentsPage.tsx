@@ -1,165 +1,173 @@
-import React, { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { Eye } from 'lucide-react'
-import { DataTable, DataTableColumn, StatBadge } from '../components/shared'
-import { incidentsApi } from '../lib/api'
-import { IncidentReport, IncidentDetail } from '../lib/types'
-import { formatNumber, formatDate } from '../lib/utils'
+import React from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { IncidentKpis } from '@/features/kpis';
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { format } from 'date-fns';
 
-const DISTRICTS = ['All Districts', 'Buner', 'Swat', 'Shangla', 'Mansehra', 'Bajaur', 'Swabi']
+interface Incident {
+  id: number;
+  district: string;
+  deaths: number;
+  injured: number;
+  housesDamaged: number;
+  cause: string;
+  date: string;
+}
 
 export default function IncidentsPage() {
-  const [selectedDistrict, setSelectedDistrict] = useState('All Districts')
+  const { data, isLoading } = useQuery({
+    queryKey: ['incidents-overview'],
+    queryFn: () => Promise.resolve({
+      totalIncidents: 248,
+      criticalIncidents: 42,
+      floodIncidents: 156,
+      recentIncidents: 18,
+      incidents: [
+        {
+          id: 1,
+          district: "Peshawar",
+          deaths: 12,
+          injured: 28,
+          housesDamaged: 156,
+          cause: "Flash Flood",
+          date: "2025-08-19T10:30:00Z",
+          description: "Sudden flash flood in local stream caused widespread damage..."
+        },
+        {
+          id: 2,
+          district: "Charsadda",
+          deaths: 8,
+          injured: 15,
+          housesDamaged: 89,
+          cause: "River Overflow",
+          date: "2025-08-18T14:20:00Z",
+          description: "River Swat overflow affected multiple villages..."
+        },
+        // Add more incidents as needed
+      ]
+    })
+  });
 
-  const { data: incidentsData, isLoading: incidentsLoading } = useQuery({
-    queryKey: ['incidents', 'list', selectedDistrict],
-    queryFn: () => incidentsApi.getIncidents({ district: selectedDistrict === 'All Districts' ? undefined : selectedDistrict })
-  })
-
-  const { data: detailsData, isLoading: detailsLoading } = useQuery({
-    queryKey: ['incidents', 'details'],
-    queryFn: () => incidentsApi.getIncidentDetails()
-  })
-
-  const incidents = incidentsData?.data || []
-  const details = detailsData?.data || []
-
-  // Filter incidents based on selected district
-  const filteredIncidents = selectedDistrict === 'All Districts' 
-    ? incidents 
-    : incidents.filter(incident => incident.district === selectedDistrict)
-
-  const incidentColumns: DataTableColumn<IncidentReport>[] = [
-    { key: 'district', label: 'District', align: 'left' },
-    { 
-      key: 'deaths', 
-      label: 'Deaths', 
-      align: 'right',
-      render: (value: number) => (
-        <span className="font-medium text-red-600">{formatNumber(value)}</span>
-      )
-    },
-    { 
-      key: 'injured', 
-      label: 'Injured', 
-      align: 'right',
-      render: (value: number) => (
-        <span className="font-medium text-orange-600">{formatNumber(value)}</span>
-      )
-    },
-    { 
-      key: 'housesDamaged', 
-      label: 'Houses Damaged', 
-      align: 'right',
-      render: (value: number) => (
-        <span className="font-medium text-blue-600">{formatNumber(value)}</span>
-      )
-    },
-    { key: 'cause', label: 'Cause', align: 'left' },
-    { 
-      key: 'date', 
-      label: 'Date', 
-      align: 'left',
-      render: (value: string) => formatDate(value)
-    },
-    {
-      key: 'id',
-      label: 'Actions',
-      align: 'center',
-      render: () => (
-        <button className="inline-flex items-center space-x-1 text-blue-600 hover:text-blue-800 font-medium text-sm">
-          <Eye className="w-4 h-4" />
-          <span>View Details</span>
-        </button>
-      )
+  const getCauseBadgeColor = (cause: string) => {
+    switch (cause.toLowerCase()) {
+      case 'flash flood':
+        return 'bg-red-100 text-red-800';
+      case 'river overflow':
+        return 'bg-blue-100 text-blue-800';
+      case 'landslide':
+        return 'bg-yellow-100 text-yellow-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
     }
-  ]
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Incident Reports</h1>
-          
-          {/* District Filter */}
-          <div className="space-y-3">
-            <p className="text-sm font-medium text-gray-700">Filter by District:</p>
-            <div className="flex flex-wrap gap-2">
-              {DISTRICTS.map((district) => (
-                <button
-                  key={district}
-                  onClick={() => setSelectedDistrict(district)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 ${
-                    selectedDistrict === district
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  {district}
-                </button>
+    <div className="space-y-6">
+      <IncidentKpis data={data} />
+      
+      {/* Filter Chips */}
+      <div className="flex flex-wrap gap-2">
+        <Badge variant="outline" className="px-3 py-1 bg-white">All</Badge>
+        <Badge variant="outline" className="px-3 py-1">Peshawar</Badge>
+        <Badge variant="outline" className="px-3 py-1">Charsadda</Badge>
+        <Badge variant="outline" className="px-3 py-1">Nowshera</Badge>
+        {/* Add more district filters */}
+      </div>
+
+      {/* Incidents Table */}
+      <Card>
+        <CardHeader>
+          <h2 className="text-lg font-semibold">Recent Incidents</h2>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>District</TableHead>
+                <TableHead className="text-right">Deaths</TableHead>
+                <TableHead className="text-right">Injured</TableHead>
+                <TableHead className="text-right">Houses Damaged</TableHead>
+                <TableHead>Cause</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data?.incidents.map((incident: Incident) => (
+                <TableRow key={incident.id}>
+                  <TableCell className="font-medium">{incident.district}</TableCell>
+                  <TableCell className="text-right">{incident.deaths}</TableCell>
+                  <TableCell className="text-right">{incident.injured}</TableCell>
+                  <TableCell className="text-right">{incident.housesDamaged}</TableCell>
+                  <TableCell>
+                    <Badge className={getCauseBadgeColor(incident.cause)}>
+                      {incident.cause}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{format(new Date(incident.date), 'MMM d, yyyy')}</TableCell>
+                  <TableCell className="text-right">
+                    <button className="text-blue-600 hover:text-blue-800">
+                      View Details
+                    </button>
+                  </TableCell>
+                </TableRow>
               ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      {/* Incident Details */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <h3 className="text-lg font-semibold">Flash Flood in Peshawar</h3>
+            <p className="text-sm text-muted-foreground">
+              August 19, 2025
+            </p>
+          </CardHeader>
+          <CardContent>
+            <p className="text-gray-600 mb-4">
+              Sudden flash flood in local stream caused widespread damage to infrastructure
+              and residential areas. Emergency response teams were deployed immediately.
+            </p>
+            <div className="flex gap-2">
+              <Badge variant="destructive">12 Deaths</Badge>
+              <Badge variant="warning">28 Injured</Badge>
+              <Badge variant="secondary">156 Houses</Badge>
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
-        {/* District-wise Incident Reports Table */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
-          <div className="p-6 border-b border-gray-100">
-            <h2 className="text-xl font-semibold text-gray-900">District-wise Incident Reports</h2>
-          </div>
-          <DataTable
-            data={filteredIncidents}
-            columns={incidentColumns}
-            loading={incidentsLoading}
-            emptyMessage="No incidents found for the selected district"
-          />
-        </div>
-
-        {/* Recent Incident Details */}
-        <div className="space-y-6">
-          <h2 className="text-xl font-semibold text-gray-900">Recent Incident Details</h2>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {details.map((detail, index) => (
-              <div key={index} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                <div className="mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    {detail.title}
-                  </h3>
-                  <p className="text-sm text-gray-600 mb-3">
-                    Date: {formatDate(detail.date)}
-                  </p>
-                  <p className="text-gray-700 leading-relaxed mb-4">
-                    {detail.description}
-                  </p>
-                </div>
-                
-                <div className="flex flex-wrap gap-2">
-                  <StatBadge
-                    label="Deaths"
-                    value={detail.stats.deaths}
-                    color="red"
-                    size="sm"
-                  />
-                  <StatBadge
-                    label="Injured"
-                    value={detail.stats.injured}
-                    color="orange"
-                    size="sm"
-                  />
-                  <StatBadge
-                    label="Houses Damaged"
-                    value={detail.stats.housesDamaged}
-                    color="blue"
-                    size="sm"
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <Card>
+          <CardHeader>
+            <h3 className="text-lg font-semibold">River Overflow in Charsadda</h3>
+            <p className="text-sm text-muted-foreground">
+              August 18, 2025
+            </p>
+          </CardHeader>
+          <CardContent>
+            <p className="text-gray-600 mb-4">
+              River Swat overflow affected multiple villages in the district. Evacuation
+              efforts are ongoing with support from local authorities.
+            </p>
+            <div className="flex gap-2">
+              <Badge variant="destructive">8 Deaths</Badge>
+              <Badge variant="warning">15 Injured</Badge>
+              <Badge variant="secondary">89 Houses</Badge>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
-  )
+  );
 }
