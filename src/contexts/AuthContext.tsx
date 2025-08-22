@@ -1,0 +1,231 @@
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+
+export interface User {
+  id: number;
+  user_id: string;
+  user_name: string;
+  email?: string;
+  role: 'super_admin' | 'admin' | 'admin_staff';
+  jurisdiction?: string;
+  first_login: boolean;
+  is_disabled: boolean;
+  created_at: string;
+}
+
+interface AuthContextType {
+  user: User | null;
+  token: string | null;
+  login: (userId: string, password: string) => Promise<{ success: boolean; requiresPasswordChange?: boolean; error?: string }>;
+  logout: () => void;
+  updatePassword: (oldPassword: string, newPassword: string) => Promise<{ success: boolean; error?: string }>;
+  refreshUserData: () => Promise<void>;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+
+  // Initialize auth state from localStorage
+  useEffect(() => {
+    const initializeAuth = async () => {
+      try {
+        const storedToken = localStorage.getItem('crux_auth_token');
+        const storedUser = localStorage.getItem('crux_user');
+
+        if (storedToken && storedUser) {
+          const userData = JSON.parse(storedUser);
+          
+          // Verify token with server to ensure it's still valid
+          try {
+            const response = await fetch(`${API_BASE}/auth/me`, {
+              headers: {
+                'Authorization': `Bearer ${storedToken}`,
+              },
+            });
+
+            if (response.ok) {
+              const result = await response.json();
+              const verifiedUser = result.data;
+              
+              setToken(storedToken);
+              setUser(verifiedUser);
+              localStorage.setItem('crux_user', JSON.stringify(verifiedUser));
+              console.log('🔐 Token verified, user authenticated');
+            } else {
+              // Token is invalid, clear storage
+              localStorage.removeItem('crux_auth_token');
+              localStorage.removeItem('crux_user');
+              setToken(null);
+              setUser(null);
+              console.log('🔐 Token invalid, cleared authentication');
+            }
+          } catch (error) {
+            console.error('Token verification failed:', error);
+            // Clear storage on verification error
+            localStorage.removeItem('crux_auth_token');
+            localStorage.removeItem('crux_user');
+            setToken(null);
+            setUser(null);
+          }
+        } else {
+          console.log('🔐 No stored authentication found');
+        }
+      } catch (error) {
+        console.error('Auth initialization error:', error);
+        localStorage.removeItem('crux_auth_token');
+        localStorage.removeItem('crux_user');
+        setToken(null);
+        setUser(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initializeAuth();
+  }, [API_BASE]);
+
+  const login = async (userId: string, password: string) => {
+    try {
+      const response = await fetch(`${API_BASE}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user_id: userId, password }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        const { user: userData, token: authToken } = result.data;
+        
+        setUser(userData);
+        setToken(authToken);
+        
+        // Store in localStorage
+        localStorage.setItem('crux_auth_token', authToken);
+        localStorage.setItem('crux_user', JSON.stringify(userData));
+
+        return { 
+          success: true, 
+          requiresPasswordChange: userData.first_login 
+        };
+      } else {
+        return { success: false, error: result.error || 'Login failed' };
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      return { success: false, error: 'Network error. Please try again.' };
+    }
+  };
+
+  const logout = () => {
+    setUser(null);
+    setToken(null);
+    localStorage.removeItem('crux_auth_token');
+    localStorage.removeItem('crux_user');
+    
+    // Optional: Call logout endpoint to invalidate token on server
+    if (token) {
+      fetch(`${API_BASE}/auth/logout`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      }).catch(console.error);
+    }
+  };
+
+  const updatePassword = async (oldPassword: string, newPassword: string) => {
+    if (!token || !user) {
+      return { success: false, error: 'Not authenticated' };
+    }
+
+    try {
+      const response = await fetch(`${API_BASE}/auth/change-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ 
+          old_password: oldPassword, 
+          new_password: newPassword 
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        // Update user's first_login status
+        const updatedUser = { ...user, first_login: false };
+        setUser(updatedUser);
+        localStorage.setItem('crux_user', JSON.stringify(updatedUser));
+        
+        return { success: true };
+      } else {
+        return { success: false, error: result.error || 'Password change failed' };
+      }
+    } catch (error) {
+      console.error('Password change error:', error);
+      return { success: false, error: 'Network error. Please try again.' };
+    }
+  };
+
+  const refreshUserData = async () => {
+    if (!token) return;
+
+    try {
+      const response = await fetch(`${API_BASE}/auth/me`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        const userData = result.data;
+        setUser(userData);
+        localStorage.setItem('crux_user', JSON.stringify(userData));
+      }
+    } catch (error) {
+      console.error('Error refreshing user data:', error);
+    }
+  };
+
+  const value: AuthContextType = {
+    user,
+    token,
+    login,
+    logout,
+    updatePassword,
+    refreshUserData,
+    isAuthenticated: !!user && !!token,
+    isLoading,
+  };
+
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+}; 

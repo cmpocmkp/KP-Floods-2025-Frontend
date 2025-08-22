@@ -1,0 +1,6 @@
+export { default as OverviewPage } from './OverviewPage'
+export { default as IncidentsPage } from './IncidentsPage'
+export { default as InfrastructurePage } from './InfrastructurePage'
+export { default as WarehousePage } from './WarehousePage'
+export { default as CampsPage } from './CampsPage'
+export { default as CompensationPage } from './CompensationPage'
