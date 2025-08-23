@@ -15,7 +15,7 @@ export interface User {
 interface AuthContextType {
   user: User | null;
   token: string | null;
-  login: (userId: string, password: string) => Promise<{ success: boolean; requiresPasswordChange?: boolean; error?: string }>;
+  login: (userId: string, password: string) => Promise<{ success: boolean; user?: any; error?: string }>;
   logout: () => void;
   updatePassword: (oldPassword: string, newPassword: string) => Promise<{ success: boolean; error?: string }>;
   refreshUserData: () => Promise<void>;
@@ -34,7 +34,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+  const API_BASE = import.meta.env.VITE_API_BASE ?? "https://kp-floods-2025-backend-production.up.railway.app";
 
   // Initialize auth state from localStorage
   useEffect(() => {
@@ -97,32 +97,37 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (userId: string, password: string) => {
     try {
-      const response = await fetch(`${API_BASE}/auth/login`, {
+      console.log('Attempting login:', { API_BASE, userId });
+      const response = await fetch(`${API_BASE}/auth/log-in`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': '*/*'
         },
-        body: JSON.stringify({ user_id: userId, password }),
+        body: JSON.stringify({ username: userId, password }),
       });
 
       const result = await response.json();
+      console.log('Login response:', { status: response.status, result });
 
-      if (result.success) {
-        const { user: userData, token: authToken } = result.data;
+      if (response.status === 201 && result.status) {
+        const token = result.access_token;
+        const userData = result.user;
         
         setUser(userData);
-        setToken(authToken);
+        setToken(token);
         
         // Store in localStorage
-        localStorage.setItem('crux_auth_token', authToken);
+        localStorage.setItem('crux_auth_token', token);
         localStorage.setItem('crux_user', JSON.stringify(userData));
 
         return { 
-          success: true, 
-          requiresPasswordChange: userData.first_login 
+          success: true,
+          user: userData
         };
       } else {
-        return { success: false, error: result.error || 'Login failed' };
+        console.log('Login failed:', { status: response.status, result });
+        return { success: false, error: result?.message || 'Login failed' };
       }
     } catch (error) {
       console.error('Login error:', error);

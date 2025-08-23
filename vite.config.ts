@@ -10,4 +10,11 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  optimizeDeps: {
+    force: true,
+    include: ['react-leaflet', 'recharts', 'leaflet'],
+  },
+  server: {
+    force: true,
+  },
 })

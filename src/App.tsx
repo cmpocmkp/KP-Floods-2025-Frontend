@@ -1,19 +1,12 @@
 import React, { useState, useEffect, Suspense } from 'react';
-import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
-import Login from './pages/Login';
+import { Routes, Route } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import Login from './pages/auth/LoginPage';
 import { AppHeader } from './components/Layout/AppHeader';
 import { OverviewHeader } from './features/overview/OverviewHeader';
 import { OverviewKpis, IncidentKpis, InfrastructureKpis, WarehouseKpis, CampsKpis, CompensationKpis } from '@/features/kpis';
 
-// Create a client with default options
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+
 
 // Lazy load pages
 const OverviewPage = React.lazy(() => import('./pages/OverviewPage'));
@@ -112,6 +105,7 @@ function AppContent() {
 
   if (!isLoggedIn) {
     return <Login onLoginSuccess={(userData) => {
+      console.log('Login success, user data:', userData);
       setUser(userData);
       setIsLoggedIn(true);
     }} />;
@@ -200,9 +194,18 @@ function AppContent() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AppContent />
-    </QueryClientProvider>
+    <Routes>
+      <Route path="/" element={<AppContent />} />
+      <Route path="/login" element={<AppContent />} />
+      <Route path="/overview" element={<AppContent />} />
+      <Route path="/incidents" element={<AppContent />} />
+      <Route path="/infrastructure" element={<AppContent />} />
+      <Route path="/warehouse" element={<AppContent />} />
+      <Route path="/camps" element={<AppContent />} />
+      <Route path="/compensation" element={<AppContent />} />
+      <Route path="/sources-management" element={<AppContent />} />
+      <Route path="/settings" element={<AppContent />} />
+    </Routes>
   );
 }
 
