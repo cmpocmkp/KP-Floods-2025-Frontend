@@ -60,7 +60,7 @@ export function AppHeader({
                 </>
               )}
               <DropdownMenuItem onSelect={onLogout} className="text-red-600">
-                Logout
+                Sign out
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

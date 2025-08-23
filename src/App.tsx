@@ -88,8 +88,8 @@ function AppContent() {
   });
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const savedUser = localStorage.getItem('user');
+    const token = localStorage.getItem('crux_auth_token');
+    const savedUser = localStorage.getItem('crux_user');
     if (token && savedUser) {
       setIsLoggedIn(true);
       setUser(JSON.parse(savedUser));
@@ -97,8 +97,8 @@ function AppContent() {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem('crux_auth_token');
+    localStorage.removeItem('crux_user');
     setIsLoggedIn(false);
     setUser(null);
   };

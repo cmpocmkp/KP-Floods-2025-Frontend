@@ -1,5 +1,8 @@
 import React from 'react';
 import { format } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
 
 interface OverviewHeaderProps {
   reportPeriod?: { start: string; end: string };
@@ -7,6 +10,8 @@ interface OverviewHeaderProps {
 }
 
 export function OverviewHeader({ reportPeriod, lastUpdated }: OverviewHeaderProps) {
+  const nav = useNavigate();
+  const { logout } = useAuth();
   const formattedPeriod = reportPeriod
     ? `${format(new Date(reportPeriod.start), 'MMM d')}–${format(new Date(reportPeriod.end), 'MMM d, yyyy')}`
     : 'Loading...';
@@ -24,9 +29,22 @@ export function OverviewHeader({ reportPeriod, lastUpdated }: OverviewHeaderProp
             <span className="text-white/90 font-normal">Report Period:</span>{' '}
             <span className="text-white">{formattedPeriod}</span>
           </div>
-          <div className="text-base font-medium">
-            <span className="text-white/90 font-normal">Last Updated:</span>{' '}
-            <span className="text-white">{formattedLastUpdated}</span>
+          <div className="flex items-center gap-4">
+            <div className="text-base font-medium">
+              <span className="text-white/90 font-normal">Last Updated:</span>{' '}
+              <span className="text-white">{formattedLastUpdated}</span>
+            </div>
+            <Button 
+              variant="destructive"
+              size="sm"
+              onClick={() => {
+                logout();
+                nav('/login', { replace: true });
+              }}
+              className="ml-4"
+            >
+              Sign out
+            </Button>
           </div>
         </div>
       </div>
