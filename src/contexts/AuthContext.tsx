@@ -37,56 +37,55 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const API_BASE = import.meta.env.VITE_API_BASE ?? "https://kp-floods-2025-backend-production.up.railway.app";
 
   // Initialize auth state from localStorage
+  const verifyToken = async (token: string) => {
+    try {
+      const response = await fetch(`${API_BASE}/users`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': '*/*'
+        }
+      });
+
+      if (response.ok) {
+        const userData = await response.json();
+        setToken(token);
+        setUser(userData);
+        localStorage.setItem('crux_user', JSON.stringify(userData));
+        return true;
+      } else {
+        // Token is invalid or expired
+        localStorage.removeItem('crux_auth_token');
+        localStorage.removeItem('crux_user');
+        setToken(null);
+        setUser(null);
+        return false;
+      }
+    } catch (error) {
+      console.error('Token verification failed:', error);
+      localStorage.removeItem('crux_auth_token');
+      localStorage.removeItem('crux_user');
+      setToken(null);
+      setUser(null);
+      return false;
+    }
+  };
+
   useEffect(() => {
     const initializeAuth = async () => {
       try {
         const storedToken = localStorage.getItem('crux_auth_token');
-        const storedUser = localStorage.getItem('crux_user');
-
-        if (storedToken && storedUser) {
-          const userData = JSON.parse(storedUser);
-          
-          // Verify token with server to ensure it's still valid
-          try {
-            const response = await fetch(`${API_BASE}/auth/me`, {
-              headers: {
-                'Authorization': `Bearer ${storedToken}`,
-              },
-            });
-
-            if (response.ok) {
-              const result = await response.json();
-              const verifiedUser = result.data;
-              
-              setToken(storedToken);
-              setUser(verifiedUser);
-              localStorage.setItem('crux_user', JSON.stringify(verifiedUser));
-              console.log('🔐 Token verified, user authenticated');
-            } else {
-              // Token is invalid, clear storage
-              localStorage.removeItem('crux_auth_token');
-              localStorage.removeItem('crux_user');
-              setToken(null);
-              setUser(null);
-              console.log('🔐 Token invalid, cleared authentication');
-            }
-          } catch (error) {
-            console.error('Token verification failed:', error);
-            // Clear storage on verification error
-            localStorage.removeItem('crux_auth_token');
-            localStorage.removeItem('crux_user');
-            setToken(null);
-            setUser(null);
+        if (storedToken) {
+          const isValid = await verifyToken(storedToken);
+          if (isValid) {
+            console.log('🔐 Token verified, user authenticated');
+          } else {
+            console.log('🔐 Token invalid, cleared authentication');
           }
         } else {
           console.log('🔐 No stored authentication found');
         }
       } catch (error) {
         console.error('Auth initialization error:', error);
-        localStorage.removeItem('crux_auth_token');
-        localStorage.removeItem('crux_user');
-        setToken(null);
-        setUser(null);
       } finally {
         setIsLoading(false);
       }
@@ -136,20 +135,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const logout = () => {
-    setUser(null);
-    setToken(null);
+    // Clear local storage and state
     localStorage.removeItem('crux_auth_token');
     localStorage.removeItem('crux_user');
-    
-    // Optional: Call logout endpoint to invalidate token on server
-    if (token) {
-      fetch(`${API_BASE}/auth/logout`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      }).catch(console.error);
-    }
+    setUser(null);
+    setToken(null);
   };
 
   const updatePassword = async (oldPassword: string, newPassword: string) => {

@@ -39,7 +39,7 @@ export function OverviewHeader({ reportPeriod, lastUpdated }: OverviewHeaderProp
               size="sm"
               onClick={() => {
                 logout();
-                nav('/login', { replace: true });
+                window.location.href = '/login';
               }}
               className="ml-4"
             >
