@@ -12,67 +12,120 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { getInfrastructureStatus, getInfrastructureByDistrict } from '@/api/infrastructure';
+import { DEFAULT_DATE_RANGE } from '@/lib/api';
 
 export default function InfrastructurePage() {
-  const { data, isLoading } = useQuery({
-    queryKey: ['infrastructure-details'],
-    queryFn: () => Promise.resolve({
-      districtData: [
-        {
-          district: "Peshawar",
-          roadsDamaged: 45,
-          bridgesDamaged: 5,
-          culvertsDamaged: 23,
-          totalLength: 78.5,
-          restorationProgress: 65
-        },
-        {
-          district: "Charsadda",
-          roadsDamaged: 38,
-          bridgesDamaged: 3,
-          culvertsDamaged: 18,
-          totalLength: 52.3,
-          restorationProgress: 45
-        }
-      ],
-      restorationStatus: [
-        {
-          name: 'Roads',
-          'Fully Restored': 120,
-          'Partially Restored': 150,
-          'Not Restored': 72
-        },
-        {
-          name: 'Bridges',
-          'Fully Restored': 8,
-          'Partially Restored': 12,
-          'Not Restored': 8
-        },
-        {
-          name: 'Culverts',
-          'Fully Restored': 45,
-          'Partially Restored': 68,
-          'Not Restored': 43
-        }
-      ],
-      roadSituations: [
-        {
-          id: 1,
-          title: "N-35 Highway Damage",
-          date: "2025-08-19",
-          description: "Major landslide damage on Karakoram Highway near Battagram. Emergency repairs underway.",
-          status: "In Progress"
-        },
-        {
-          id: 2,
-          title: "Swat Bridge Collapse",
-          date: "2025-08-18",
-          description: "Bridge connecting Mingora to surrounding villages partially collapsed due to flood waters.",
-          status: "In Progress"
-        }
-      ]
-    })
+  const { 
+    data: infraStatus, 
+    isLoading: isStatusLoading,
+    error: statusError
+  } = useQuery({
+    queryKey: ['infrastructure-status'],
+    queryFn: () => getInfrastructureStatus({
+      date_from: DEFAULT_DATE_RANGE.from,
+      date_to: DEFAULT_DATE_RANGE.to
+    }),
+    retry: 1
   });
+
+  const { 
+    data: districtData, 
+    isLoading: isDistrictLoading,
+    error: districtError
+  } = useQuery({
+    queryKey: ['infrastructure-by-district'],
+    queryFn: () => getInfrastructureByDistrict({
+      date_from: DEFAULT_DATE_RANGE.from,
+      date_to: DEFAULT_DATE_RANGE.to
+    }),
+    retry: 1
+  });
+
+  const isLoading = isStatusLoading || isDistrictLoading;
+
+  // Handle loading state
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <h2 className="text-lg font-semibold">Loading infrastructure data...</h2>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[400px] flex items-center justify-center">
+              <div className="animate-pulse">Loading...</div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Handle errors
+  if (statusError || districtError) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <h2 className="text-lg font-semibold text-red-600">Error Loading Data</h2>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {statusError && (
+                <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <h3 className="font-medium">Infrastructure Status Error:</h3>
+                  <p className="text-sm text-red-600">{statusError instanceof Error ? statusError.message : 'Failed to load status data'}</p>
+                </div>
+              )}
+              {districtError && (
+                <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <h3 className="font-medium">District Data Error:</h3>
+                  <p className="text-sm text-red-600">{districtError instanceof Error ? districtError.message : 'Failed to load district data'}</p>
+                </div>
+              )}
+              <button 
+                onClick={() => window.location.reload()}
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+              >
+                Retry
+              </button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  const formattedDistrictData = districtData?.map(d => ({
+    district: d.district,
+    roadsDamaged: d.roads_km,
+    bridgesDamaged: d.bridges,
+    culvertsDamaged: d.culverts,
+    totalLength: d.roads_km,
+    restorationProgress: Math.round(d.restoration_progress * 100)
+  })) || [];
+
+  const formattedRestorationStatus = infraStatus ? [
+    {
+      name: 'Roads',
+      'Fully Restored': infraStatus.roads_km.fully_restored,
+      'Partially Restored': infraStatus.roads_km.partially_restored,
+      'Not Restored': infraStatus.roads_km.not_restored
+    },
+    {
+      name: 'Bridges',
+      'Fully Restored': infraStatus.bridges.fully_restored,
+      'Partially Restored': infraStatus.bridges.partially_restored,
+      'Not Restored': infraStatus.bridges.not_restored
+    },
+    {
+      name: 'Culverts',
+      'Fully Restored': infraStatus.culverts.fully_restored,
+      'Partially Restored': infraStatus.culverts.partially_restored,
+      'Not Restored': infraStatus.culverts.not_restored
+    }
+  ] : [];
 
   return (
     <div className="space-y-6">
@@ -84,7 +137,7 @@ export default function InfrastructurePage() {
         <CardContent>
           <div className="h-[400px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data?.restorationStatus}>
+              <BarChart data={formattedRestorationStatus}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />
@@ -117,7 +170,7 @@ export default function InfrastructurePage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data?.districtData.map((row) => (
+              {formattedDistrictData.map((row) => (
                 <TableRow key={row.district}>
                   <TableCell className="font-medium">{row.district}</TableCell>
                   <TableCell className="text-right">{row.roadsDamaged}</TableCell>
@@ -142,33 +195,7 @@ export default function InfrastructurePage() {
         </CardContent>
       </Card>
 
-      {/* Road Situations */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {data?.roadSituations.map((situation) => (
-          <Card key={situation.id}>
-            <CardHeader>
-              <div className="flex items-start justify-between">
-                <div>
-                  <h3 className="text-lg font-semibold">{situation.title}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {new Date(situation.date).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
-                  </p>
-                </div>
-                <Badge className="bg-yellow-100 text-yellow-800">
-                  {situation.status}
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">{situation.description}</p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+
     </div>
   );
 }

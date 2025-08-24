@@ -15,6 +15,12 @@ export default defineConfig({
     include: ['react-leaflet', 'recharts', 'leaflet'],
   },
   server: {
-    force: true,
+    hmr: {
+      overlay: false
+    },
+    watch: {
+      usePolling: true
+    }
   },
+  clearScreen: false,
 })

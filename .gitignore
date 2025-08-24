@@ -3,9 +3,15 @@
 /.pnp
 .pnp.js
 
-# Production build
+# Production build and distribution files
 /dist
 /build
+dist/
+**/dist/
+**/*.dist.*
+*.tsbuildinfo
+.vite
+.rollup.cache
 
 # Environment files
 .env
