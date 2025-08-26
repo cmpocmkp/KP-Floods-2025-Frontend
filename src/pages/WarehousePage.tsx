@@ -12,56 +12,14 @@ import {
 } from "@/components/ui/table";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { getWarehouseDetails } from '@/api/warehouse';
 
 const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#6366F1', '#EC4899'];
 
 export default function WarehousePage() {
   const { data, isLoading } = useQuery({
     queryKey: ['warehouse-details'],
-    queryFn: () => Promise.resolve({
-      stockByDivision: [
-        { name: 'Peshawar', value: 3200 },
-        { name: 'Mardan', value: 2800 },
-        { name: 'Hazara', value: 2400 },
-        { name: 'Malakand', value: 2200 },
-        { name: 'Bannu', value: 1850 }
-      ],
-      topItems: [
-        {
-          id: 1,
-          item: "Food Packages",
-          available: 2500,
-          issued: 1800,
-          remaining: 700,
-          status: "In Stock"
-        },
-        {
-          id: 2,
-          item: "Tents",
-          available: 800,
-          issued: 750,
-          remaining: 50,
-          status: "Low Stock"
-        },
-        {
-          id: 3,
-          item: "Water Bottles",
-          available: 5000,
-          issued: 3200,
-          remaining: 1800,
-          status: "In Stock"
-        }
-      ],
-      issuedTrend: [
-        { date: '08/14', items: 420 },
-        { date: '08/15', items: 380 },
-        { date: '08/16', items: 550 },
-        { date: '08/17', items: 480 },
-        { date: '08/18', items: 620 },
-        { date: '08/19', items: 580 },
-        { date: '08/20', items: 450 }
-      ]
-    })
+    queryFn: getWarehouseDetails
   });
 
   const getStatusBadge = (status: string) => {

@@ -2,7 +2,7 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/contexts/AuthContext';
-import { getOverview } from '@/lib/overview';
+import { getCumulativeDashboard } from '@/lib/overview';
 import Login from './pages/auth/LoginPage';
 import { AppHeader } from './components/Layout/AppHeader';
 import { OverviewHeader } from './features/overview/OverviewHeader';
@@ -54,16 +54,8 @@ function AppContent() {
   const [user, setUser] = useState<User | null>(null);
 
   const { data: kpiData } = useQuery({
-    queryKey: ['kpi-data', activeTab],
-    queryFn: async () => {
-      switch (activeTab) {
-        case 'overview':
-          return getOverview();
-        // Add other cases for different tabs when their APIs are ready
-        default:
-          return undefined;
-      }
-    }
+    queryKey: ['cumulative-dashboard'],
+    queryFn: getCumulativeDashboard,
   });
 
   useEffect(() => {
@@ -104,7 +96,7 @@ function AppContent() {
       case 'camps':
         return <CampsKpis data={kpiData} />;
       case 'compensation':
-        return <CompensationKpis data={kpiData} />;
+        return <CompensationKpis />;
       default:
         return null;
     }
@@ -148,9 +140,9 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <OverviewHeader 
-        reportPeriod={kpiData?.report_period}
-        lastUpdated={kpiData?.last_updated}
+      <OverviewHeader
+        reportPeriod={kpiData ? { from: kpiData.lastUpdated, to: kpiData.lastUpdated } : undefined}
+        lastUpdated={kpiData?.lastUpdated}
       />
       <div className="max-w-[1400px] mx-auto px-4 md:px-6 py-6">
         {renderKpis()}

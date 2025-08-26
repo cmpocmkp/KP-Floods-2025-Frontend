@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { KpiCard } from '@/components/ui/kpi-card';
 import {
   Skull,
@@ -21,15 +21,12 @@ import {
   Building,
   Tent,
   MapPin,
-  UserCheck,
-  Wallet,
-  ClipboardCheck,
-  Clock
+
 } from 'lucide-react';
 
-import { OverviewResponse } from '@/lib/types';
+import type { CumulativeDashboardResponse } from '@/lib/types';
 
-export function OverviewKpis({ data }: { data?: OverviewResponse }) {
+export function OverviewKpis({ data }: { data?: CumulativeDashboardResponse }) {
   if (!data) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -40,30 +37,30 @@ export function OverviewKpis({ data }: { data?: OverviewResponse }) {
     );
   }
 
-  const { totals } = data;
+  const { human } = data;
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <KpiCard
         title="Total Deaths"
-        value={totals.deaths}
+        value={human.deaths}
         icon={Skull}
         color="text-red-600"
       />
       <KpiCard
         title="Total Injured"
-        value={totals.injured}
+        value={human.injured}
         icon={Heart}
         color="text-yellow-600"
       />
       <KpiCard
         title="Houses Damaged"
-        value={totals.houses_damaged}
+        value={human.housesDamaged}
         icon={Home}
         color="text-blue-600"
       />
       <KpiCard
         title="Livestock Lost"
-        value={totals.livestock_lost}
+        value={human.livestockLost}
         icon={Beef}
         color="text-green-600"
       />
@@ -71,7 +68,7 @@ export function OverviewKpis({ data }: { data?: OverviewResponse }) {
   );
 }
 
-export function IncidentKpis({ data }: { data: any }) {
+export function IncidentKpis({ data }: { data?: CumulativeDashboardResponse }) {
   if (!data) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -82,29 +79,30 @@ export function IncidentKpis({ data }: { data: any }) {
     );
   }
 
+  const { incidents } = data;
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <KpiCard
         title="Total Incidents"
-        value={data?.totalIncidents || 0}
+        value={incidents.total}
         icon={FileText}
         color="text-blue-600"
       />
       <KpiCard
         title="Critical Incidents"
-        value={data?.criticalIncidents || 0}
+        value={incidents.critical}
         icon={AlertTriangle}
         color="text-red-600"
       />
       <KpiCard
         title="Flood Related"
-        value={data?.floodIncidents || 0}
+        value={incidents.floodRelated}
         icon={Droplets}
         color="text-cyan-600"
       />
       <KpiCard
         title="Last 24 Hours"
-        value={data?.recentIncidents || 0}
+        value={incidents.last24h}
         icon={Calendar}
         color="text-purple-600"
       />
@@ -112,7 +110,7 @@ export function IncidentKpis({ data }: { data: any }) {
   );
 }
 
-export function InfrastructureKpis({ data }: { data: any }) {
+export function InfrastructureKpis({ data }: { data?: CumulativeDashboardResponse }) {
   if (!data) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -123,29 +121,30 @@ export function InfrastructureKpis({ data }: { data: any }) {
     );
   }
 
+  const { infrastructure } = data;
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <KpiCard
         title="Roads Damaged"
-        value={`${data?.roadsDamaged || 0} km`}
+        value={`${infrastructure.roadsDamagedKm} km`}
         icon={StretchHorizontal}
         color="text-orange-600"
       />
       <KpiCard
         title="Bridges Damaged"
-        value={data?.bridgesDamaged || 0}
+        value={infrastructure.bridgesDamaged}
         icon={Building2}
         color="text-blue-600"
       />
       <KpiCard
         title="Culverts Damaged"
-        value={data?.culvertsDamaged || 0}
+        value={infrastructure.culvertsDamaged}
         icon={Construction}
         color="text-yellow-600"
       />
       <KpiCard
         title="Avg. Restoration Time"
-        value={`${data?.avgRestorationDays || 0} days`}
+        value={`${infrastructure.avgRestorationDays} days`}
         icon={Timer}
         color="text-green-600"
       />
@@ -153,7 +152,7 @@ export function InfrastructureKpis({ data }: { data: any }) {
   );
 }
 
-export function WarehouseKpis({ data }: { data: any }) {
+export function WarehouseKpis({ data }: { data?: CumulativeDashboardResponse }) {
   if (!data) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -164,29 +163,30 @@ export function WarehouseKpis({ data }: { data: any }) {
     );
   }
 
+  const { inventory } = data;
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <KpiCard
         title="Total Items"
-        value={data?.totalItems || 0}
+        value={inventory.totalItems}
         icon={Package}
         color="text-blue-600"
       />
       <KpiCard
         title="Items Issued"
-        value={data?.itemsIssued || 0}
+        value={inventory.itemsIssued}
         icon={PackageCheck}
         color="text-green-600"
       />
       <KpiCard
         title="Items Requested"
-        value={data?.itemsRequested || 0}
+        value={inventory.itemsRequested}
         icon={PackageSearch}
         color="text-yellow-600"
       />
       <KpiCard
         title="Low Stock Items"
-        value={data?.lowStockItems || 0}
+        value={inventory.lowStock}
         icon={AlertCircle}
         color="text-red-600"
       />
@@ -194,7 +194,7 @@ export function WarehouseKpis({ data }: { data: any }) {
   );
 }
 
-export function CampsKpis({ data }: { data: any }) {
+export function CampsKpis({ data }: { data?: CumulativeDashboardResponse }) {
   if (!data) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -205,29 +205,30 @@ export function CampsKpis({ data }: { data: any }) {
     );
   }
 
+  const { camps } = data;
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <KpiCard
         title="Total Camps"
-        value={data?.totalCamps || 0}
+        value={camps.totalCamps}
         icon={Tent}
         color="text-blue-600"
       />
       <KpiCard
         title="Districts with Camps"
-        value={data?.districtsWithCamps || 0}
+        value={camps.districtsWithCamps}
         icon={MapPin}
         color="text-purple-600"
       />
       <KpiCard
         title="Total Occupants"
-        value={data?.totalOccupants || 0}
+        value={camps.totalOccupants}
         icon={Users}
         color="text-green-600"
       />
       <KpiCard
         title="Capacity Utilization"
-        value={`${data?.capacityUtilization || 0}%`}
+        value={`${camps.capacityUtilizationPct}%`}
         icon={Building}
         color="text-yellow-600"
       />
@@ -235,43 +236,19 @@ export function CampsKpis({ data }: { data: any }) {
   );
 }
 
-export function CompensationKpis({ data }: { data: any }) {
-  if (!data) {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {[...Array(4)].map((_, i) => (
-          <div key={i} className="h-24 bg-muted/50 rounded-lg animate-pulse" />
-        ))}
-      </div>
-    );
-  }
-
+export function CompensationKpis() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <KpiCard
-        title="Affected Families"
-        value={data?.totalBeneficiaries || 0}
-        icon={Users}
-        color="text-blue-600"
-      />
-      <KpiCard
-        title="Cases Processed"
-        value={data?.beneficiariesPaid || 0}
-        icon={UserCheck}
-        color="text-green-600"
-      />
-      <KpiCard
-        title="Amount Disbursed"
-        value={`Rs ${(data?.amountDisbursed || 0).toLocaleString()}`}
-        icon={Wallet}
-        color="text-purple-600"
-      />
-      <KpiCard
-        title="Pending Cases"
-        value={data?.pendingCases || 0}
-        icon={Clock}
-        color="text-yellow-600"
-      />
+      <div className="col-span-full flex items-center justify-center h-64 bg-muted/20 rounded-lg">
+        <div className="text-center">
+          <div className="text-lg font-medium text-muted-foreground mb-2">
+            Compensation Data Not Available
+          </div>
+          <div className="text-sm text-muted-foreground">
+            The current dashboard API does not provide compensation statistics.
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

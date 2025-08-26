@@ -15,6 +15,42 @@ export interface OverviewResponse {
   sources: string[];
 }
 
+// Cumulative Dashboard Types
+export interface CumulativeDashboardResponse {
+  human: {
+    deaths: number;
+    injured: number;
+    housesDamaged: number;
+    schoolsDamaged: number;
+    livestockLost: number;
+  };
+  incidents: {
+    total: number;
+    critical: number;
+    floodRelated: number;
+    last24h: number;
+  };
+  infrastructure: {
+    roadsDamagedKm: number;
+    bridgesDamaged: number;
+    culvertsDamaged: number;
+    avgRestorationDays: number;
+  };
+  inventory: {
+    totalItems: number;
+    itemsIssued: number;
+    itemsRequested: number;
+    lowStock: number;
+  };
+  camps: {
+    totalCamps: number;
+    districtsWithCamps: number;
+    totalOccupants: number;
+    capacityUtilizationPct: number;
+  };
+  lastUpdated: string;
+}
+
 // Damage Distribution Types
 export interface DamageDistributionResponse {
   total_incidents: number;
@@ -34,17 +70,7 @@ export interface DivisionSummaryRow {
   livestock_lost: number;
 }
 
-export interface DivisionSummaryResponse {
-  rows: DivisionSummaryRow[];
-  totals: {
-    deaths: number;
-    injured: number;
-    houses_damaged: number;
-    schools_damaged: number;
-    livestock_lost: number;
-  };
-  last_updated: string;
-}
+export type DivisionSummaryResponse = DivisionSummaryRow[];
 
 // Incident Trends Types
 export interface IncidentTrendPoint {

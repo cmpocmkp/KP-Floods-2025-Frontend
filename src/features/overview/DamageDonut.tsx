@@ -5,17 +5,19 @@ import { useQuery } from '@tanstack/react-query';
 import { getDamageDistribution } from '@/lib/overview';
 
 const COLORS = {
-  deaths: '#ef4444',
-  injured: '#eab308',
-  houses_damaged: '#3b82f6',
-  livestock_lost: '#22c55e'
+  'Human Casualties': '#ef4444',
+  'Infrastructure Damage': '#f97316',
+  'Housing Damage': '#3b82f6',
+  'Agricultural Loss': '#22c55e',
+  'Other': '#8b5cf6'
 };
 
 const LABELS = {
-  deaths: 'Deaths',
-  injured: 'Injured',
-  houses_damaged: 'Houses Damaged',
-  livestock_lost: 'Livestock Lost'
+  'Human Casualties': 'Human Casualties',
+  'Infrastructure Damage': 'Infrastructure Damage',
+  'Housing Damage': 'Housing Damage',
+  'Agricultural Loss': 'Agricultural Loss',
+  'Other': 'Other'
 };
 
 export function DamageDonut() {
@@ -39,10 +41,13 @@ export function DamageDonut() {
     );
   }
 
-  const data = damageData.buckets.map(bucket => ({
-    name: LABELS[bucket.key as keyof typeof LABELS],
+  // Predefined colors for fallback
+  const DEFAULT_COLORS = ['#ef4444', '#f97316', '#eab308', '#3b82f6', '#22c55e', '#8b5cf6', '#ec4899', '#06b6d4'];
+
+  const data = damageData.buckets.map((bucket, index) => ({
+    name: LABELS[bucket.key as keyof typeof LABELS] || bucket.key,
     value: bucket.value,
-    color: COLORS[bucket.key as keyof typeof COLORS]
+    color: COLORS[bucket.key as keyof typeof COLORS] || DEFAULT_COLORS[index % DEFAULT_COLORS.length]
   }));
 
   const total = damageData.total_incidents;

@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Table,
@@ -35,10 +35,26 @@ export function DivisionSummaryTable() {
   if (!summaryData) {
     return null;
   }
+
+  // Calculate totals from the array data
+  const totals = summaryData.reduce(
+    (acc, division) => ({
+      deaths: acc.deaths + division.deaths,
+      injured: acc.injured + division.injured,
+      houses_damaged: acc.houses_damaged + division.houses_damaged,
+      schools_damaged: acc.schools_damaged + division.schools_damaged,
+      livestock_lost: acc.livestock_lost + division.livestock_lost,
+    }),
+    { deaths: 0, injured: 0, houses_damaged: 0, schools_damaged: 0, livestock_lost: 0 }
+  );
+
   return (
     <Card>
       <CardHeader>
         <h2 className="text-lg font-semibold">Division-wise Summary</h2>
+        <p className="text-sm text-muted-foreground">
+          Impact summary across {summaryData.length} divisions
+        </p>
       </CardHeader>
       <CardContent>
         <Table>
@@ -53,23 +69,23 @@ export function DivisionSummaryTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {summaryData.rows.map((row) => (
-              <TableRow key={row.division}>
-                <TableCell className="font-medium">{row.division}</TableCell>
-                <TableCell className="text-right">{row.deaths.toLocaleString()}</TableCell>
-                <TableCell className="text-right">{row.injured.toLocaleString()}</TableCell>
-                <TableCell className="text-right">{row.houses_damaged.toLocaleString()}</TableCell>
-                <TableCell className="text-right">{row.schools_damaged.toLocaleString()}</TableCell>
-                <TableCell className="text-right">{row.livestock_lost.toLocaleString()}</TableCell>
+            {summaryData.map((division) => (
+              <TableRow key={division.division}>
+                <TableCell className="font-medium">{division.division}</TableCell>
+                <TableCell className="text-right">{division.deaths.toLocaleString()}</TableCell>
+                <TableCell className="text-right">{division.injured.toLocaleString()}</TableCell>
+                <TableCell className="text-right">{division.houses_damaged.toLocaleString()}</TableCell>
+                <TableCell className="text-right">{division.schools_damaged.toLocaleString()}</TableCell>
+                <TableCell className="text-right">{division.livestock_lost.toLocaleString()}</TableCell>
               </TableRow>
             ))}
             <TableRow className="font-semibold bg-muted/50">
               <TableCell>Total</TableCell>
-              <TableCell className="text-right">{summaryData.totals.deaths.toLocaleString()}</TableCell>
-              <TableCell className="text-right">{summaryData.totals.injured.toLocaleString()}</TableCell>
-              <TableCell className="text-right">{summaryData.totals.houses_damaged.toLocaleString()}</TableCell>
-              <TableCell className="text-right">{summaryData.totals.schools_damaged.toLocaleString()}</TableCell>
-              <TableCell className="text-right">{summaryData.totals.livestock_lost.toLocaleString()}</TableCell>
+              <TableCell className="text-right">{totals.deaths.toLocaleString()}</TableCell>
+              <TableCell className="text-right">{totals.injured.toLocaleString()}</TableCell>
+              <TableCell className="text-right">{totals.houses_damaged.toLocaleString()}</TableCell>
+              <TableCell className="text-right">{totals.schools_damaged.toLocaleString()}</TableCell>
+              <TableCell className="text-right">{totals.livestock_lost.toLocaleString()}</TableCell>
             </TableRow>
           </TableBody>
         </Table>
