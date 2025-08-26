@@ -12,20 +12,34 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
+import { getCampsDetailsByDistrict } from '@/api/camps';
 
 export default function CampsPage() {
-  const { data, isLoading } = useQuery({
+  const { data: apiData, isLoading } = useQuery({
     queryKey: ['camps-details'],
-    queryFn: () => Promise.resolve({
-      campsByDistrict: [
-        { district: 'Peshawar', camps: 18 },
-        { district: 'Charsadda', camps: 15 },
-        { district: 'Nowshera', camps: 12 },
-        { district: 'Swat', camps: 10 },
-        { district: 'Dir Lower', camps: 8 },
-        { district: 'Chitral', camps: 7 },
-        { district: 'Others', camps: 16 }
-      ],
+    queryFn: getCampsDetailsByDistrict
+  });
+
+  // Transform API data to match component structure
+  const data = React.useMemo(() => {
+    if (!apiData?.result) return null;
+
+    const campsByDistrict = apiData.result.map(item => ({
+      district: item.item_title,
+      camps: item.item_value
+    }));
+
+    // Create camp details from API data (without capacity/occupancy for now)
+    const campDetails = apiData.result.map(item => ({
+      district: item.item_title,
+      numCamps: item.item_value,
+      estimatedCapacity: item.item_value * 200, // Estimated capacity based on camps
+      currentOccupancy: Math.floor(item.item_value * 180), // Estimated occupancy
+      facilities: ["Medical", "Water", "Security"] // Default facilities
+    }));
+
+    return {
+      campsByDistrict,
       facilitiesDistribution: [
         { facility: 'Medical Care', score: 85 },
         { facility: 'Clean Water', score: 95 },
@@ -34,31 +48,11 @@ export default function CampsPage() {
         { facility: 'Power Supply', score: 70 },
         { facility: 'Security', score: 100 }
       ],
-      campDetails: [
-        {
-          district: "Peshawar",
-          numCamps: 18,
-          estimatedCapacity: 3600,
-          currentOccupancy: 3200,
-          facilities: ["Medical", "Water", "Power", "Security"]
-        },
-        {
-          district: "Charsadda",
-          numCamps: 15,
-          estimatedCapacity: 3000,
-          currentOccupancy: 2800,
-          facilities: ["Medical", "Water", "Security"]
-        },
-        {
-          district: "Nowshera",
-          numCamps: 12,
-          estimatedCapacity: 2400,
-          currentOccupancy: 2100,
-          facilities: ["Medical", "Water", "Power", "Security"]
-        }
-      ]
-    })
-  });
+      campDetails,
+      totalCamps: apiData.total_camps,
+      lastUpdated: apiData.last_updated
+    };
+  }, [apiData]);
 
   const getFacilityBadges = (facilities: string[]) => {
     const colors: { [key: string]: string } = {
@@ -81,7 +75,14 @@ export default function CampsPage() {
         {/* Camps by District */}
         <Card>
           <CardHeader>
-            <h2 className="text-lg font-semibold">Camps by District</h2>
+            <div className="flex justify-between items-center">
+              <h2 className="text-lg font-semibold">Camps by District</h2>
+              {data?.totalCamps && (
+                <div className="text-sm text-gray-600">
+                  <span className="font-medium">Total: {data.totalCamps} camps</span>
+                </div>
+              )}
+            </div>
           </CardHeader>
           <CardContent>
             <div className="h-[400px]">
@@ -128,7 +129,19 @@ export default function CampsPage() {
       {/* Camp Details Table */}
       <Card>
         <CardHeader>
-          <h2 className="text-lg font-semibold">Camp Details by District</h2>
+          <div className="flex justify-between items-center">
+            <h2 className="text-lg font-semibold">Camp Details by District</h2>
+            {data?.totalCamps && (
+              <div className="text-sm text-gray-600">
+                <span className="font-medium">Total Camps: {data.totalCamps}</span>
+                {data.lastUpdated && (
+                  <span className="ml-4">
+                    Last Updated: {new Date(data.lastUpdated).toLocaleDateString()}
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
         </CardHeader>
         <CardContent>
           <Table>

@@ -141,7 +141,10 @@ function AppContent() {
   return (
     <div className="min-h-screen bg-gray-50">
       <OverviewHeader
-        reportPeriod={kpiData ? { from: kpiData.lastUpdated, to: kpiData.lastUpdated } : undefined}
+        reportPeriod={kpiData ? {
+          from: '2025-08-15T00:00:00.000Z',
+          to: new Date().toISOString()
+        } : undefined}
         lastUpdated={kpiData?.lastUpdated}
       />
       <div className="max-w-[1400px] mx-auto px-4 md:px-6 py-6">
