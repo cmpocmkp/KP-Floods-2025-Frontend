@@ -1,4 +1,3 @@
-import React from 'react';
 import { TabsBar } from './TabsBar';
 import { MoreHorizontal } from 'lucide-react';
 import {
@@ -23,6 +22,9 @@ const TABS = [
   { id: 'warehouse', label: 'Warehouse' },
   { id: 'camps', label: 'Relief Camps' },
   { id: 'compensation', label: 'Compensation' },
+  { id: 'analyze', label: '📊 Analyze' },
+  { id: 'visualize', label: '📈 Visualize' },
+  { id: 'ask-ai', label: '🤖 Ask AI' },
 ];
 
 export function AppHeader({

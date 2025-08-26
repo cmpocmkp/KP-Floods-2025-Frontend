@@ -7,6 +7,7 @@ import Login from './pages/auth/LoginPage';
 import { AppHeader } from './components/Layout/AppHeader';
 import { OverviewHeader } from './features/overview/OverviewHeader';
 import { OverviewKpis, IncidentKpis, InfrastructureKpis, WarehouseKpis, CampsKpis, CompensationKpis } from '@/features/kpis';
+import { ComingSoon } from './components/ComingSoon';
 
 
 
@@ -97,6 +98,10 @@ function AppContent() {
         return <CampsKpis data={kpiData} />;
       case 'compensation':
         return <CompensationKpis />;
+      case 'analyze':
+      case 'visualize':
+      case 'ask-ai':
+        return null; // No KPIs for coming soon features
       default:
         return null;
     }
@@ -123,6 +128,24 @@ function AppContent() {
       case 'compensation':
         Component = CompensationPage;
         break;
+      case 'analyze':
+        console.log('Rendering Analyze Coming Soon');
+        return <ComingSoon
+          title="📊 Advanced Analytics"
+          description="Powerful data analysis tools to uncover insights and trends from flood-related data."
+        />;
+      case 'visualize':
+        console.log('Rendering Visualize Coming Soon');
+        return <ComingSoon
+          title="📈 Interactive Visualizations"
+          description="Advanced charts, maps, and interactive dashboards for comprehensive data exploration."
+        />;
+      case 'ask-ai':
+        console.log('Rendering Ask AI Coming Soon');
+        return <ComingSoon
+          title="🤖 AI-Powered Insights"
+          description="Get intelligent answers and insights from your data using advanced AI technology."
+        />;
       case 'sources-management':
         return <SourcesManagement />;
       case 'settings':
@@ -175,6 +198,9 @@ function App() {
       <Route path="/warehouse" element={<AppContent />} />
       <Route path="/camps" element={<AppContent />} />
       <Route path="/compensation" element={<AppContent />} />
+      <Route path="/analyze" element={<AppContent />} />
+      <Route path="/visualize" element={<AppContent />} />
+      <Route path="/ask-ai" element={<AppContent />} />
       <Route path="/sources-management" element={<AppContent />} />
       <Route path="/settings" element={<AppContent />} />
     </Routes>

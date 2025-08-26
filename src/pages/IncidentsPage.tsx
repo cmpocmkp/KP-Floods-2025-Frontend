@@ -95,14 +95,6 @@ export default function IncidentsPage() {
   return (
     <div className="space-y-6">
 
-      {/* Filter Chips */}
-      <div className="flex flex-wrap gap-2">
-        <Badge variant="outline" className="px-3 py-1 bg-white">All</Badge>
-        <Badge variant="outline" className="px-3 py-1">Peshawar</Badge>
-        <Badge variant="outline" className="px-3 py-1">Charsadda</Badge>
-        <Badge variant="outline" className="px-3 py-1">Nowshera</Badge>
-      </div>
-
       {/* Incidents Table */}
       <Card>
         <CardHeader>
