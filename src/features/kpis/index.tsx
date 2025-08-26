@@ -2,7 +2,6 @@
 import { KpiCard } from '@/components/ui/kpi-card';
 import {
   Skull,
-  Heart,
   Home,
   Beef,
   FileText,
@@ -21,8 +20,12 @@ import {
   Building,
   Tent,
   MapPin,
+  DollarSign,
+  Activity,
 
 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { getCompensationSummary } from '@/api/compensation';
 
 import type { CumulativeDashboardResponse } from '@/lib/types';
 
@@ -49,7 +52,7 @@ export function OverviewKpis({ data }: { data?: CumulativeDashboardResponse }) {
       <KpiCard
         title="Total Injured"
         value={human.injured}
-        icon={Heart}
+        icon={Activity}
         color="text-yellow-600"
       />
       <KpiCard
@@ -237,18 +240,52 @@ export function CampsKpis({ data }: { data?: CumulativeDashboardResponse }) {
 }
 
 export function CompensationKpis() {
+  const { data: compensationData, isLoading } = useQuery({
+    queryKey: ['compensation-summary'],
+    queryFn: () => getCompensationSummary()
+  });
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="h-24 bg-muted/50 rounded-lg animate-pulse" />
+        ))}
+      </div>
+    );
+  }
+
+  const totalCompensation = compensationData?.totalCompensation || 0;
+  const totalDeaths = compensationData?.totalDeaths || 0;
+  const totalInjured = compensationData?.totalInjured || 0;
+  const totalHousesDamaged = compensationData?.totalHousesDamaged || 0;
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <div className="col-span-full flex items-center justify-center h-64 bg-muted/20 rounded-lg">
-        <div className="text-center">
-          <div className="text-lg font-medium text-muted-foreground mb-2">
-            Compensation Data Not Available
-          </div>
-          <div className="text-sm text-muted-foreground">
-            The current dashboard API does not provide compensation statistics.
-          </div>
-        </div>
-      </div>
+      <KpiCard
+        title="Total Compensation"
+        value={`PKR ${(totalCompensation / 1000000000).toFixed(1)}B`}
+        icon={DollarSign}
+        color="text-green-600"
+      />
+      <KpiCard
+        title="Total Deaths"
+        value={totalDeaths.toString()}
+        icon={Skull}
+        color="text-red-600"
+      />
+      <KpiCard
+        title="Total Injured"
+        value={totalInjured.toString()}
+        icon={Activity}
+        color="text-orange-600"
+      />
+      <KpiCard
+        title="Houses Damaged"
+        value={totalHousesDamaged.toString()}
+        icon={Home}
+        color="text-blue-600"
+      />
     </div>
   );
 }

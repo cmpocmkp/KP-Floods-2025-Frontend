@@ -9,153 +9,232 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from '@/lib/utils';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { getCompensationSummary, COMPENSATION_RATES } from '@/api/compensation';
+
+const COLORS = ['#3B82F6', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6', '#F97316'];
 
 export default function CompensationPage() {
-  const { data, isLoading } = useQuery({
-    queryKey: ['compensation-details'],
-    queryFn: () => Promise.resolve({
-      processingRate: 28,
-      estimatedCompletion: 47,
-      districtData: [
-        {
-          district: "Peshawar",
-          beneficiariesPaid: 180,
-          pendingCases: 220,
-          amountDisbursed: 90000000,
-          lastUpdate: "2025-08-19T10:30:00Z"
-        },
-        {
-          district: "Charsadda",
-          beneficiariesPaid: 150,
-          pendingCases: 180,
-          amountDisbursed: 75000000,
-          lastUpdate: "2025-08-19T09:15:00Z"
-        },
-        {
-          district: "Nowshera",
-          beneficiariesPaid: 120,
-          pendingCases: 160,
-          amountDisbursed: 60000000,
-          lastUpdate: "2025-08-19T11:45:00Z"
-        }
-      ],
-      disbursementTrend: [
-        { date: '08/14', amount: 45000000 },
-        { date: '08/15', amount: 52000000 },
-        { date: '08/16', amount: 63000000 },
-        { date: '08/17', amount: 58000000 },
-        { date: '08/18', amount: 72000000 },
-        { date: '08/19', amount: 68000000 },
-        { date: '08/20', amount: 62000000 }
-      ]
-    })
+  const { data: compensationData, isLoading, error } = useQuery({
+    queryKey: ['compensation-summary'],
+    queryFn: getCompensationSummary
   });
+
+  // Prepare chart data
+  const compensationByDistrict = React.useMemo(() => {
+    if (!compensationData?.districtBreakdown) return [];
+    return compensationData.districtBreakdown.map(district => ({
+      district: district.district,
+      compensation: district.totalCompensation,
+      deaths: district.casualties.deaths,
+      injured: district.casualties.injured
+    }));
+  }, [compensationData]);
+
+  const compensationByCategory = React.useMemo(() => {
+    if (!compensationData?.districtBreakdown) return [];
+
+    const categories = {
+      'Casualties': 0,
+      'Property': 0,
+      'Livestock': 0,
+      'Business': 0,
+      'Vehicles': 0,
+      'Agricultural': 0,
+      'Support': 0
+    };
+
+    compensationData.districtBreakdown.forEach(district => {
+      categories.Casualties += district.casualties.deathCompensation + district.casualties.injuryCompensation;
+      categories.Property += district.property.houseCompensation;
+      categories.Livestock += district.livestock.cattleCompensation;
+      categories.Business += district.business.businessCompensation;
+      categories.Vehicles += district.vehicles.vehicleCompensation;
+      categories.Agricultural += district.agricultural.cropsCompensation + district.agricultural.orchardsCompensation + district.agricultural.treesCompensation;
+      categories.Support += district.support.familyRationSupport;
+    });
+
+    return Object.entries(categories).map(([name, value], index) => ({
+      name,
+      value,
+      color: COLORS[index % COLORS.length]
+    }));
+  }, [compensationData]);
+
+  const getCategoryBadge = (category: string) => {
+    const colors: { [key: string]: string } = {
+      casualties: 'bg-red-100 text-red-800',
+      property: 'bg-blue-100 text-blue-800',
+      agricultural: 'bg-green-100 text-green-800',
+      business: 'bg-yellow-100 text-yellow-800',
+      vehicle: 'bg-purple-100 text-purple-800',
+      livestock: 'bg-orange-100 text-orange-800',
+      support: 'bg-indigo-100 text-indigo-800'
+    };
+    return colors[category] || 'bg-gray-100 text-gray-800';
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-lg">Loading compensation data...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-lg text-red-600">
+          Error loading compensation data: {error.message}
+        </div>
+      </div>
+    );
+  }
+
+  // Show KPI cards even if data is not available
+  const totalCompensation = compensationData?.totalCompensation || 0;
+  const totalDeaths = compensationData?.totalDeaths || 0;
+  const totalInjured = compensationData?.totalInjured || 0;
+  const totalHousesDamaged = compensationData?.totalHousesDamaged || 0;
+  const totalDistricts = compensationData?.totalDistricts || 0;
 
   return (
     <div className="space-y-6">
+      {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Compensation by District */}
         <Card>
           <CardHeader>
-            <h2 className="text-lg font-semibold">Processing Status</h2>
+            <h2 className="text-lg font-semibold">Compensation by District</h2>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-muted-foreground">Processing Rate</p>
-                <p className="text-2xl font-bold">{data?.processingRate} cases/day</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Est. Completion</p>
-                <p className="text-2xl font-bold">{data?.estimatedCompletion} days</p>
-              </div>
+          <CardContent>
+            <div className="h-[400px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={compensationByDistrict}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="district" />
+                  <YAxis
+                    tickFormatter={(value) =>
+                      `${(value / 1000000000).toFixed(1)}B`
+                    }
+                  />
+                  <Tooltip
+                    formatter={(value: number) => [
+                      formatCurrency(value),
+                      "Total Compensation"
+                    ]}
+                  />
+                  <Bar dataKey="compensation" fill="#3B82F6" />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
           </CardContent>
         </Card>
 
-        {/* Disbursement Trend */}
+        {/* Compensation by Category */}
         <Card>
           <CardHeader>
-            <h2 className="text-lg font-semibold">Daily Disbursement Trend</h2>
+            <h2 className="text-lg font-semibold">Compensation by Category</h2>
           </CardHeader>
           <CardContent>
-            <div className="h-[300px]">
+            <div className="h-[400px]">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={data?.disbursementTrend}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis 
-                    tickFormatter={(value) => 
-                      `${(value / 1000000).toFixed(0)}M`
-                    }
-                  />
-                  <Tooltip 
-                    formatter={(value: number) => 
-                      [formatCurrency(value), "Amount Disbursed"]
-                    }
-                  />
-                  <Bar dataKey="amount" fill="#3B82F6" />
-                </BarChart>
+                <PieChart>
+                  <Pie
+                    data={compensationByCategory}
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={120}
+                    fill="#8884d8"
+                    dataKey="value"
+                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  >
+                    {compensationByCategory.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip formatter={(value: number) => formatCurrency(value)} />
+                </PieChart>
               </ResponsiveContainer>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* District-wise Table */}
+      {/* Compensation Policy Table */}
       <Card>
         <CardHeader>
-          <h2 className="text-lg font-semibold">District-wise Compensation Status</h2>
+          <h2 className="text-lg font-semibold">Compensation Policy Rates</h2>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>District</TableHead>
-                <TableHead className="text-right">Beneficiaries Paid</TableHead>
-                <TableHead className="text-right">Pending Cases</TableHead>
-                <TableHead className="text-right">Amount Disbursed</TableHead>
-                <TableHead>Last Update</TableHead>
-                <TableHead className="text-right">Progress</TableHead>
+                <TableHead>ID</TableHead>
+                <TableHead>Compensation Type</TableHead>
+                <TableHead className="text-right">Amount (PKR)</TableHead>
+                <TableHead>Category</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data?.districtData.map((district) => {
-                const total = district.beneficiariesPaid + district.pendingCases;
-                const progress = (district.beneficiariesPaid / total) * 100;
-                
-                return (
-                  <TableRow key={district.district}>
-                    <TableCell className="font-medium">{district.district}</TableCell>
-                    <TableCell className="text-right">{district.beneficiariesPaid.toLocaleString()}</TableCell>
-                    <TableCell className="text-right">{district.pendingCases.toLocaleString()}</TableCell>
-                    <TableCell className="text-right">{formatCurrency(district.amountDisbursed)}</TableCell>
-                    <TableCell>
-                      {new Date(district.lastUpdate).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center justify-end gap-2">
-                        <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-blue-600 rounded-full"
-                            style={{ width: `${progress}%` }}
-                          />
-                        </div>
-                        <span className="text-sm">{progress.toFixed(1)}%</span>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+              {COMPENSATION_RATES.map((rate) => (
+                <TableRow key={rate.id}>
+                  <TableCell className="font-medium">{rate.id}</TableCell>
+                  <TableCell>{rate.type}</TableCell>
+                  <TableCell className="text-right font-mono">
+                    {rate.amount.toLocaleString()}
+                  </TableCell>
+                  <TableCell>
+                    <Badge className={getCategoryBadge(rate.category)}>
+                      {rate.category}
+                    </Badge>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
+        </CardContent>
+      </Card>
+
+      {/* District-wise Detailed Breakdown */}
+      <Card>
+        <CardHeader>
+          <h2 className="text-lg font-semibold">District-wise Compensation Breakdown</h2>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>District</TableHead>
+                  <TableHead className="text-right">Deaths</TableHead>
+                  <TableHead className="text-right">Injured</TableHead>
+                  <TableHead className="text-right">Houses Damaged</TableHead>
+                  <TableHead className="text-right">Cattle Lost</TableHead>
+                  <TableHead className="text-right">Total Compensation</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {compensationData?.districtBreakdown.map((district) => (
+                  <TableRow key={district.district}>
+                    <TableCell className="font-medium">{district.district}</TableCell>
+                    <TableCell className="text-right">{district.casualties.deaths}</TableCell>
+                    <TableCell className="text-right">{district.casualties.injured}</TableCell>
+                    <TableCell className="text-right">
+                      {district.property.housesFullyDamaged + district.property.housesPartiallyDamaged}
+                    </TableCell>
+                    <TableCell className="text-right">{district.livestock.cattlePerished}</TableCell>
+                    <TableCell className="text-right font-mono font-bold">
+                      {formatCurrency(district.totalCompensation)}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
     </div>
