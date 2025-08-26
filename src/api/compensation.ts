@@ -1,5 +1,4 @@
 import { getDistrictWiseIncidents } from './incidents';
-import { getGisDistricts } from './map';
 import { getCumulativeDashboard } from '@/lib/overview';
 
 export interface CompensationRate {
@@ -96,8 +95,8 @@ export const calculateDistrictCompensation = (districtData: any): DistrictCompen
 
   if (districtData.incidents && districtData.incidents.length > 0) {
     // Sum from detailed incident data
-    housesFullyDamaged = districtData.incidents.reduce((sum, incident) => sum + (incident.house_damaged_fully || 0), 0);
-    housesPartiallyDamaged = districtData.incidents.reduce((sum, incident) => sum + (incident.house_damaged_partially || 0), 0);
+    housesFullyDamaged = districtData.incidents.reduce((sum: number, incident: any) => sum + (incident.house_damaged_fully || 0), 0);
+    housesPartiallyDamaged = districtData.incidents.reduce((sum: number, incident: any) => sum + (incident.house_damaged_partially || 0), 0);
   } else {
     // Estimate from total if detailed data not available
     const totalHouses = districtData.houses_damaged || 0;
@@ -113,7 +112,7 @@ export const calculateDistrictCompensation = (districtData: any): DistrictCompen
   let cattlePerished = 0;
   if (districtData.incidents && districtData.incidents.length > 0) {
     // Sum from detailed incident data
-    cattlePerished = districtData.incidents.reduce((sum, incident) => sum + (incident.cattle_perished || 0), 0);
+    cattlePerished = districtData.incidents.reduce((sum: number, incident: any) => sum + (incident.cattle_perished || 0), 0);
   } else {
     // Use district level data if available
     cattlePerished = districtData.cattle_perished || 0;
@@ -123,7 +122,7 @@ export const calculateDistrictCompensation = (districtData: any): DistrictCompen
   // Estimate business damages (using a portion of other damages as proxy)
   let totalOtherDamaged = 0;
   if (districtData.incidents && districtData.incidents.length > 0) {
-    totalOtherDamaged = districtData.incidents.reduce((sum, incident) => sum + (incident.total_other_damaged || 0), 0);
+    totalOtherDamaged = districtData.incidents.reduce((sum: number, incident: any) => sum + (incident.total_other_damaged || 0), 0);
   } else {
     totalOtherDamaged = districtData.total_other_damaged || 0;
   }
@@ -187,134 +186,18 @@ export const calculateDistrictCompensation = (districtData: any): DistrictCompen
   };
 };
 
-const calculateDistrictCompensationFromGis = (gisData: {
-  district: string;
-  houses_damaged: number;
-  livestock_lost: number;
-  deaths: number;
-  injured: number;
-  incidentData?: any;
-}): DistrictCompensation => {
-  const rates = COMPENSATION_RATES;
 
-  // Calculate casualties compensation
-  const deathCompensation = gisData.deaths * rates.find(r => r.type === 'Death')!.amount;
-  const injuryCompensation = gisData.injured * rates.find(r => r.type === 'Injury')!.amount;
-
-  // Calculate property compensation (houses)
-  // Estimate fully vs partially damaged houses (20% fully, 80% partially)
-  const housesFullyDamaged = Math.floor(gisData.houses_damaged * 0.2);
-  const housesPartiallyDamaged = gisData.houses_damaged - housesFullyDamaged;
-  const houseCompensation =
-    housesFullyDamaged * rates.find(r => r.type === 'Fully Damaged Houses')!.amount +
-    housesPartiallyDamaged * rates.find(r => r.type === 'Partial damaged Houses')!.amount;
-
-  // Calculate livestock compensation
-  const cattleCompensation = gisData.livestock_lost * rates.find(r => r.type === 'Big Cattles (cows,buffalos,Horse)')!.amount;
-
-  // Estimate business damages (using a portion of other data if available from incidents)
-  let estimatedBusinessDamages = 0;
-  if (gisData.incidentData?.incidents) {
-    const totalOtherDamaged = gisData.incidentData.incidents.reduce((sum: number, incident: any) =>
-      sum + (incident.total_other_damaged || 0), 0);
-    estimatedBusinessDamages = Math.floor(totalOtherDamaged * 0.3);
-  } else {
-    // Estimate based on houses damaged (rough approximation)
-    estimatedBusinessDamages = Math.floor(gisData.houses_damaged * 0.1);
-  }
-
-  const businessCompensation = estimatedBusinessDamages * rates.find(r => r.type === 'Shops, Kiosk or other business establishment Fully Damaged')!.amount;
-
-  // Estimate vehicle damages
-  const estimatedVehicleDamages = Math.floor(gisData.houses_damaged * 0.05); // Rough estimate
-  const vehicleCompensation = estimatedVehicleDamages * rates.find(r => r.type === 'Car, jeep 4 or 3 Wheelers Fully Damaged')!.amount;
-
-  // Estimate agricultural compensation based on affected families
-  const affectedFamilies = Math.max(gisData.deaths, gisData.injured, housesFullyDamaged);
-  const cropsCompensation = affectedFamilies * rates.find(r => r.type === 'Crops per family')!.amount;
-  const orchardsCompensation = affectedFamilies * rates.find(r => r.type === 'Orchads per Family')!.amount;
-  const treesCompensation = affectedFamilies * 10 * rates.find(r => r.type === 'Tree per unit')!.amount;
-
-  // Family ration support
-  const familyRationSupport = affectedFamilies * rates.find(r => r.type === 'Family Ration Support')!.amount;
-
-  const totalCompensation = deathCompensation + injuryCompensation + houseCompensation +
-                          cattleCompensation + businessCompensation + vehicleCompensation +
-                          cropsCompensation + orchardsCompensation + treesCompensation + familyRationSupport;
-
-  return {
-    district: gisData.district,
-    totalCompensation,
-    casualties: {
-      deaths: gisData.deaths,
-      injured: gisData.injured,
-      deathCompensation,
-      injuryCompensation
-    },
-    property: {
-      housesFullyDamaged,
-      housesPartiallyDamaged,
-      houseCompensation
-    },
-    livestock: {
-      cattlePerished: gisData.livestock_lost,
-      cattleCompensation
-    },
-    business: {
-      shopsFullyDamaged: estimatedBusinessDamages,
-      shopsPartiallyDamaged: 0,
-      businessCompensation
-    },
-    vehicles: {
-      vehiclesFullyDamaged: estimatedVehicleDamages,
-      vehiclesPartiallyDamaged: 0,
-      vehicleCompensation
-    },
-    agricultural: {
-      cropsCompensation,
-      orchardsCompensation,
-      treesCompensation
-    },
-    support: {
-      familyRationSupport
-    }
-  };
-};
 
 export const getCompensationSummary = async (p?: { date_from?: string; date_to?: string }): Promise<CompensationSummary> => {
   // Get consistent data from the same source as overview KPIs
   const cumulativeDashboard = await getCumulativeDashboard();
 
-  // Use GIS districts data for district-wise breakdown
-  const gisDistricts = await getGisDistricts(p);
+  // Use incidents API data for accurate district-wise breakdown (correct data)
   const districtIncidents = await getDistrictWiseIncidents(p);
 
-  // Create a map of district incidents for additional data
-  const incidentsMap = new Map();
-  districtIncidents.forEach(district => {
-    incidentsMap.set(district.district, district);
-  });
-
-  const districtBreakdown = gisDistricts.features.map(feature => {
-    const properties = feature.properties;
-    const districtName = properties.district;
-    const incidentData = incidentsMap.get(districtName);
-
-    // Use GIS data for district-wise breakdown, but scale it proportionally to match overview totals
-    const housesDamaged = parseInt(properties.houses_damaged) || 0;
-    const livestockLost = parseInt(properties.livestock_lost) || 0;
-    const deaths = parseInt(properties.deaths) || 0;
-    const injured = parseInt(properties.injured) || 0;
-
-    return calculateDistrictCompensationFromGis({
-      district: districtName,
-      houses_damaged: housesDamaged,
-      livestock_lost: livestockLost,
-      deaths,
-      injured,
-      incidentData
-    });
-  });
+  const districtBreakdown = districtIncidents.map(districtData =>
+    calculateDistrictCompensation(districtData)
+  );
 
   // Use the consistent totals from cumulative dashboard (same as overview)
   const consistentTotals = {
