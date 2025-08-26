@@ -1,15 +1,21 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { API_BASE } from '../lib/env';
 
 export interface User {
-  id: number;
+  _id: string;
   user_id: string;
   user_name: string;
-  email?: string;
-  role: 'super_admin' | 'admin' | 'admin_staff';
-  jurisdiction?: string;
-  first_login: boolean;
+  email: string;
+  description: string;
+  jurisdiction: string;
+  role: string;
   is_disabled: boolean;
+  is_deleted: boolean;
+  first_login: boolean;
+  initial_password: string;
+  created_by: string | null;
   created_at: string;
+  updated_at: string;
 }
 
 interface AuthContextType {
@@ -34,12 +40,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const API_BASE = import.meta.env.VITE_API_BASE ?? "https://kp-floods-2025-backend-production.up.railway.app";
-
   // Initialize auth state from localStorage
   const verifyToken = async (token: string) => {
     try {
-      const response = await fetch(`${API_BASE}/users`, {
+      const response = await fetch(`${API_BASE}/users/auth`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Accept': '*/*'
@@ -109,7 +113,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const result = await response.json();
       console.log('Login response:', { status: response.status, result });
 
-      if (response.status === 201 && result.status) {
+      if (response.ok && result.status && result.statusCode === 200) {
         const token = result.access_token;
         const userData = result.user;
         

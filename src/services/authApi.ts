@@ -6,7 +6,7 @@ export interface LoginResponse {
   access_token: string;
   message: string;
   user: {
-    id: number;
+    _id: string;
     user_id: string;
     user_name: string;
     email: string;
@@ -16,12 +16,10 @@ export interface LoginResponse {
     is_disabled: boolean;
     is_deleted: boolean;
     first_login: boolean;
-    email_verified: boolean;
     initial_password: string;
-    created_by: number | null;
+    created_by: string | null;
     created_at: string;
     updated_at: string;
-    data_id: number;
   };
 }
 
@@ -30,7 +28,7 @@ export interface LoginRequest {
   password: string;
 }
 
-const BASE_URL = 'https://kp-floods-2025-backend-production.up.railway.app';
+const BASE_URL = 'https://kp-floods-2025-mongo-backend-production.up.railway.app';
 
 export const authApi = {
   login: async (credentials: LoginRequest): Promise<LoginResponse> => {

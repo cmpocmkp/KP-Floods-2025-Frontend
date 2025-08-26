@@ -1,6 +1,6 @@
 // Default configuration
 const DEFAULT_CONFIG = {
-  apiBaseUrl: 'https://kp-floods-2025-backend-production.up.railway.app',
+  apiBaseUrl: 'https://kp-floods-2025-mongo-backend-production.up.railway.app',
   defaultDateFrom: '2025-08-14',
   defaultDateTo: '2025-08-20',
 };

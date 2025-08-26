@@ -2,6 +2,7 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/contexts/AuthContext';
+import { getOverview } from '@/lib/overview';
 import Login from './pages/auth/LoginPage';
 import { AppHeader } from './components/Layout/AppHeader';
 import { OverviewHeader } from './features/overview/OverviewHeader';
@@ -54,38 +55,15 @@ function AppContent() {
 
   const { data: kpiData } = useQuery({
     queryKey: ['kpi-data', activeTab],
-    queryFn: () => Promise.resolve({
-      // Overview KPIs
-      deaths: 156,
-      injured: 342,
-      housesDamaged: 1245,
-      livestockLost: 789,
-      // Incidents KPIs
-      totalIncidents: 248,
-      criticalIncidents: 42,
-      floodIncidents: 156,
-      recentIncidents: 18,
-      // Infrastructure KPIs
-      roadsDamaged: 342,
-      bridgesDamaged: 28,
-      culvertsDamaged: 156,
-      avgRestorationDays: 45,
-      // Warehouse KPIs
-      totalItems: 12450,
-      itemsIssued: 8234,
-      itemsRequested: 2156,
-      lowStockItems: 18,
-      // Camps KPIs
-      totalCamps: 86,
-      districtsWithCamps: 12,
-      totalOccupants: 12450,
-      capacityUtilization: 78,
-      // Compensation KPIs
-      totalBeneficiaries: 2160,
-      beneficiariesPaid: 840,
-      amountDisbursed: 420000000,
-      pendingCases: 1320,
-    })
+    queryFn: async () => {
+      switch (activeTab) {
+        case 'overview':
+          return getOverview();
+        // Add other cases for different tabs when their APIs are ready
+        default:
+          return undefined;
+      }
+    }
   });
 
   useEffect(() => {
@@ -171,11 +149,8 @@ function AppContent() {
   return (
     <div className="min-h-screen bg-gray-50">
       <OverviewHeader 
-        reportPeriod={{
-          start: '2025-08-14',
-          end: '2025-08-20'
-        }}
-        lastUpdated="2025-08-20T10:52:00Z"
+        reportPeriod={kpiData?.report_period}
+        lastUpdated={kpiData?.last_updated}
       />
       <div className="max-w-[1400px] mx-auto px-4 md:px-6 py-6">
         {renderKpis()}

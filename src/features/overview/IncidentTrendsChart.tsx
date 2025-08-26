@@ -1,47 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { getRecentIncidents } from '@/api/incidents';
-import { DEFAULT_DATE_RANGE } from '@/lib/api';
-import type { IncidentRow } from '@/types/api';
-
-interface ChartData {
-  date: string;
-  deaths: number;
-  injured: number;
-  houses: number;
-}
+import { useQuery } from '@tanstack/react-query';
+import { getIncidentTrends } from '@/lib/overview';
+import { format } from 'date-fns';
 
 export function IncidentTrendsChart() {
-  const [data, setData] = useState<ChartData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const { data: trendsData, isLoading, error } = useQuery({
+    queryKey: ['incident-trends'],
+    queryFn: () => getIncidentTrends({
+      metric: 'deaths',
+      group_by: 'daily',
+      fill_missing: true
+    }),
+    select: (data) => data.series.map(point => ({
+      date: format(new Date(point.date), 'MM/dd'),
+      value: point.value
+    }))
+  });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const incidents = await getRecentIncidents({
-          date_from: DEFAULT_DATE_RANGE.from,
-          date_to: DEFAULT_DATE_RANGE.to,
-          limit: 7
-        });
-        const chartData = incidents.map(incident => ({
-          date: new Date(incident.date).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' }),
-          deaths: incident.deaths,
-          injured: incident.injured,
-          houses: incident.houses_damaged
-        }));
-        setData(chartData.reverse()); // Most recent last
-      } catch (err) {
-        setError(err as Error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-
-  if (loading) return (
+  if (isLoading) return (
     <Card>
       <CardHeader>
         <h2 className="text-lg font-semibold">Incident Trends</h2>
@@ -75,7 +53,7 @@ export function IncidentTrendsChart() {
       <CardContent>
         <div className="h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={data}>
+            <LineChart data={trendsData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" />
               <YAxis />
@@ -83,25 +61,9 @@ export function IncidentTrendsChart() {
               <Legend />
               <Line 
                 type="monotone" 
-                dataKey="deaths" 
+                dataKey="value" 
                 name="Deaths"
                 stroke="#ef4444" 
-                strokeWidth={2}
-                dot={{ r: 4 }}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="injured" 
-                name="Injured"
-                stroke="#eab308" 
-                strokeWidth={2}
-                dot={{ r: 4 }}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="houses" 
-                name="Houses Damaged"
-                stroke="#3b82f6" 
                 strokeWidth={2}
                 dot={{ r: 4 }}
               />

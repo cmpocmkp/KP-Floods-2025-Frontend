@@ -27,30 +27,43 @@ import {
   Clock
 } from 'lucide-react';
 
-export function OverviewKpis({ data }: { data: any }) {
+import { OverviewResponse } from '@/lib/types';
+
+export function OverviewKpis({ data }: { data?: OverviewResponse }) {
+  if (!data) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="h-24 bg-muted/50 rounded-lg animate-pulse" />
+        ))}
+      </div>
+    );
+  }
+
+  const { totals } = data;
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <KpiCard
         title="Total Deaths"
-        value={data?.deaths || 0}
+        value={totals.deaths}
         icon={Skull}
         color="text-red-600"
       />
       <KpiCard
         title="Total Injured"
-        value={data?.injured || 0}
+        value={totals.injured}
         icon={Heart}
         color="text-yellow-600"
       />
       <KpiCard
         title="Houses Damaged"
-        value={data?.housesDamaged || 0}
+        value={totals.houses_damaged}
         icon={Home}
         color="text-blue-600"
       />
       <KpiCard
         title="Livestock Lost"
-        value={data?.livestockLost || 0}
+        value={totals.livestock_lost}
         icon={Beef}
         color="text-green-600"
       />
@@ -59,6 +72,16 @@ export function OverviewKpis({ data }: { data: any }) {
 }
 
 export function IncidentKpis({ data }: { data: any }) {
+  if (!data) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="h-24 bg-muted/50 rounded-lg animate-pulse" />
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <KpiCard
@@ -90,6 +113,16 @@ export function IncidentKpis({ data }: { data: any }) {
 }
 
 export function InfrastructureKpis({ data }: { data: any }) {
+  if (!data) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="h-24 bg-muted/50 rounded-lg animate-pulse" />
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <KpiCard
@@ -121,6 +154,16 @@ export function InfrastructureKpis({ data }: { data: any }) {
 }
 
 export function WarehouseKpis({ data }: { data: any }) {
+  if (!data) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="h-24 bg-muted/50 rounded-lg animate-pulse" />
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <KpiCard
@@ -152,6 +195,16 @@ export function WarehouseKpis({ data }: { data: any }) {
 }
 
 export function CampsKpis({ data }: { data: any }) {
+  if (!data) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="h-24 bg-muted/50 rounded-lg animate-pulse" />
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <KpiCard
@@ -183,6 +236,16 @@ export function CampsKpis({ data }: { data: any }) {
 }
 
 export function CompensationKpis({ data }: { data: any }) {
+  if (!data) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="h-24 bg-muted/50 rounded-lg animate-pulse" />
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <KpiCard

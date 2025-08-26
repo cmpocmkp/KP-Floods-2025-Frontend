@@ -14,17 +14,16 @@ export default function OverviewPage() {
           <LeafletMap />
         </div>
         <div className="xl:col-span-5">
-          <IncidentTrendsChart />
+          <DamageDonut />
         </div>
       </div>
       
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
-        <div className="xl:col-span-5">
-          <DamageDonut />
-        </div>
-        <div className="xl:col-span-7">
-          <DivisionSummaryTable />
-        </div>
+      <div className="xl:col-span-12">
+        <DivisionSummaryTable />
+      </div>
+
+      <div className="xl:col-span-12">
+        <IncidentTrendsChart />
       </div>
     </div>
   );

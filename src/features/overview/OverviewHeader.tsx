@@ -1,19 +1,17 @@
-import React from 'react';
 import { format } from 'date-fns';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 
 interface OverviewHeaderProps {
-  reportPeriod?: { start: string; end: string };
+  reportPeriod?: { from: string; to: string };
   lastUpdated?: string;
 }
 
 export function OverviewHeader({ reportPeriod, lastUpdated }: OverviewHeaderProps) {
-  const nav = useNavigate();
+
   const { logout } = useAuth();
   const formattedPeriod = reportPeriod
-    ? `${format(new Date(reportPeriod.start), 'MMM d')}–${format(new Date(reportPeriod.end), 'MMM d, yyyy')}`
+    ? `${format(new Date(reportPeriod.from), 'MMM d')}–${format(new Date(reportPeriod.to), 'MMM d, yyyy')}`
     : 'Loading...';
 
   const formattedLastUpdated = lastUpdated

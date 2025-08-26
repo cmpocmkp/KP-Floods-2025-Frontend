@@ -1,16 +1,51 @@
 import React from 'react';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import { useQuery } from '@tanstack/react-query';
+import { getDamageDistribution } from '@/lib/overview';
 
-const data = [
-  { name: 'Deaths', value: 156, color: '#ef4444' },
-  { name: 'Injured', value: 342, color: '#eab308' },
-  { name: 'Houses Damaged', value: 1245, color: '#3b82f6' },
-  { name: 'Livestock Lost', value: 789, color: '#22c55e' }
-];
+const COLORS = {
+  deaths: '#ef4444',
+  injured: '#eab308',
+  houses_damaged: '#3b82f6',
+  livestock_lost: '#22c55e'
+};
+
+const LABELS = {
+  deaths: 'Deaths',
+  injured: 'Injured',
+  houses_damaged: 'Houses Damaged',
+  livestock_lost: 'Livestock Lost'
+};
 
 export function DamageDonut() {
-  const total = data.reduce((sum, item) => sum + item.value, 0);
+  const { data: damageData } = useQuery({
+    queryKey: ['damage-distribution'],
+    queryFn: getDamageDistribution
+  });
+
+  if (!damageData) {
+    return (
+      <Card>
+        <CardHeader>
+          <h2 className="text-lg font-semibold">Damage Distribution</h2>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[400px] flex items-center justify-center">
+            <div className="animate-pulse">Loading...</div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const data = damageData.buckets.map(bucket => ({
+    name: LABELS[bucket.key as keyof typeof LABELS],
+    value: bucket.value,
+    color: COLORS[bucket.key as keyof typeof COLORS]
+  }));
+
+  const total = damageData.total_incidents;
 
   return (
     <Card>
