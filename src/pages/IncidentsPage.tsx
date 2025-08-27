@@ -75,7 +75,7 @@ export default function IncidentsPage() {
       <div className="space-y-6">
         <Card>
           <CardHeader>
-            <h2 className="text-lg font-semibold">Recent Incidents</h2>
+            <h2 className="text-lg font-semibold">Incidents</h2>
           </CardHeader>
           <CardContent>
             <div className="h-[400px] flex items-center justify-center text-red-500">
@@ -98,7 +98,7 @@ export default function IncidentsPage() {
       {/* Incidents Table */}
       <Card>
         <CardHeader>
-          <h2 className="text-lg font-semibold">Recent Incidents</h2>
+          <h2 className="text-lg font-semibold">Incidents</h2>
         </CardHeader>
         <CardContent>
           <Table>
