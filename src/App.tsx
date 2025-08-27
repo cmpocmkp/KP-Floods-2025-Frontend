@@ -6,7 +6,7 @@ import { getCumulativeDashboard } from '@/lib/overview';
 import Login from './pages/auth/LoginPage';
 import { AppHeader } from './components/Layout/AppHeader';
 import { OverviewHeader } from './features/overview/OverviewHeader';
-import { OverviewKpis, IncidentKpis, WarehouseKpis, CampsKpis, CompensationKpis, LivestockKpis, GlobalSummaryCards } from '@/features/kpis';
+import { OverviewKpis, IncidentKpis, WarehouseKpis, CampsKpis, CompensationKpis, LivestockKpis, AgricultureKpis, GlobalSummaryCards } from '@/features/kpis';
 import { ComingSoon } from './components/ComingSoon';
 
 
@@ -19,6 +19,7 @@ const WarehousePage = React.lazy(() => import('./pages/WarehousePage'));
 const CampsPage = React.lazy(() => import('./pages/CampsPage'));
 const CompensationPage = React.lazy(() => import('./pages/CompensationPage'));
 const LivestockPage = React.lazy(() => import('./pages/LivestockPage'));
+const AgriculturePage = React.lazy(() => import('./pages/AgriculturePage'));
 
 // Placeholder components
 const SourcesManagement = () => (
@@ -91,6 +92,10 @@ function AppContent() {
         return <OverviewKpis data={kpiData} />;
       case 'incidents':
         return <IncidentKpis data={kpiData} />;
+      case 'infrastructure':
+        return null;
+      case 'agriculture':
+        return <AgricultureKpis />;
       case 'warehouse':
         return <WarehouseKpis data={kpiData} />;
       case 'camps':
@@ -119,6 +124,9 @@ function AppContent() {
         break;
       case 'infrastructure':
         Component = InfrastructurePage;
+        break;
+      case 'agriculture':
+        Component = AgriculturePage;
         break;
       case 'warehouse':
         Component = WarehousePage;
@@ -204,6 +212,7 @@ function App() {
       <Route path="/overview" element={<AppContent />} />
       <Route path="/incidents" element={<AppContent />} />
       <Route path="/infrastructure" element={<AppContent />} />
+      <Route path="/agriculture" element={<AppContent />} />
       <Route path="/warehouse" element={<AppContent />} />
       <Route path="/camps" element={<AppContent />} />
       <Route path="/compensation" element={<AppContent />} />

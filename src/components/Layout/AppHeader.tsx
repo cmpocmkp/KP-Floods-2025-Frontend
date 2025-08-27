@@ -22,7 +22,8 @@ const TABS = [
   { id: 'warehouse', label: 'Warehouse' },
   { id: 'camps', label: 'Relief Camps' },
   { id: 'compensation', label: 'Compensation' },
-  { id: 'livestock', label: '🐄 Livestock' }, // Made more visible
+  { id: 'livestock', label: '🐄 Livestock' },
+  { id: 'agriculture', label: '🌾 Agriculture' },
   { id: 'analyze', label: '📊 Analyze' },
   { id: 'visualize', label: '📈 Visualize' },
   { id: 'ask-ai', label: '🧠 Brief' },

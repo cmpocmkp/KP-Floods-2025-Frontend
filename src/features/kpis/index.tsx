@@ -22,14 +22,26 @@ import {
   Flame,
   Phone,
   Signal,
+  Sprout,
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { getCompensationSummary } from '@/api/compensation';
 import { getLivestockSummary } from '@/api/livestock';
+import { getAgricultureSummary } from '@/api/agriculture';
 import { getCombinedInfrastructureServices } from '@/api/infrastructure';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import type { CumulativeDashboardResponse } from '@/lib/types';
+
+// Helper function to format large numbers
+const formatLargeNumber = (num: number): string => {
+  if (num >= 1000000) {
+    return `${(num / 1000000).toFixed(1)}M`;
+  } else if (num >= 1000) {
+    return `${(num / 1000).toFixed(1)}K`;
+  }
+  return num.toLocaleString();
+};
 
 export function OverviewKpis({ data }: { data?: CumulativeDashboardResponse }) {
   if (!data) {
@@ -305,6 +317,62 @@ export function LivestockKpis() {
       <KpiCard
         title="Affected Districts"
         value={livestockData.affectedDistricts.toString()}
+        icon={MapPin}
+        color="text-blue-600"
+      />
+    </div>
+  );
+}
+
+export function AgricultureKpis() {
+  const { data: agricultureData, isLoading } = useQuery({
+    queryKey: ['agriculture-summary'],
+    queryFn: () => getAgricultureSummary()
+  });
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="h-24 bg-muted/50 rounded-lg animate-pulse" />
+        ))}
+      </div>
+    );
+  }
+
+  if (!agricultureData) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="h-24 bg-muted/50 rounded-lg animate-pulse" />
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <KpiCard
+        title="Structural Damages"
+        value={agricultureData.totalStructuralDamages.toLocaleString()}
+        icon={Building}
+        color="text-red-600"
+      />
+      <KpiCard
+        title="Crop Area Affected"
+        value={`${formatLargeNumber(agricultureData.totalCropMaskAcre)} acres`}
+        icon={Sprout}
+        color="text-green-600"
+      />
+      <KpiCard
+        title="Economic Loss"
+        value={`PKR ${(agricultureData.totalEstimatedLossesMillionPKR / 1000).toFixed(1)}B`}
+        icon={DollarSign}
+        color="text-orange-600"
+      />
+      <KpiCard
+        title="Affected Districts"
+        value={agricultureData.affectedDistricts.toString()}
         icon={MapPin}
         color="text-blue-600"
       />
