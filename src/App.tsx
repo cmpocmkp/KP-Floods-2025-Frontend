@@ -6,7 +6,7 @@ import { getCumulativeDashboard } from '@/lib/overview';
 import Login from './pages/auth/LoginPage';
 import { AppHeader } from './components/Layout/AppHeader';
 import { OverviewHeader } from './features/overview/OverviewHeader';
-import { OverviewKpis, IncidentKpis, InfrastructureKpis, WarehouseKpis, CampsKpis, CompensationKpis, LivestockKpis } from '@/features/kpis';
+import { OverviewKpis, IncidentKpis, WarehouseKpis, CampsKpis, CompensationKpis, LivestockKpis, GlobalSummaryCards } from '@/features/kpis';
 import { ComingSoon } from './components/ComingSoon';
 
 
@@ -91,8 +91,6 @@ function AppContent() {
         return <OverviewKpis data={kpiData} />;
       case 'incidents':
         return <IncidentKpis data={kpiData} />;
-      case 'infrastructure':
-        return <InfrastructureKpis data={kpiData} />;
       case 'warehouse':
         return <WarehouseKpis data={kpiData} />;
       case 'camps':
@@ -176,6 +174,11 @@ function AppContent() {
         } : undefined}
         lastUpdated={kpiData?.lastUpdated}
       />
+      {activeTab === 'infrastructure' && (
+        <div className="max-w-[1400px] mx-auto px-4 md:px-6 pb-6">
+          <GlobalSummaryCards />
+        </div>
+      )}
       <div className="max-w-[1400px] mx-auto px-4 md:px-6 py-6">
         {renderKpis()}
       </div>

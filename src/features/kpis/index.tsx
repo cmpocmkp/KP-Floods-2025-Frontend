@@ -7,8 +7,6 @@ import {
   FileText,
   AlertTriangle,
   Calendar,
-  StretchHorizontal, // Instead of Road
-  Building2, // Instead of Bridge
   Package,
   PackageCheck,
   PackageSearch,
@@ -19,20 +17,17 @@ import {
   MapPin,
   DollarSign,
   Activity,
-  ShoppingBag,
-  GraduationCap,
-  Heart,
-  Building as OfficeBuilding,
   Zap,
   Droplets,
   Flame,
   Phone,
-
+  Signal,
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { getCompensationSummary } from '@/api/compensation';
 import { getLivestockSummary } from '@/api/livestock';
 import { getCombinedInfrastructureServices } from '@/api/infrastructure';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import type { CumulativeDashboardResponse } from '@/lib/types';
 
@@ -121,147 +116,9 @@ export function IncidentKpis({ data }: { data?: CumulativeDashboardResponse }) {
 }
 
 export function InfrastructureKpis() {
-  const { data: infraData, isLoading } = useQuery({
-    queryKey: ['combined-infrastructure-services'],
-    queryFn: () => getCombinedInfrastructureServices()
-  });
-
-  if (isLoading) {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {[...Array(8)].map((_, i) => (
-          <div key={i} className="h-24 bg-muted/50 rounded-lg animate-pulse" />
-        ))}
-      </div>
-    );
-  }
-
-  if (!infraData || !infraData.infrastructure?.summary || !infraData.services?.summary) {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {[...Array(8)].map((_, i) => (
-          <div key={i} className="h-24 bg-muted/50 rounded-lg animate-pulse" />
-        ))}
-      </div>
-    );
-  }
-
-  const infraSummary = infraData.infrastructure.summary;
-  const servicesSummary = infraData.services.summary;
-
-  return (
-    <div className="space-y-6">
-      {/* Infrastructure Damage KPIs */}
-      <div>
-        <h3 className="text-lg font-semibold mb-4 text-center">🏗️ Infrastructure Damage</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <KpiCard
-            title="Houses Fully Damaged"
-            value={infraSummary.total_houses_fully_damaged.toLocaleString()}
-            icon={Home}
-            color="text-red-600"
-          />
-          <KpiCard
-            title="Houses Partially Damaged"
-            value={infraSummary.total_houses_partially_damaged.toLocaleString()}
-            icon={Home}
-            color="text-orange-600"
-          />
-          <KpiCard
-            title="Shops Damaged"
-            value={infraSummary.total_shops_damaged.toLocaleString()}
-            icon={ShoppingBag}
-            color="text-yellow-600"
-          />
-          <KpiCard
-            title="Education Facilities Damaged"
-            value={infraSummary.total_education_facilities_damaged.toLocaleString()}
-            icon={GraduationCap}
-            color="text-blue-600"
-          />
-          <KpiCard
-            title="Health Facilities Damaged"
-            value={infraSummary.total_health_facilities_damaged.toLocaleString()}
-            icon={Heart}
-            color="text-purple-600"
-          />
-          <KpiCard
-            title="Govt Offices Damaged"
-            value={infraSummary.total_govt_offices_damaged.toLocaleString()}
-            icon={OfficeBuilding}
-            color="text-indigo-600"
-          />
-          <KpiCard
-            title="Roads Damaged"
-            value={`${infraSummary.total_roads_damaged_length_km.toLocaleString()} km`}
-            icon={StretchHorizontal}
-            color="text-green-600"
-          />
-          <KpiCard
-            title="Bridges Damaged"
-            value={(infraSummary.total_permanent_bridges_damaged + infraSummary.total_pedestrian_bridges_damaged).toLocaleString()}
-            icon={Building2}
-            color="text-teal-600"
-          />
-        </div>
-      </div>
-
-      {/* Services Status KPIs */}
-      <div>
-        <h3 className="text-lg font-semibold mb-4 text-center">⚡ Services Status</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <KpiCard
-            title="Electricity Disconnections"
-            value={servicesSummary.total_feeders_disconnections.toLocaleString()}
-            icon={Zap}
-            color="text-yellow-500"
-          />
-          <KpiCard
-            title="Electricity Restored"
-            value={servicesSummary.total_feeders_restored.toLocaleString()}
-            icon={Zap}
-            color="text-green-500"
-          />
-          <KpiCard
-            title="Water Disconnections"
-            value={servicesSummary.total_water_disconnections.toLocaleString()}
-            icon={Droplets}
-            color="text-blue-500"
-          />
-          <KpiCard
-            title="Water Restored"
-            value={servicesSummary.total_water_restored.toLocaleString()}
-            icon={Droplets}
-            color="text-cyan-500"
-          />
-          <KpiCard
-            title="Gas Disconnections"
-            value={servicesSummary.total_gas_disconnections.toLocaleString()}
-            icon={Flame}
-            color="text-red-500"
-          />
-          <KpiCard
-            title="Gas Restored"
-            value={servicesSummary.total_gas_restored.toLocaleString()}
-            icon={Flame}
-            color="text-orange-500"
-          />
-          <KpiCard
-            title="Phone Disconnections"
-            value={servicesSummary.total_ptcl_disconnections.toLocaleString()}
-            icon={Phone}
-            color="text-purple-500"
-          />
-          <KpiCard
-            title="Phone Restored"
-            value={servicesSummary.total_ptcl_restored.toLocaleString()}
-            icon={Phone}
-            color="text-pink-500"
-          />
-        </div>
-      </div>
-    </div>
-  );
+  // This component is now empty since Infrastructure Damage KPIs moved to InfrastructurePage
+  // and Services Status KPIs moved to ServiceStatusCards component
+  return null;
 }
 
 export function WarehouseKpis({ data }: { data?: CumulativeDashboardResponse }) {
@@ -451,6 +308,178 @@ export function LivestockKpis() {
         icon={MapPin}
         color="text-blue-600"
       />
+    </div>
+  );
+}
+
+export function GlobalSummaryCards() {
+  const { data: combinedData, isLoading } = useQuery({
+    queryKey: ['combined-infrastructure-services'],
+    queryFn: () => getCombinedInfrastructureServices(),
+  });
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="h-24 bg-muted/50 rounded-lg animate-pulse" />
+        ))}
+      </div>
+    );
+  }
+
+  if (!combinedData || !combinedData.infrastructure?.summary || !combinedData.services?.summary) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="h-24 bg-muted/50 rounded-lg animate-pulse" />
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div data-testid="global-summary-cards" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Total Districts Affected</CardTitle>
+          <AlertTriangle className="h-4 w-4 text-red-600" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold text-red-600">{combinedData.infrastructure.summary.total_districts}</div>
+          <p className="text-xs text-muted-foreground">
+            Infrastructure & Services
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Total Houses Damaged</CardTitle>
+          <Home className="h-4 w-4 text-orange-600" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold text-orange-600">
+            {(combinedData.infrastructure.summary.total_houses_fully_damaged + combinedData.infrastructure.summary.total_houses_partially_damaged).toLocaleString()}
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Fully + Partially Damaged
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Services Disconnections</CardTitle>
+          <Zap className="h-4 w-4 text-yellow-600" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold text-yellow-600">
+            {(combinedData.services.summary.total_feeders_disconnections + combinedData.services.summary.total_water_disconnections + combinedData.services.summary.total_gas_disconnections).toLocaleString()}
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Electricity + Water + Gas
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Inaccessible Areas</CardTitle>
+          <Signal className="h-4 w-4 text-purple-600" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold text-purple-600">{combinedData.services.summary.total_inaccessible_areas.toLocaleString()}</div>
+          <p className="text-xs text-muted-foreground">
+            Areas without connectivity
+          </p>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+export function ServiceStatusCards() {
+  const { data: infraData, isLoading } = useQuery({
+    queryKey: ['combined-infrastructure-services'],
+    queryFn: () => getCombinedInfrastructureServices()
+  });
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[...Array(8)].map((_, i) => (
+          <div key={i} className="h-24 bg-muted/50 rounded-lg animate-pulse" />
+        ))}
+      </div>
+    );
+  }
+
+  if (!infraData || !infraData.services?.summary) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[...Array(8)].map((_, i) => (
+          <div key={i} className="h-24 bg-muted/50 rounded-lg animate-pulse" />
+        ))}
+      </div>
+    );
+  }
+
+  const servicesSummary = infraData.services.summary;
+
+  return (
+    <div data-testid="service-status-cards">
+      <h3 className="text-lg font-semibold mb-4 text-center">⚡ Services Status</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <KpiCard
+          title="Electricity Disconnections"
+          value={servicesSummary.total_feeders_disconnections.toLocaleString()}
+          icon={Zap}
+          color="text-yellow-500"
+        />
+        <KpiCard
+          title="Electricity Restored"
+          value={servicesSummary.total_feeders_restored.toLocaleString()}
+          icon={Zap}
+          color="text-green-500"
+        />
+        <KpiCard
+          title="Water Disconnections"
+          value={servicesSummary.total_water_disconnections.toLocaleString()}
+          icon={Droplets}
+          color="text-blue-500"
+        />
+        <KpiCard
+          title="Water Restored"
+          value={servicesSummary.total_water_restored.toLocaleString()}
+          icon={Droplets}
+          color="text-cyan-500"
+        />
+        <KpiCard
+          title="Gas Disconnections"
+          value={servicesSummary.total_gas_disconnections.toLocaleString()}
+          icon={Flame}
+          color="text-red-500"
+        />
+        <KpiCard
+          title="Gas Restored"
+          value={servicesSummary.total_gas_restored.toLocaleString()}
+          icon={Flame}
+          color="text-orange-500"
+        />
+        <KpiCard
+          title="Phone Disconnections"
+          value={servicesSummary.total_ptcl_disconnections.toLocaleString()}
+          icon={Phone}
+          color="text-purple-500"
+        />
+        <KpiCard
+          title="Phone Restored"
+          value={servicesSummary.total_ptcl_restored.toLocaleString()}
+          icon={Phone}
+          color="text-pink-500"
+        />
+      </div>
     </div>
   );
 }

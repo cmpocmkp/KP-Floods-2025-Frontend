@@ -41,6 +41,8 @@ import {
   AlertTriangle,
   Eye
 } from 'lucide-react';
+import { KpiCard } from '@/components/ui/kpi-card';
+import { ServiceStatusCards } from '@/features/kpis';
 import {
   getInfrastructureDamage,
   getServicesStatus,
@@ -197,65 +199,6 @@ export default function InfrastructurePage() {
 
   return (
     <div className="space-y-6">
-      {/* Overview Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Districts Affected</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-red-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600">{combinedData.infrastructure.summary.total_districts}</div>
-            <p className="text-xs text-muted-foreground">
-              Infrastructure & Services
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Houses Damaged</CardTitle>
-            <Home className="h-4 w-4 text-orange-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-orange-600">
-              {(combinedData.infrastructure.summary.total_houses_fully_damaged + combinedData.infrastructure.summary.total_houses_partially_damaged).toLocaleString()}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Fully + Partially Damaged
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Services Disconnections</CardTitle>
-            <Zap className="h-4 w-4 text-yellow-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-yellow-600">
-              {(combinedData.services.summary.total_feeders_disconnections + combinedData.services.summary.total_water_disconnections + combinedData.services.summary.total_gas_disconnections).toLocaleString()}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Electricity + Water + Gas
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Inaccessible Areas</CardTitle>
-            <Signal className="h-4 w-4 text-purple-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-purple-600">{combinedData.services.summary.total_inaccessible_areas.toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground">
-              Areas without connectivity
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-
       {/* Main Content Tabs */}
       <Tabs defaultValue="infrastructure" className="space-y-6">
         <TabsList className="grid w-full grid-cols-2">
@@ -265,6 +208,61 @@ export default function InfrastructurePage() {
 
         {/* Infrastructure Damage Tab */}
         <TabsContent value="infrastructure" className="space-y-6">
+          {/* Infrastructure Damage KPIs */}
+          <div data-testid="infrastructure-kpi-cards">
+            <h3 className="text-lg font-semibold mb-4 text-center">🏗️ Infrastructure Damage</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <KpiCard
+                title="Houses Fully Damaged"
+                value={combinedData.infrastructure.summary.total_houses_fully_damaged.toLocaleString()}
+                icon={Home}
+                color="text-red-600"
+              />
+              <KpiCard
+                title="Houses Partially Damaged"
+                value={combinedData.infrastructure.summary.total_houses_partially_damaged.toLocaleString()}
+                icon={Home}
+                color="text-orange-600"
+              />
+              <KpiCard
+                title="Shops Damaged"
+                value={combinedData.infrastructure.summary.total_shops_damaged.toLocaleString()}
+                icon={ShoppingBag}
+                color="text-yellow-600"
+              />
+              <KpiCard
+                title="Education Facilities Damaged"
+                value={combinedData.infrastructure.summary.total_education_facilities_damaged.toLocaleString()}
+                icon={GraduationCap}
+                color="text-blue-600"
+              />
+              <KpiCard
+                title="Health Facilities Damaged"
+                value={combinedData.infrastructure.summary.total_health_facilities_damaged.toLocaleString()}
+                icon={Heart}
+                color="text-purple-600"
+              />
+              <KpiCard
+                title="Govt Offices Damaged"
+                value={combinedData.infrastructure.summary.total_govt_offices_damaged.toLocaleString()}
+                icon={OfficeBuilding}
+                color="text-indigo-600"
+              />
+              <KpiCard
+                title="Roads Damaged"
+                value={`${combinedData.infrastructure.summary.total_roads_damaged_length_km.toLocaleString()} km`}
+                icon={StretchHorizontal}
+                color="text-green-600"
+              />
+              <KpiCard
+                title="Bridges Damaged"
+                value={(combinedData.infrastructure.summary.total_permanent_bridges_damaged + combinedData.infrastructure.summary.total_pedestrian_bridges_damaged).toLocaleString()}
+                icon={Building2}
+                color="text-teal-600"
+              />
+            </div>
+          </div>
+
           {/* Infrastructure Charts Row */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* District-wise Infrastructure Damage */}
@@ -402,6 +400,9 @@ export default function InfrastructurePage() {
 
         {/* Services Status Tab */}
         <TabsContent value="services" className="space-y-6">
+          {/* Services Status KPIs */}
+          <ServiceStatusCards />
+
           {/* Services Charts Row */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Services Disconnections Chart */}
