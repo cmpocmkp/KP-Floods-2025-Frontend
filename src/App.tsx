@@ -20,6 +20,7 @@ const CampsPage = React.lazy(() => import('./pages/CampsPage'));
 const CompensationPage = React.lazy(() => import('./pages/CompensationPage'));
 const LivestockPage = React.lazy(() => import('./pages/LivestockPage'));
 const AgriculturePage = React.lazy(() => import('./pages/AgriculturePage'));
+const AnalyzePage = React.lazy(() => import('./pages/AnalyzePage'));
 
 // Placeholder components
 const SourcesManagement = () => (
@@ -141,11 +142,8 @@ function AppContent() {
         Component = LivestockPage;
         break;
       case 'analyze':
-        console.log('Rendering Analyze Coming Soon');
-        return <ComingSoon
-          title="📊 Advanced Analytics"
-          description="Powerful data analysis tools to uncover insights and trends from flood-related data."
-        />;
+        Component = AnalyzePage;
+        break;
       case 'visualize':
         console.log('Rendering Visualize Coming Soon');
         return <ComingSoon
