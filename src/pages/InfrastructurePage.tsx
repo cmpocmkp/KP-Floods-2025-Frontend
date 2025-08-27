@@ -210,7 +210,7 @@ export default function InfrastructurePage() {
         <TabsContent value="infrastructure" className="space-y-6">
           {/* Infrastructure Damage KPIs */}
           <div data-testid="infrastructure-kpi-cards">
-            <h3 className="text-lg font-semibold mb-4 text-center">🏗️ Infrastructure Damage</h3>
+           
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <KpiCard
                 title="Houses Fully Damaged"

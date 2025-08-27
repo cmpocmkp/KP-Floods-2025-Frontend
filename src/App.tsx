@@ -175,7 +175,7 @@ function AppContent() {
         lastUpdated={kpiData?.lastUpdated}
       />
       {activeTab === 'infrastructure' && (
-        <div className="max-w-[1400px] mx-auto px-4 md:px-6 pb-6">
+        <div className="max-w-[1400px] mx-auto px-4 md:px-6 pt-6">
           <GlobalSummaryCards />
         </div>
       )}
