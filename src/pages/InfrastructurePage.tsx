@@ -43,6 +43,7 @@ import {
 } from 'lucide-react';
 import { KpiCard } from '@/components/ui/kpi-card';
 import { ServiceStatusCards } from '@/features/kpis';
+import { PheAssetsTab } from '@/components/infrastructure/PheAssetsTab';
 import {
   getInfrastructureDamage,
   getServicesStatus,
@@ -201,9 +202,10 @@ export default function InfrastructurePage() {
     <div className="space-y-6">
       {/* Main Content Tabs */}
       <Tabs defaultValue="infrastructure" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="infrastructure">🏗️ Infrastructure Damage</TabsTrigger>
           <TabsTrigger value="services">⚡ Services Status</TabsTrigger>
+          <TabsTrigger value="phe-assets">Public Health Schemes</TabsTrigger>
         </TabsList>
 
         {/* Infrastructure Damage Tab */}
@@ -540,6 +542,11 @@ export default function InfrastructurePage() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* PHE Assets Tab */}
+        <TabsContent value="phe-assets" className="space-y-6">
+          <PheAssetsTab />
         </TabsContent>
       </Tabs>
 

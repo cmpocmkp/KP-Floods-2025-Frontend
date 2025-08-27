@@ -21,6 +21,7 @@ const CompensationPage = React.lazy(() => import('./pages/CompensationPage'));
 const LivestockPage = React.lazy(() => import('./pages/LivestockPage'));
 const AgriculturePage = React.lazy(() => import('./pages/AgriculturePage'));
 const AnalyzePage = React.lazy(() => import('./pages/AnalyzePage'));
+const VisualizePage = React.lazy(() => import('./pages/VisualizePage'));
 
 // Placeholder components
 const SourcesManagement = () => (
@@ -145,11 +146,8 @@ function AppContent() {
         Component = AnalyzePage;
         break;
       case 'visualize':
-        console.log('Rendering Visualize Coming Soon');
-        return <ComingSoon
-          title="📈 Interactive Visualizations"
-          description="Advanced charts, maps, and interactive dashboards for comprehensive data exploration."
-        />;
+        Component = VisualizePage;
+        break;
       case 'ask-ai':
         console.log('Rendering Ask AI Coming Soon');
         return <ComingSoon

@@ -153,6 +153,10 @@ export const computeDSRAggregates = (dsr: DailyDSRResponse, weights: SeverityWei
   other: 0.1,
   cattle: 0.05
 }): DSRAggregates => {
+  if (!dsr.data) {
+    throw new Error('DSR data is null or undefined');
+  }
+
   const { district_summaries, incident_details, road_situations } = dsr.data;
 
   // Compute totals
