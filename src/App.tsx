@@ -6,7 +6,7 @@ import { getCumulativeDashboard } from '@/lib/overview';
 import Login from './pages/auth/LoginPage';
 import { AppHeader } from './components/Layout/AppHeader';
 import { OverviewHeader } from './features/overview/OverviewHeader';
-import { OverviewKpis, IncidentKpis, InfrastructureKpis, WarehouseKpis, CampsKpis, CompensationKpis } from '@/features/kpis';
+import { OverviewKpis, IncidentKpis, InfrastructureKpis, WarehouseKpis, CampsKpis, CompensationKpis, LivestockKpis } from '@/features/kpis';
 import { ComingSoon } from './components/ComingSoon';
 
 
@@ -18,6 +18,7 @@ const InfrastructurePage = React.lazy(() => import('./pages/InfrastructurePage')
 const WarehousePage = React.lazy(() => import('./pages/WarehousePage'));
 const CampsPage = React.lazy(() => import('./pages/CampsPage'));
 const CompensationPage = React.lazy(() => import('./pages/CompensationPage'));
+const LivestockPage = React.lazy(() => import('./pages/LivestockPage'));
 
 // Placeholder components
 const SourcesManagement = () => (
@@ -98,6 +99,8 @@ function AppContent() {
         return <CampsKpis data={kpiData} />;
       case 'compensation':
         return <CompensationKpis />;
+      case 'livestock':
+        return <LivestockKpis />;
       case 'analyze':
       case 'visualize':
       case 'ask-ai':
@@ -127,6 +130,9 @@ function AppContent() {
         break;
       case 'compensation':
         Component = CompensationPage;
+        break;
+      case 'livestock':
+        Component = LivestockPage;
         break;
       case 'analyze':
         console.log('Rendering Analyze Coming Soon');
@@ -198,6 +204,7 @@ function App() {
       <Route path="/warehouse" element={<AppContent />} />
       <Route path="/camps" element={<AppContent />} />
       <Route path="/compensation" element={<AppContent />} />
+      <Route path="/livestock" element={<AppContent />} />
       <Route path="/analyze" element={<AppContent />} />
       <Route path="/visualize" element={<AppContent />} />
       <Route path="/ask-ai" element={<AppContent />} />

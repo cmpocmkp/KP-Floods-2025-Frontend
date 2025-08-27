@@ -1,0 +1,312 @@
+import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell
+} from 'recharts';
+import {
+  Home,
+  ShoppingBag,
+  GraduationCap,
+  Heart,
+  Building as OfficeBuilding,
+  StretchHorizontal,
+  Building2,
+  Zap,
+  Droplets,
+  Flame,
+  Phone,
+  Signal,
+  AlertTriangle,
+  Eye
+} from 'lucide-react';
+import {
+  getInfrastructureDamage,
+  getServicesStatus,
+  getCombinedInfrastructureServices,
+  type DistrictInfrastructureData,
+  type DistrictServicesData
+} from '@/api/infrastructure';
+
+export default function InfrastructurePage() {
+  const [selectedDistrict, setSelectedDistrict] = useState<DistrictInfrastructureData | null>(null);
+  const [showDistrictModal, setShowDistrictModal] = useState(false);
+  const [selectedServicesDistrict, setSelectedServicesDistrict] = useState<DistrictServicesData | null>(null);
+  const [showServicesModal, setShowServicesModal] = useState(false);
+
+  const { data: combinedData, isLoading, error } = useQuery({
+    queryKey: ['combined-infrastructure-services'],
+    queryFn: () => getCombinedInfrastructureServices(),
+    retry: 2,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const handleViewDistrictDetails = (district: DistrictInfrastructureData) => {
+    setSelectedDistrict(district);
+    setShowDistrictModal(true);
+  };
+
+  const handleViewServicesDetails = (district: DistrictServicesData) => {
+    setSelectedServicesDistrict(district);
+    setShowServicesModal(true);
+  };
+
+  const handleCloseModals = () => {
+    setShowDistrictModal(false);
+    setShowServicesModal(false);
+    setSelectedDistrict(null);
+    setSelectedServicesDistrict(null);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <h2 className="text-lg font-semibold">Loading infrastructure data...</h2>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[400px] flex items-center justify-center">
+              <div className="animate-pulse">Loading enhanced infrastructure data...</div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <h2 className="text-lg font-semibold text-red-600">Error Loading Data</h2>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                <h3 className="font-medium">Infrastructure Data Error:</h3>
+                <p className="text-sm text-red-600">{error instanceof Error ? error.message : 'Failed to load infrastructure data'}</p>
+              </div>
+              <button
+                onClick={() => window.location.reload()}
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+              >
+                Retry
+              </button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!combinedData || !combinedData.infrastructure?.data || !combinedData.services?.data) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <h2 className="text-lg font-semibold">No Data Available</h2>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[400px] flex items-center justify-center">
+              <div>No infrastructure data available</div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  const infraData = combinedData.infrastructure.data;
+  const servicesData = combinedData.services.data;
+
+  // Prepare chart data for infrastructure damage by district
+  const districtDamageChartData = infraData.map(district => ({
+    district: district.DistrictName.length > 12 ? district.DistrictName.substring(0, 12) + '...' : district.DistrictName,
+    fullDistrict: district.DistrictName,
+    housesFullyDamaged: district.HousesFullyDamaged,
+    housesPartiallyDamaged: district.HousesPartiallyDamaged,
+    shopsDamaged: district.ShopsDamaged,
+    educationFacilitiesDamaged: district.EducationFacilitiesDamaged,
+    healthFacilitiesDamaged: district.HealthFacilitiesDamaged,
+    govtOfficesDamaged: district.GovtOfficesDamaged,
+    roadsDamaged: district.RoadsDamaged,
+    bridgesDamaged: district.PermanentBridgesDamaged + district.PedestrianBridgesDamaged,
+    totalDamage: district.HousesFullyDamaged + district.HousesPartiallyDamaged + district.ShopsDamaged +
+                 district.EducationFacilitiesDamaged + district.HealthFacilitiesDamaged + district.GovtOfficesDamaged
+  }));
+
+  // Prepare chart data for services disruptions
+  const servicesChartData = servicesData.map(district => ({
+    district: district.DistrictName.length > 12 ? district.DistrictName.substring(0, 12) + '...' : district.DistrictName,
+    fullDistrict: district.DistrictName,
+    feedersDisconnections: district.TotalFeedersDisconnections,
+    feedersRestored: district.TotalFeedersRestored,
+    waterDisconnections: district.TotalWaterDisconnections,
+    waterRestored: district.TotalWaterRestored,
+    gasDisconnections: district.TotalGasDisconnections,
+    gasRestored: district.TotalGasRestored,
+    ptclDisconnections: district.TotalPTCLDisconnections,
+    ptclRestored: district.TotalPTCLRestored,
+    cellularDisconnections: district.TotalCellularDisconnections,
+    cellularRestored: district.TotalCellularRestored,
+    inaccessibleAreas: district.TotalInaccessibleAreas,
+    reconnectedAreas: district.TotalReconnectedAreas
+  }));
+
+  // Infrastructure damage type distribution
+  const damageTypeData = [
+    { name: 'Houses Fully Damaged', value: combinedData.infrastructure.summary.total_houses_fully_damaged, color: '#ef4444' },
+    { name: 'Houses Partially Damaged', value: combinedData.infrastructure.summary.total_houses_partially_damaged, color: '#f97316' },
+    { name: 'Shops Damaged', value: combinedData.infrastructure.summary.total_shops_damaged, color: '#eab308' },
+    { name: 'Education Facilities', value: combinedData.infrastructure.summary.total_education_facilities_damaged, color: '#3b82f6' },
+    { name: 'Health Facilities', value: combinedData.infrastructure.summary.total_health_facilities_damaged, color: '#8b5cf6' },
+    { name: 'Govt Offices', value: combinedData.infrastructure.summary.total_govt_offices_damaged, color: '#06b6d4' }
+  ].filter(item => item.value > 0);
+
+  // Services disruption type distribution
+  const servicesTypeData = [
+    { name: 'Electricity Disconnections', value: combinedData.services.summary.total_feeders_disconnections, color: '#eab308' },
+    { name: 'Water Disconnections', value: combinedData.services.summary.total_water_disconnections, color: '#3b82f6' },
+    { name: 'Gas Disconnections', value: combinedData.services.summary.total_gas_disconnections, color: '#ef4444' },
+    { name: 'Phone Disconnections', value: combinedData.services.summary.total_ptcl_disconnections, color: '#8b5cf6' },
+    { name: 'Cellular Disconnections', value: combinedData.services.summary.total_cellular_disconnections, color: '#06b6d4' }
+  ].filter(item => item.value > 0);
+
+  return (
+    <div className="space-y-6">
+      {/* Overview Summary */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Districts Affected</CardTitle>
+            <AlertTriangle className="h-4 w-4 text-red-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-red-600">{combinedData.infrastructure.summary.total_districts}</div>
+            <p className="text-xs text-muted-foreground">
+              Infrastructure & Services
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Houses Damaged</CardTitle>
+            <Home className="h-4 w-4 text-orange-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-orange-600">
+              {(combinedData.infrastructure.summary.total_houses_fully_damaged + combinedData.infrastructure.summary.total_houses_partially_damaged).toLocaleString()}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Fully + Partially Damaged
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Services Disconnections</CardTitle>
+            <Zap className="h-4 w-4 text-yellow-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-yellow-600">
+              {(combinedData.services.summary.total_feeders_disconnections + combinedData.services.summary.total_water_disconnections + combinedData.services.summary.total_gas_disconnections).toLocaleString()}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Electricity + Water + Gas
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Inaccessible Areas</CardTitle>
+            <Signal className="h-4 w-4 text-purple-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-purple-600">{combinedData.services.summary.total_inaccessible_areas.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">
+              Areas without connectivity
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Main Content Tabs */}
+      <Tabs defaultValue="infrastructure" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="infrastructure">🏗️ Infrastructure Damage</TabsTrigger>
+          <TabsTrigger value="services">⚡ Services Status</TabsTrigger>
+        </TabsList>
+
+      {/* District-wise Table */}
+      <Card>
+        <CardHeader>
+          <h2 className="text-lg font-semibold">District-wise Infrastructure Damage</h2>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>District</TableHead>
+                <TableHead className="text-right">Roads Damaged</TableHead>
+                <TableHead className="text-right">Bridges Damaged</TableHead>
+                <TableHead className="text-right">Culverts Damaged</TableHead>
+                <TableHead className="text-right">Total Length (KM)</TableHead>
+                <TableHead className="text-right">Restoration Progress</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {formattedDistrictData.map((row) => (
+                <TableRow key={row.district}>
+                  <TableCell className="font-medium">{row.district}</TableCell>
+                  <TableCell className="text-right">{row.roadsDamaged}</TableCell>
+                  <TableCell className="text-right">{row.bridgesDamaged}</TableCell>
+                  <TableCell className="text-right">{row.culvertsDamaged}</TableCell>
+                  <TableCell className="text-right">{row.totalLength.toFixed(1)}</TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-blue-600 rounded-full"
+                          style={{ width: `${row.restorationProgress}%` }}
+                        />
+                      </div>
+                      <span className="text-sm">{row.restorationProgress}%</span>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+
+    </div>
+  );
+}

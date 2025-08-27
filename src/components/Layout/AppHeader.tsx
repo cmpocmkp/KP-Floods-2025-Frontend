@@ -22,9 +22,10 @@ const TABS = [
   { id: 'warehouse', label: 'Warehouse' },
   { id: 'camps', label: 'Relief Camps' },
   { id: 'compensation', label: 'Compensation' },
+  { id: 'livestock', label: '🐄 Livestock' }, // Made more visible
   { id: 'analyze', label: '📊 Analyze' },
   { id: 'visualize', label: '📈 Visualize' },
-  { id: 'ask-ai', label: '🤖 Ask AI' },
+  { id: 'ask-ai', label: '🧠 Brief' },
 ];
 
 export function AppHeader({

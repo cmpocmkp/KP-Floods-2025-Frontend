@@ -84,7 +84,7 @@ export function TabsBar({ tabs, activeTab, onTabChange }: TabsBarProps) {
               <ChevronLeft className="h-4 w-4" />
             </button>
           )}
-          
+
           <div
             ref={listRef}
             className="relative flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth py-2"
