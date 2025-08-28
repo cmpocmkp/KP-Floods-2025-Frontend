@@ -11,7 +11,7 @@ const tabs = [
   { id: 'incidents', label: 'Incident Reports' },
   { id: 'infrastructure', label: 'Infrastructure' },
   { id: 'warehouse', label: 'Warehouse' },
-  { id: 'camps', label: 'Relief Camps' },
+  { id: 'camps', label: 'Relief' },
   { id: 'compensation', label: 'Compensation' }
 ];
 
