@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -9,7 +9,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -31,11 +30,8 @@ import {
   GraduationCap,
   Heart,
   Building as OfficeBuilding,
-  StretchHorizontal,
   Building2,
   Zap,
-  Droplets,
-  Flame,
   Phone,
   Signal,
   AlertTriangle,
@@ -43,12 +39,14 @@ import {
 } from 'lucide-react';
 import { KpiCard } from '@/components/ui/kpi-card';
 import { ServiceStatusCards } from '@/features/kpis';
-import { PheAssetsTab } from '@/components/infrastructure/PheAssetsTab';
-import { CwRoadsBridgesTab } from '@/components/infrastructure/CwRoadsBridgesTab';
+import PheAssetsTab from '@/components/infrastructure/PheAssetsTab';
+import CwRoadsBridgesTab from '@/components/infrastructure/CwRoadsBridgesTab';
+import { LocalGovtTab } from '@/components/infrastructure/LocalGovtTab';
+import EnergyPowerTab from '@/components/infrastructure/EnergyPowerTab';
 import {
-  getInfrastructureDamage,
-  getServicesStatus,
   getCombinedInfrastructureServices,
+  getPheAssets,
+  getEnergyPowerAssets,
   type DistrictInfrastructureData,
   type DistrictServicesData
 } from '@/api/infrastructure';
@@ -59,12 +57,29 @@ export default function InfrastructurePage() {
   const [selectedServicesDistrict, setSelectedServicesDistrict] = useState<DistrictServicesData | null>(null);
   const [showServicesModal, setShowServicesModal] = useState(false);
 
-  const { data: combinedData, isLoading, error } = useQuery({
+  const { data: combinedData, isLoading: isLoadingCombined, error: errorCombined } = useQuery({
     queryKey: ['combined-infrastructure-services'],
     queryFn: () => getCombinedInfrastructureServices(),
     retry: 2,
     staleTime: 1000 * 60 * 5,
   });
+
+  const { data: pheData, isLoading: isLoadingPhe } = useQuery({
+    queryKey: ['phe-assets'],
+    queryFn: () => getPheAssets(),
+    retry: 2,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const { data: energyData, isLoading: isLoadingEnergy } = useQuery({
+    queryKey: ['energy-power-assets'],
+    queryFn: () => getEnergyPowerAssets(),
+    retry: 2,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const isLoading = isLoadingCombined || isLoadingPhe || isLoadingEnergy;
+  const error = errorCombined;
 
   const handleViewDistrictDetails = (district: DistrictInfrastructureData) => {
     setSelectedDistrict(district);
@@ -203,11 +218,13 @@ export default function InfrastructurePage() {
     <div className="space-y-6">
       {/* Main Content Tabs */}
       <Tabs defaultValue="infrastructure" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="infrastructure">Community Facilities</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-6">
+          <TabsTrigger value="infrastructure">Community Assets</TabsTrigger>
           <TabsTrigger value="services">Services</TabsTrigger>
           <TabsTrigger value="phe-assets">Public Health Schemes</TabsTrigger>
           <TabsTrigger value="cw-roads-bridges">Roads & Bridges</TabsTrigger>
+          <TabsTrigger value="local-govt">Local Government</TabsTrigger>
+          <TabsTrigger value="energy-power">Energy & Power</TabsTrigger>
         </TabsList>
 
         {/* Infrastructure Damage Tab */}
@@ -528,7 +545,20 @@ export default function InfrastructurePage() {
 
         {/* PHE Assets Tab */}
         <TabsContent value="phe-assets" className="space-y-6">
-          <PheAssetsTab />
+          {pheData ? (
+            <PheAssetsTab data={pheData} />
+          ) : (
+            <Card>
+              <CardHeader>
+                <h2 className="text-lg font-semibold">PHE Schemes Data</h2>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[400px] flex items-center justify-center">
+                  <div>No PHE Schemes data available</div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
 
         {/* C&W Roads & Bridges Tab */}
@@ -546,6 +576,45 @@ export default function InfrastructurePage() {
               <CardContent>
                 <div className="h-[400px] flex items-center justify-center">
                   <div>No C&W Roads & Bridges data available</div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
+        {/* Local Government Tab */}
+        <TabsContent value="local-govt" className="space-y-6">
+          {combinedData.local_govt ? (
+            <LocalGovtTab 
+              data={combinedData.local_govt.data} 
+              summary={combinedData.local_govt.summary} 
+            />
+          ) : (
+            <Card>
+              <CardHeader>
+                <h2 className="text-lg font-semibold">Local Government Data</h2>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[400px] flex items-center justify-center">
+                  <div>No Local Government data available</div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
+        {/* Energy & Power Tab */}
+        <TabsContent value="energy-power" className="space-y-6">
+          {energyData ? (
+            <EnergyPowerTab data={energyData} />
+          ) : (
+            <Card>
+              <CardHeader>
+                <h2 className="text-lg font-semibold">Energy & Power Data</h2>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[400px] flex items-center justify-center">
+                  <div>No Energy & Power data available</div>
                 </div>
               </CardContent>
             </Card>

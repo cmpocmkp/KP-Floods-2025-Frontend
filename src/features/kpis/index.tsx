@@ -15,7 +15,6 @@ import {
   Building,
   Tent,
   MapPin,
-  DollarSign,
   Activity,
   Zap,
   Droplets,
@@ -24,11 +23,12 @@ import {
   Signal,
   Sprout,
   Award,
+  Banknote,
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { getCompensationSummary } from '@/api/compensation';
 import { getLivestockSummary } from '@/api/livestock';
-import { getAgricultureSummary } from '@/api/agriculture';
+import { getAgricultureImpacts } from '@/api/agriculture';
 import { getCombinedInfrastructureServices } from '@/api/infrastructure';
 import { getReliefOperationsOverview } from '@/api/camps';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -251,7 +251,7 @@ export function CompensationKpis() {
       <KpiCard
         title="Total Compensation"
         value={`PKR ${(totalCompensation / 1000000000).toFixed(1)}B`}
-        icon={DollarSign}
+        icon={Banknote}
         color="text-green-600"
       />
       <KpiCard
@@ -334,8 +334,8 @@ export function LivestockKpis() {
 
 export function AgricultureKpis() {
   const { data: agricultureData, isLoading } = useQuery({
-    queryKey: ['agriculture-summary'],
-    queryFn: () => getAgricultureSummary()
+    queryKey: ['agriculture-impacts'],
+    queryFn: () => getAgricultureImpacts()
   });
 
   if (isLoading) {
@@ -358,29 +358,35 @@ export function AgricultureKpis() {
     );
   }
 
+  // Calculate totals
+  const totalStructuralDamages = agricultureData.summary.totalStructuralDamages;
+  const totalCropArea = agricultureData.summary.totalCropMaskAcre;
+  const totalLoss = agricultureData.summary.totalEstimatedLossesMillionPKR;
+  const affectedDistricts = agricultureData.summary.affectedDistricts;
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <KpiCard
         title="Structural Damages"
-        value={agricultureData.totalStructuralDamages.toLocaleString()}
+        value={totalStructuralDamages.toLocaleString()}
         icon={Building}
         color="text-red-600"
       />
       <KpiCard
         title="Crop Area Affected"
-        value={`${formatLargeNumber(agricultureData.totalCropMaskAcre)} acres`}
+        value={`${formatLargeNumber(totalCropArea)} acres`}
         icon={Sprout}
         color="text-green-600"
       />
       <KpiCard
         title="Economic Loss"
-        value={`PKR ${(agricultureData.totalEstimatedLossesMillionPKR / 1000).toFixed(1)}B`}
-        icon={DollarSign}
+        value={`PKR ${(totalLoss / 1000).toFixed(1)}B`}
+        icon={Banknote}
         color="text-orange-600"
       />
       <KpiCard
         title="Affected Districts"
-        value={agricultureData.affectedDistricts.toString()}
+        value={affectedDistricts.toString()}
         icon={MapPin}
         color="text-blue-600"
       />

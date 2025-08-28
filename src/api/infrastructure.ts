@@ -126,6 +126,16 @@ export interface ServicesStatusResponse {
   source: string;
 }
 
+// PHE Schemes Types
+export interface PheSchemeData {
+  district: string;
+  total_schemes: number;
+  damaged_schemes: number;
+  restored_schemes: number;
+  restoration_cost_m: number;
+  rehabilitation_cost_m: number;
+}
+
 // C&W Roads & Bridges Types
 export interface CwRoadsBridgesData {
   district: string;
@@ -158,6 +168,61 @@ export interface CwRoadsBridgesResponse {
   source: string;
 }
 
+// Local Government Types
+export interface LocalGovtDetail {
+  id: number;
+  department: string;
+  reporting_officer: string;
+  designation: string;
+  contact: number;
+  email: string;
+  tehsil: string;
+  location: string | null;
+  nature_of_damage: string | null;
+  infrastructure_type: string | null;
+  specific_description: string | null;
+  points_spots: string | null;
+  damaged_area_sqm: number;
+  restoration_status: string;
+  restoration_cost_m: number;
+  rehabilitation_cost_m: number;
+}
+
+export interface LocalGovtData {
+  district: string;
+  division: string;
+  total_records: number;
+  total_damaged_area_sqm: number;
+  total_restoration_cost_m: number;
+  total_rehabilitation_cost_m: number;
+  restoration_status: {
+    fully_restored: number;
+    partially_restored: number;
+    not_restored: number;
+    washed_away: number;
+  };
+  infrastructure_types: Record<string, number>;
+  tehsils: Record<string, number>;
+  details: LocalGovtDetail[];
+}
+
+export interface LocalGovtResponse {
+  data: LocalGovtData[];
+  summary: {
+    total_districts: number;
+    total_records: number;
+    total_damaged_area_sqm: number;
+    total_restoration_cost_m: number;
+    total_rehabilitation_cost_m: number;
+    total_fully_restored: number;
+    total_partially_restored: number;
+    total_not_restored: number;
+    total_washed_away: number;
+  };
+  total_records: number;
+  source: string;
+}
+
 // Combined Infrastructure and Services Data
 export interface CombinedInfrastructureData {
   success: boolean;
@@ -165,6 +230,15 @@ export interface CombinedInfrastructureData {
   infrastructure: InfrastructureDamageResponse;
   services: ServicesStatusResponse;
   cw_roads_bridges: CwRoadsBridgesResponse;
+  local_govt: LocalGovtResponse;
+  phe_schemes?: {
+    data: PheSchemeData[];
+    summary: {
+      total_schemes: number;
+      total_damaged: number;
+      total_restored: number;
+    };
+  };
   last_updated: string;
   data_sources: string[];
 }
@@ -225,6 +299,44 @@ export const getServicesStatus = async (): Promise<ServicesStatusResponse> => {
 
   if (!response.ok) {
     throw new Error(`Failed to fetch services status: ${response.status} ${response.statusText}`);
+  }
+
+  return await response.json();
+};
+
+export const getPheAssets = async (): Promise<PheSchemeData[]> => {
+  const baseUrl = 'https://kp-floods-2025-mongo-backend-production.up.railway.app';
+  const response = await fetch(`${baseUrl}/floods/phe-assets`, {
+    headers: {
+      'Accept': '*/*'
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch PHE assets: ${response.status} ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data.map((item: any) => ({
+    district: item.district.name,
+    total_schemes: item.total_schemes_no,
+    damaged_schemes: item.minorly_damaged_no + item.partially_damaged_no + item.washed_away_no,
+    restored_schemes: 0, // Not available in API
+    restoration_cost_m: item.estimated_cost_million_pkr,
+    rehabilitation_cost_m: 0 // Not available in API
+  }));
+};
+
+export const getEnergyPowerAssets = async (): Promise<any[]> => {
+  const baseUrl = 'https://kp-floods-2025-mongo-backend-production.up.railway.app';
+  const response = await fetch(`${baseUrl}/floods/energy-power-assets`, {
+    headers: {
+      'Accept': '*/*'
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch energy & power assets: ${response.status} ${response.statusText}`);
   }
 
   return await response.json();

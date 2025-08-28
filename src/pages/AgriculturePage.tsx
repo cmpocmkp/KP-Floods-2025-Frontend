@@ -1,15 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { useMemo } from 'react';
 import {
   BarChart,
   Bar,
@@ -17,277 +6,239 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
   PieChart,
   Pie,
   Cell,
-  LineChart,
-  Line,
-  Area,
-  AreaChart
+  Legend,
+  LabelList
 } from 'recharts';
 import {
-  Sprout,
-  MapPin,
-  TrendingUp,
-  AlertTriangle,
-  Eye,
-  Building,
-  DollarSign,
+  Banknote,
   Activity,
-  Target
+  Sprout,
+  Eye,
+  Building2,
+  Ruler,
+  Tractor,
+  AlertTriangle
 } from 'lucide-react';
-import { getAgricultureImpacts, getAgricultureSummary, type AgricultureImpactRecord } from '@/api/agriculture';
-import { useState } from 'react';
+import { KpiCard } from '@/components/ui/kpi-card';
+import { getAgricultureImpacts, type ProcessedAgricultureData } from '@/api/agriculture';
+import { useQuery } from '@tanstack/react-query';
+import LoadingSpinner from '@/components/Layout/LoadingSpinner';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import ChartWrapper from '@/components/charts/ChartWrapper';
+import SmartTick from '@/components/charts/SmartTick';
+import SmartValueLabel from '@/components/charts/SmartValueLabel';
+import { 
+  DEFAULT_CHART_HEIGHT, 
+  DEFAULT_MARGIN, 
+  DEFAULT_PIE_MARGIN,
+  AXIS_CONFIG,
+  PIE_CONFIG,
+  TOOLTIP_FORMATTERS,
+  CHART_COLORS
+} from '@/components/charts/chartConfig';
 
-const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7c7c', '#8dd1e1'];
+interface DivisionData {
+  name: string;
+  totalLoss: number;
+}
 
-// Helper function to format large numbers
-const formatLargeNumber = (num: number): string => {
-  if (num >= 1000000) {
-    return `${(num / 1000000).toFixed(1)}M`;
-  } else if (num >= 1000) {
-    return `${(num / 1000).toFixed(1)}K`;
-  }
-  return num.toLocaleString();
-};
+interface SeverityData {
+  name: string;
+  value: number;
+  color: string;
+}
+
+interface ProcessedData {
+  divisionData: DivisionData[];
+  districtData: ProcessedAgricultureData['districtBreakdown'];
+  severityData: SeverityData[];
+}
 
 export default function AgriculturePage() {
-  const [selectedDistrict, setSelectedDistrict] = useState<AgricultureImpactRecord | null>(null);
-  const [showModal, setShowModal] = useState(false);
-
-  const { data: agricultureData, isLoading: isLoadingData, error: dataError } = useQuery({
+  // Fetch agriculture data
+  const { data: agricultureData, isLoading: isLoadingAgriculture } = useQuery<ProcessedAgricultureData>({
     queryKey: ['agriculture-impacts'],
-    queryFn: () => getAgricultureImpacts(),
-    retry: 2,
-    staleTime: 1000 * 60 * 5,
+    queryFn: getAgricultureImpacts
   });
 
-  const { data: summaryData, isLoading: isLoadingSummary } = useQuery({
-    queryKey: ['agriculture-summary'],
-    queryFn: () => getAgricultureSummary(),
-    retry: 2,
-    staleTime: 1000 * 60 * 5,
-  });
+  // Process data for visualizations
+  const processedData = useMemo(() => {
+    if (!agricultureData) return null;
 
-  const handleViewDetails = (record: AgricultureImpactRecord) => {
-    setSelectedDistrict(record);
-    setShowModal(true);
-  };
+    // Division-wise analysis
+    const divisionData = agricultureData.divisionBreakdown
+      .map(division => ({
+        name: division.division,
+        totalLoss: division.total_estimated_losses_million_pkr
+      }))
+      .sort((a, b) => b.totalLoss - a.totalLoss);
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setSelectedDistrict(null);
-  };
+    // District-wise analysis
+    const districtData = agricultureData.districtBreakdown
+      .sort((a, b) => b.estimated_losses_million_pkr - a.estimated_losses_million_pkr)
+      .slice(0, 10);
 
-  if (isLoadingData || isLoadingSummary) {
+    // Impact severity distribution
+    const severityData = [
+      { name: 'High Impact (>100M PKR)', value: agricultureData.impactSeverity.highImpact, color: CHART_COLORS.danger },
+      { name: 'Medium Impact (10-100M PKR)', value: agricultureData.impactSeverity.mediumImpact, color: CHART_COLORS.warning },
+      { name: 'Low Impact (<10M PKR)', value: agricultureData.impactSeverity.lowImpact, color: CHART_COLORS.success },
+      { name: 'No Impact', value: agricultureData.impactSeverity.noImpact, color: CHART_COLORS.info }
+    ];
+
+    return {
+      divisionData,
+      districtData,
+      severityData
+    } as ProcessedData;
+  }, [agricultureData]);
+
+  if (isLoadingAgriculture || !processedData) {
     return (
       <div className="space-y-6">
-        <Card>
-          <CardHeader>
-            <h2 className="text-lg font-semibold">Agriculture Impacts</h2>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[400px] flex items-center justify-center">
-              <div className="animate-pulse">Loading agriculture data...</div>
-            </div>
-          </CardContent>
-        </Card>
+        <LoadingSpinner size="lg" text="Loading agriculture impact data..." />
       </div>
     );
   }
-
-  if (dataError) {
-    return (
-      <div className="space-y-6">
-        <Card>
-          <CardHeader>
-            <h2 className="text-lg font-semibold">Agriculture Impacts</h2>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[400px] flex items-center justify-center text-red-500">
-              <div>
-                <div className="font-semibold">Error loading agriculture data</div>
-                <div className="text-sm mt-1">{dataError.message}</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  if (!agricultureData || !summaryData) {
-    return (
-      <div className="space-y-6">
-        <Card>
-          <CardHeader>
-            <h2 className="text-lg font-semibold">No Agriculture Data Available</h2>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[400px] flex items-center justify-center">
-              <div>No agriculture impact data available</div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  // Prepare chart data for top impacted districts
-  const topDistrictsChartData = summaryData.topImpactedDistricts.map(district => ({
-    district: district.district.length > 12 ? district.district.substring(0, 12) + '...' : district.district,
-    fullDistrict: district.district,
-    division: district.division,
-    loss: district.total_loss,
-    structuralDamages: district.structural_damages,
-    areaAffected: district.area_affected
-  }));
-
-  // Prepare division-wise comparison data
-  const divisionComparisonData = summaryData.divisionWiseImpact.map(division => ({
-    division: division.division,
-    districts: division.districts_count,
-    structuralDamages: division.total_structural_damages,
-    cropMaskArea: division.total_crop_mask_acre,
-    gisDamagedArea: division.total_damaged_area_gis_acre,
-    verifiedArea: division.total_onground_verified_acre,
-    totalLoss: division.total_estimated_losses_million_pkr
-  }));
 
   return (
     <div className="space-y-6">
-      {/* Charts Row 1 */}
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <KpiCard
+          title="Total Structural Damages"
+          value={agricultureData?.summary.totalStructuralDamages.toLocaleString() ?? '0'}
+          icon={Building2}
+          color="text-red-600"
+        />
+        <KpiCard
+          title="Total Crop Area"
+          value={`${(agricultureData?.summary.totalCropMaskAcre ?? 0).toFixed(2)} acres`}
+          icon={Tractor}
+          color="text-green-600"
+        />
+        <KpiCard
+          title="Damaged Area (GIS)"
+          value={`${(agricultureData?.summary.totalDamagedAreaGIS ?? 0).toFixed(2)} acres`}
+          icon={AlertTriangle}
+          color="text-yellow-600"
+        />
+        <KpiCard
+          title="Estimated Losses"
+          value={`PKR ${(agricultureData?.summary.totalEstimatedLossesMillionPKR ?? 0).toFixed(2)}M`}
+          icon={Banknote}
+          color="text-purple-600"
+        />
+      </div>
+
+      {/* Additional KPI Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <KpiCard
+          title="Verified Area"
+          value={`${(agricultureData?.summary.totalOngroundVerified ?? 0).toFixed(2)} acres`}
+          icon={Ruler}
+          color="text-blue-600"
+        />
+        <KpiCard
+          title="Affected Districts"
+          value={agricultureData?.summary.affectedDistricts.toLocaleString() ?? '0'}
+          icon={Activity}
+          color="text-orange-600"
+        />
+        <KpiCard
+          title="High Impact Districts"
+          value={agricultureData?.impactSeverity.highImpact.toLocaleString() ?? '0'}
+          icon={AlertTriangle}
+          color="text-red-600"
+        />
+        <KpiCard
+          title="Medium Impact Districts"
+          value={agricultureData?.impactSeverity.mediumImpact.toLocaleString() ?? '0'}
+          icon={AlertTriangle}
+          color="text-yellow-600"
+        />
+      </div>
+
+      {/* Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Top Impacted Districts */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Target className="h-5 w-5" />
-              Top 10 Impacted Districts by Loss
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={topDistrictsChartData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="district" />
-                <YAxis />
-                <Tooltip
-                  formatter={(value, name) => [
-                    typeof value === 'number' ? value.toLocaleString() : value,
-                    name === 'loss' ? 'Loss (M PKR)' : name
-                  ]}
-                  labelFormatter={(label) => {
-                    const item = topDistrictsChartData.find(d => d.district === label);
-                    return item ? item.fullDistrict : label;
-                  }}
+        {/* Division-wise Economic Loss */}
+        <ChartWrapper
+          title="Division-wise Economic Loss"
+          icon={Banknote}
+          height={DEFAULT_CHART_HEIGHT}
+        >
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart 
+              data={processedData.divisionData}
+              margin={DEFAULT_MARGIN}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis 
+                dataKey="name"
+                {...AXIS_CONFIG.xAxis}
+                tick={<SmartTick />}
+              />
+              <YAxis 
+                {...AXIS_CONFIG.yAxis}
+                label={{ value: 'M PKR', position: 'top', offset: 15 }}
+              />
+              <Tooltip formatter={TOOLTIP_FORMATTERS.currency} />
+              <Legend />
+              <Bar 
+                dataKey="totalLoss" 
+                name="Economic Loss (M PKR)" 
+                fill={CHART_COLORS.danger}
+              >
+                <LabelList 
+                  dataKey="totalLoss" 
+                  content={<SmartValueLabel />} 
                 />
-                <Legend />
-                <Bar dataKey="loss" fill="#ef4444" name="Economic Loss (M PKR)" />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartWrapper>
 
         {/* Impact Severity Distribution */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5" />
-              Impact Severity Distribution
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={summaryData.impactSeverityData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {summaryData.impactSeverityData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip formatter={(value) => [value, 'Districts']} />
-              </PieChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+        <ChartWrapper
+          title="Impact Severity Distribution"
+          icon={Activity}
+          height={DEFAULT_CHART_HEIGHT}
+        >
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart margin={DEFAULT_PIE_MARGIN}>
+              <Pie
+                data={processedData.severityData}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                {...PIE_CONFIG}
+              >
+                {processedData.severityData.map((_entry, index) => (
+                  <Cell key={`cell-${index}`} fill={processedData.severityData[index].color} />
+                ))}
+              </Pie>
+              <Tooltip formatter={TOOLTIP_FORMATTERS.number} />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        </ChartWrapper>
       </div>
 
-      {/* Charts Row 2 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Loss Distribution */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5" />
-              Loss Distribution by Type
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={summaryData.lossDistributionData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ name, value }) => `${name}: ${value.toLocaleString()}`}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {summaryData.lossDistributionData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip formatter={(value) => [typeof value === 'number' ? value.toLocaleString() : value, 'Count/Value']} />
-              </PieChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        {/* Division-wise Impact Comparison */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Activity className="h-5 w-5" />
-              Division-wise Impact Comparison
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={divisionComparisonData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="division" />
-                <YAxis />
-                <Tooltip
-                  formatter={(value, name) => [
-                    typeof value === 'number' ? value.toLocaleString() : value,
-                    name === 'totalLoss' ? 'Loss (M PKR)' :
-                    name === 'districts' ? 'Districts' :
-                    name === 'structuralDamages' ? 'Structural Damages' : name
-                  ]}
-                />
-                <Legend />
-                <Bar dataKey="totalLoss" fill="#ef4444" name="Economic Loss (M PKR)" />
-                <Bar dataKey="structuralDamages" fill="#f97316" name="Structural Damages" />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Agriculture Impacts Data Table */}
+      {/* Detailed Table */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -302,44 +253,30 @@ export default function AgriculturePage() {
                 <TableRow>
                   <TableHead>District</TableHead>
                   <TableHead>Division</TableHead>
-                  <TableHead className="text-right">Structural Damages</TableHead>
-                  <TableHead className="text-right">Crop Mask Area</TableHead>
-                  <TableHead className="text-right">GIS Damaged Area</TableHead>
-                  <TableHead className="text-right">On-ground Verified</TableHead>
+                  <TableHead className="text-right">Crop Area (Acres)</TableHead>
                   <TableHead className="text-right">Estimated Loss (M PKR)</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {agricultureData
-                  .filter(record => record.structural_damages_no > 0 || record.crop_mask_acre > 0)
+                {agricultureData?.districtBreakdown
                   .sort((a, b) => b.estimated_losses_million_pkr - a.estimated_losses_million_pkr)
-                  .map((record, index) => (
-                    <TableRow key={record._id}>
-                      <TableCell className="font-medium">{record.district.name}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline">{record.division.name}</Badge>
-                      </TableCell>
-                      <TableCell className="text-right font-semibold text-red-600">
-                        {record.structural_damages_no.toLocaleString()}
-                      </TableCell>
-                      <TableCell className="text-right text-green-600">
-                        {formatLargeNumber(record.crop_mask_acre)} acres
-                      </TableCell>
-                      <TableCell className="text-right text-orange-600">
-                        {record.damaged_area_gis_acre.toLocaleString()} acres
-                      </TableCell>
-                      <TableCell className="text-right text-blue-600">
-                        {record.onground_verified_acre.toLocaleString()} acres
-                      </TableCell>
-                      <TableCell className="text-right font-bold text-purple-600">
+                  .map((record) => (
+                    <TableRow key={record.district}>
+                      <TableCell className="font-medium">{record.district}</TableCell>
+                      <TableCell>{record.division}</TableCell>
+                      <TableCell className="text-right">{record.crop_mask_acre.toLocaleString()}</TableCell>
+                      <TableCell className="text-right">
                         PKR {record.estimated_losses_million_pkr.toLocaleString()}M
                       </TableCell>
                       <TableCell>
                         <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleViewDetails(record)}
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => {
+                            // Handle view details
+                          }}
                         >
                           <Eye className="h-4 w-4" />
                         </Button>
@@ -352,68 +289,8 @@ export default function AgriculturePage() {
         </CardContent>
       </Card>
 
-      {/* District Details Modal */}
-      {showModal && selectedDistrict && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-4xl w-full mx-4 max-h-[80vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">
-                {selectedDistrict.district.name} - Agriculture Impact Details
-              </h3>
-              <Button variant="outline" size="sm" onClick={handleCloseModal}>
-                Close
-              </Button>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-              <div className="text-center p-3 bg-red-50 rounded">
-                <div className="text-2xl font-bold text-red-600">{selectedDistrict.structural_damages_no}</div>
-                <div className="text-sm text-gray-600">Structural Damages</div>
-              </div>
-              <div className="text-center p-3 bg-green-50 rounded">
-                <div className="text-2xl font-bold text-green-600">{formatLargeNumber(selectedDistrict.crop_mask_acre)}</div>
-                <div className="text-sm text-gray-600">Crop Mask Area (acres)</div>
-              </div>
-              <div className="text-center p-3 bg-orange-50 rounded">
-                <div className="text-2xl font-bold text-orange-600">{selectedDistrict.damaged_area_gis_acre.toLocaleString()}</div>
-                <div className="text-sm text-gray-600">GIS Damaged Area (acres)</div>
-              </div>
-              <div className="text-center p-3 bg-blue-50 rounded">
-                <div className="text-2xl font-bold text-blue-600">{selectedDistrict.onground_verified_acre.toLocaleString()}</div>
-                <div className="text-sm text-gray-600">On-ground Verified (acres)</div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-              <div className="text-center p-4 bg-purple-50 rounded">
-                <div className="text-3xl font-bold text-purple-600">PKR {selectedDistrict.estimated_losses_million_pkr.toLocaleString()}M</div>
-                <div className="text-sm text-gray-600">Estimated Economic Loss</div>
-              </div>
-              <div className="text-center p-4 bg-gray-50 rounded">
-                <div className="text-xl font-semibold text-gray-700">{selectedDistrict.division.name}</div>
-                <div className="text-sm text-gray-600">Division</div>
-              </div>
-            </div>
-
-            {(selectedDistrict.notes || selectedDistrict.source) && (
-              <div className="space-y-4">
-                {selectedDistrict.notes && (
-                  <div>
-                    <h4 className="text-md font-semibold mb-2">Notes</h4>
-                    <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded">{selectedDistrict.notes}</p>
-                  </div>
-                )}
-                {selectedDistrict.source && (
-                  <div>
-                    <h4 className="text-md font-semibold mb-2">Source</h4>
-                    <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded">{selectedDistrict.source}</p>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      {/* Selected District Details Modal */}
+      {/* Add modal component for district details */}
     </div>
   );
 }

@@ -143,8 +143,7 @@ export default function CampsPage() {
       <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Relief Operations Dashboard</h1>
-            <p className="text-gray-600">Comprehensive overview of flood relief operations across {summary.affected_districts} districts</p>
+
           </div>
           <div className="text-right">
             <div className="text-sm text-gray-500">Last Updated</div>

@@ -29,7 +29,7 @@ import { DSRAggregates, SeverityWeights } from '@/api/dsr';
 import { VisualizeFilters } from '@/pages/VisualizePage';
 import { getInfrastructureDamage } from '@/api/infrastructure';
 import { getCompensationSummary } from '@/api/compensation';
-import { getAgricultureSummary } from '@/api/agriculture';
+import { getAgricultureImpacts } from '@/api/agriculture';
 import { getLivestockSummary } from '@/api/livestock';
 
 interface SeverityTableProps {
@@ -85,8 +85,8 @@ export function SeverityTable({ aggregates, weights, onWeightsChange, crossFilte
   });
 
   const { data: agricultureData } = useQuery({
-    queryKey: ['agriculture-summary'],
-    queryFn: getAgricultureSummary,
+    queryKey: ['agriculture-impacts'],
+    queryFn: getAgricultureImpacts,
   });
 
   const { data: livestockData } = useQuery({
@@ -121,7 +121,7 @@ export function SeverityTable({ aggregates, weights, onWeightsChange, crossFilte
       );
 
       // Find matching agriculture data
-      const agriRecord = agricultureData?.districtsWithImpacts.find(d =>
+      const agriRecord = agricultureData?.districtBreakdown.find(d =>
         d.district && record.district &&
         d.district.toLowerCase() === record.district.toLowerCase()
       );

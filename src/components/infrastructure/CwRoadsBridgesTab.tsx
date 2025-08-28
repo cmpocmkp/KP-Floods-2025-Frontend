@@ -1,14 +1,4 @@
 import { useMemo } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import {
   BarChart,
   Bar,
@@ -20,24 +10,27 @@ import {
   PieChart,
   Pie,
   Cell,
-  LineChart,
-  Line,
-  ComposedChart,
-  Area,
   Legend
 } from 'recharts';
 import {
   Car,
   Building2,
-  DollarSign,
   AlertTriangle,
   CheckCircle,
-  Clock,
-  MapPin,
-  TrendingUp
+  Banknote
 } from 'lucide-react';
 import { KpiCard } from '@/components/ui/kpi-card';
 import type { CwRoadsBridgesData } from '@/api/infrastructure';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
 
 interface CwRoadsBridgesTabProps {
   data: CwRoadsBridgesData[];
@@ -55,238 +48,124 @@ interface CwRoadsBridgesTabProps {
   };
 }
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D'];
-
-export function CwRoadsBridgesTab({ data, summary }: CwRoadsBridgesTabProps) {
-  // Process data for visualizations
-  const processedData = useMemo(() => {
-    if (!data) return null;
-
-    // Top districts by damage
-    const topDamagedDistricts = [...data]
-      .sort((a, b) => b.damage_length_km - a.damage_length_km)
-      .slice(0, 10);
-
-    // Restoration status data
-    const restorationStatusData = [
-      { name: 'Fully Restored', value: summary.total_restored_open_all, color: '#10B981' },
-      { name: 'Light Traffic', value: summary.total_restored_light_traffic, color: '#F59E0B' },
-      { name: 'Not Restored', value: summary.total_not_restored_closed, color: '#EF4444' }
-    ];
-
-    // Cost analysis data
-    const costAnalysisData = data
-      .filter(item => item.restoration_cost_m > 0 || item.rehabilitation_cost_m > 0)
-      .map(item => ({
-        district: item.district,
-        restoration_cost: item.restoration_cost_m,
-        rehabilitation_cost: item.rehabilitation_cost_m,
-        total_cost: item.restoration_cost_m + item.rehabilitation_cost_m,
-        damage_length: item.damage_length_km
-      }))
-      .sort((a, b) => b.total_cost - a.total_cost)
-      .slice(0, 10);
-
-    // Progress tracking data
-    const progressData = data.map(item => ({
-      district: item.district,
-      total_roads: item.effected_roads,
-      restored_roads: item.restored_open_all + item.restored_light_traffic,
-      restoration_percentage: item.effected_roads > 0 
-        ? ((item.restored_open_all + item.restored_light_traffic) / item.effected_roads * 100).toFixed(1)
-        : 0
+export default function CwRoadsBridgesTab({ data, summary }: CwRoadsBridgesTabProps): JSX.Element {
+  const chartData = useMemo(() => {
+    return data.map(district => ({
+      name: district.district,
+      effectedRoads: district.effected_roads,
+      damageSpots: district.damage_spots,
+      totalLength: district.total_length_km,
+      damageLength: district.damage_length_km,
+      restoredAll: district.restored_open_all,
+      restoredLight: district.restored_light_traffic,
+      notRestored: district.not_restored_closed
     }));
+  }, [data]);
 
-    return {
-      topDamagedDistricts,
-      restorationStatusData,
-      costAnalysisData,
-      progressData
-    };
-  }, [data, summary]);
-
-  if (!processedData) {
-    return (
-      <div className="space-y-6">
-        <Card>
-          <CardHeader>
-            <h2 className="text-lg font-semibold">Loading C&W Roads & Bridges data...</h2>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[400px] flex items-center justify-center">
-              <div className="animate-pulse">Loading road and bridge damage data...</div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  const restorationStatusData = useMemo(() => [
+    { name: 'Fully Restored', value: summary.total_restored_open_all, color: '#22c55e' },
+    { name: 'Light Traffic Only', value: summary.total_restored_light_traffic, color: '#eab308' },
+    { name: 'Not Restored', value: summary.total_not_restored_closed, color: '#ef4444' }
+  ], [summary]);
 
   return (
     <div className="space-y-6">
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
         <KpiCard
-          title="Total Affected Roads"
-          value={summary.total_effected_roads}
+          title="Affected Roads"
+          value={summary.total_effected_roads.toLocaleString()}
           icon={Car}
-          color="red"
+          color="text-red-600"
         />
         <KpiCard
-          title="Total Damage Spots"
-          value={summary.total_damage_spots}
+          title="Damage Spots"
+          value={summary.total_damage_spots.toLocaleString()}
           icon={AlertTriangle}
-          color="orange"
+          color="text-yellow-600"
         />
         <KpiCard
-          title="Damage Length (KM)"
-          value={summary.total_damage_length_km}
-          icon={MapPin}
-          color="blue"
+          title="Total Length (KM)"
+          value={summary.total_length_km.toLocaleString()}
+          icon={Building2}
+          color="text-blue-600"
         />
         <KpiCard
-          title="Total Cost (M PKR)"
-          value={summary.total_restoration_cost_m + summary.total_rehabilitation_cost_m}
-          icon={DollarSign}
-          color="green"
+          title="Restoration Cost (M)"
+          value={summary.total_restoration_cost_m.toLocaleString()}
+          icon={Banknote}
+          color="text-green-600"
+        />
+        <KpiCard
+          title="Rehabilitation Cost (M)"
+          value={summary.total_rehabilitation_cost_m.toLocaleString()}
+          icon={Banknote}
+          color="text-purple-600"
         />
       </div>
 
-      {/* Charts Grid */}
+      {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Top Districts by Damage */}
+        {/* Road Damage Chart */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5" />
-              Top Districts by Road Damage Length
+              <Car className="h-5 w-5" />
+              Road Damage by District
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-[400px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={processedData.topDamagedDistricts}>
+            <ResponsiveContainer width="100%" height={400}>
+                <BarChart data={chartData.slice(0, 8)} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="district" angle={-45} textAnchor="end" height={80} />
+                  <XAxis dataKey="name" />
                   <YAxis />
-                  <Tooltip 
-                    formatter={(value, name) => [
-                      `${value} km`, 
-                      name === 'damage_length_km' ? 'Damage Length' : name
-                    ]}
-                  />
-                  <Bar dataKey="damage_length_km" fill="#EF4444" name="Damage Length (KM)" />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="effectedRoads" name="Affected Roads" fill="#3b82f6" />
+                  <Bar dataKey="damageSpots" name="Damage Spots" fill="#ef4444" />
+                  <Bar dataKey="damageLength" name="Damage Length (KM)" fill="#eab308" />
                 </BarChart>
               </ResponsiveContainer>
-            </div>
           </CardContent>
         </Card>
 
-        {/* Restoration Status */}
+        {/* Restoration Status Chart */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <CheckCircle className="h-5 w-5" />
-              Road Restoration Status
+              Restoration Status Distribution
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-[400px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
+            <ResponsiveContainer width="100%" height={400}>
+                <PieChart margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                   <Pie
-                    data={processedData.restorationStatusData}
+                    data={restorationStatusData}
                     cx="50%"
                     cy="50%"
-                    labelLine={false}
-                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                    outerRadius={120}
-                    fill="#8884d8"
+                    outerRadius={140}
                     dataKey="value"
+                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
                   >
-                    {processedData.restorationStatusData.map((entry, index) => (
+                    {restorationStatusData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(value) => [`${value} roads`, 'Count']} />
+                  <Tooltip />
                 </PieChart>
               </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Cost Analysis */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <DollarSign className="h-5 w-5" />
-              Restoration Cost Analysis
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[400px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <ComposedChart data={processedData.costAnalysisData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="district" angle={-45} textAnchor="end" height={80} />
-                  <YAxis />
-                  <Tooltip 
-                    formatter={(value, name) => [
-                      `${Number(value).toFixed(2)} M PKR`, 
-                      name === 'restoration_cost' ? 'Restoration Cost' : 
-                      name === 'rehabilitation_cost' ? 'Rehabilitation Cost' : 'Total Cost'
-                    ]}
-                  />
-                  <Legend />
-                  <Bar dataKey="restoration_cost" fill="#3B82F6" name="Restoration Cost" />
-                  <Bar dataKey="rehabilitation_cost" fill="#10B981" name="Rehabilitation Cost" />
-                  <Line type="monotone" dataKey="total_cost" stroke="#EF4444" strokeWidth={2} name="Total Cost" />
-                </ComposedChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Restoration Progress */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5" />
-              Restoration Progress by District
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[400px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={processedData.progressData.slice(0, 10)}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="district" angle={-45} textAnchor="end" height={80} />
-                  <YAxis />
-                  <Tooltip 
-                    formatter={(value, name) => [
-                      name === 'total_roads' ? value : 
-                      name === 'restored_roads' ? value : 
-                      `${value}%`, 
-                      name === 'total_roads' ? 'Total Roads' : 
-                      name === 'restored_roads' ? 'Restored Roads' : 'Restoration %'
-                    ]}
-                  />
-                  <Legend />
-                  <Bar dataKey="total_roads" fill="#94A3B8" name="Total Affected Roads" />
-                  <Bar dataKey="restored_roads" fill="#10B981" name="Restored Roads" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Detailed Table */}
+      {/* District-wise Roads & Bridges Table */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Building2 className="h-5 w-5" />
-            C&W Roads & Bridges Damage Details
+            <Car className="h-5 w-5" />
+            District-wise Roads & Bridges Status
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -302,40 +181,33 @@ export function CwRoadsBridgesTab({ data, summary }: CwRoadsBridgesTabProps) {
                   <TableHead className="text-right">Fully Restored</TableHead>
                   <TableHead className="text-right">Light Traffic</TableHead>
                   <TableHead className="text-right">Not Restored</TableHead>
-                  <TableHead className="text-right">Restoration Cost (M PKR)</TableHead>
-                  <TableHead className="text-right">Rehabilitation Cost (M PKR)</TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Status</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {data.map((item) => {
-                  const totalRestored = item.restored_open_all + item.restored_light_traffic;
-                  const restorationPercentage = item.effected_roads > 0 
-                    ? (totalRestored / item.effected_roads * 100).toFixed(1)
-                    : 0;
+                {data.map((district, index) => {
+                  const totalAffected = district.effected_roads;
+                  const totalRestored = district.restored_open_all + district.restored_light_traffic;
+                  const restorationProgress = (totalRestored / totalAffected) * 100;
                   
+                  let statusColor = 'bg-red-500';
+                  if (restorationProgress >= 75) statusColor = 'bg-green-500';
+                  else if (restorationProgress >= 50) statusColor = 'bg-yellow-500';
+                  else if (restorationProgress >= 25) statusColor = 'bg-orange-500';
+
                   return (
-                    <TableRow key={item.district}>
-                      <TableCell className="font-medium">{item.district}</TableCell>
-                      <TableCell className="text-right">{item.effected_roads}</TableCell>
-                      <TableCell className="text-right">{item.damage_spots}</TableCell>
-                      <TableCell className="text-right">{item.total_length_km.toFixed(2)}</TableCell>
-                      <TableCell className="text-right">{item.damage_length_km.toFixed(2)}</TableCell>
-                      <TableCell className="text-right">{item.restored_open_all}</TableCell>
-                      <TableCell className="text-right">{item.restored_light_traffic}</TableCell>
-                      <TableCell className="text-right">{item.not_restored_closed}</TableCell>
-                      <TableCell className="text-right">{item.restoration_cost_m.toFixed(2)}</TableCell>
-                      <TableCell className="text-right">{item.rehabilitation_cost_m.toFixed(2)}</TableCell>
-                      <TableCell>
-                        <Badge 
-                          variant="secondary" 
-                          className={`${
-                            Number(restorationPercentage) >= 80 ? 'bg-green-100 text-green-800' :
-                            Number(restorationPercentage) >= 50 ? 'bg-yellow-100 text-yellow-800' :
-                            'bg-red-100 text-red-800'
-                          }`}
-                        >
-                          {restorationPercentage}% Complete
+                    <TableRow key={index}>
+                      <TableCell className="font-medium">{district.district}</TableCell>
+                      <TableCell className="text-right">{district.effected_roads.toLocaleString()}</TableCell>
+                      <TableCell className="text-right">{district.damage_spots.toLocaleString()}</TableCell>
+                      <TableCell className="text-right">{district.total_length_km.toLocaleString()}</TableCell>
+                      <TableCell className="text-right">{district.damage_length_km.toLocaleString()}</TableCell>
+                      <TableCell className="text-right text-green-600">{district.restored_open_all.toLocaleString()}</TableCell>
+                      <TableCell className="text-right text-yellow-600">{district.restored_light_traffic.toLocaleString()}</TableCell>
+                      <TableCell className="text-right text-red-600">{district.not_restored_closed.toLocaleString()}</TableCell>
+                      <TableCell className="text-right">
+                        <Badge className={statusColor}>
+                          {restorationProgress.toFixed(1)}% Restored
                         </Badge>
                       </TableCell>
                     </TableRow>
@@ -348,4 +220,4 @@ export function CwRoadsBridgesTab({ data, summary }: CwRoadsBridgesTabProps) {
       </Card>
     </div>
   );
-} 
+}

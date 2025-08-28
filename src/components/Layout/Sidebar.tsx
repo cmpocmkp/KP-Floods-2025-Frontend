@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
-import { 
-  BarChart3, 
-  Settings, 
-  Database,
+import {
+  Home,
+  BarChart3,
+  Map,
+  Users,
+  Building2,
+  Car,
+  Package,
+  Banknote,
+  Settings,
+  LogOut,
   AlertTriangle,
   Construction,
-  Package,
   Tent,
-  DollarSign
+  Database
 } from 'lucide-react';
 import BrandLogo from '../BrandLogo';
 
@@ -25,7 +31,7 @@ const menuItems = [
   { id: 'infrastructure', label: 'Infrastructure', icon: Construction },
   { id: 'warehouse', label: 'Warehouse', icon: Package },
   { id: 'camps', label: 'Relief Camps', icon: Tent },
-  { id: 'compensation', label: 'Compensation', icon: DollarSign },
+  { id: 'compensation', label: 'Compensation', icon: Banknote },
   { id: 'sources-management', label: 'Data Sources', icon: Database },
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
