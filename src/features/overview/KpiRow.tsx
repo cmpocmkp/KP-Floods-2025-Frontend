@@ -1,6 +1,6 @@
 import React from 'react';
 import { KpiCard } from '@/components/ui/kpi-card';
-import { Skull, Heart, Home, Beef } from 'lucide-react';
+import { Skull, Heart, HelpCircle, Beef } from 'lucide-react';
 
 export function KpiRow({ data }: { data: any }) {
   return (
@@ -18,9 +18,9 @@ export function KpiRow({ data }: { data: any }) {
         color="text-yellow-600"
       />
       <KpiCard
-        title="Houses Damaged"
-        value={data?.housesDamaged || 0}
-        icon={Home}
+        title="Missing Persons"
+        value={data?.missingPersons || 0}
+        icon={HelpCircle}
         color="text-blue-600"
       />
       <KpiCard

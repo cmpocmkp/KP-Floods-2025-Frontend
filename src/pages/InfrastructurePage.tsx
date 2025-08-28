@@ -43,12 +43,17 @@ import PheAssetsTab from '@/components/infrastructure/PheAssetsTab';
 import CwRoadsBridgesTab from '@/components/infrastructure/CwRoadsBridgesTab';
 import { LocalGovtTab } from '@/components/infrastructure/LocalGovtTab';
 import EnergyPowerTab from '@/components/infrastructure/EnergyPowerTab';
+import IrrigationTab from '@/components/infrastructure/IrrigationTab';
+import EducationTab from '@/components/infrastructure/EducationTab';
+import { schoolsData } from '@/data/education';
+import HigherEducationTab from '@/components/infrastructure/HigherEducationTab';
 import {
   getCombinedInfrastructureServices,
-  getPheAssets,
+
   getEnergyPowerAssets,
   type DistrictInfrastructureData,
-  type DistrictServicesData
+  type DistrictServicesData,
+  type CombinedInfrastructureData
 } from '@/api/infrastructure';
 
 export default function InfrastructurePage() {
@@ -57,19 +62,14 @@ export default function InfrastructurePage() {
   const [selectedServicesDistrict, setSelectedServicesDistrict] = useState<DistrictServicesData | null>(null);
   const [showServicesModal, setShowServicesModal] = useState(false);
 
-  const { data: combinedData, isLoading: isLoadingCombined, error: errorCombined } = useQuery({
+  const { data: combinedData, isLoading: isLoadingCombined, error: errorCombined } = useQuery<CombinedInfrastructureData>({
     queryKey: ['combined-infrastructure-services'],
     queryFn: () => getCombinedInfrastructureServices(),
     retry: 2,
     staleTime: 1000 * 60 * 5,
   });
 
-  const { data: pheData, isLoading: isLoadingPhe } = useQuery({
-    queryKey: ['phe-assets'],
-    queryFn: () => getPheAssets(),
-    retry: 2,
-    staleTime: 1000 * 60 * 5,
-  });
+
 
   const { data: energyData, isLoading: isLoadingEnergy } = useQuery({
     queryKey: ['energy-power-assets'],
@@ -78,7 +78,7 @@ export default function InfrastructurePage() {
     staleTime: 1000 * 60 * 5,
   });
 
-  const isLoading = isLoadingCombined || isLoadingPhe || isLoadingEnergy;
+  const isLoading = isLoadingCombined || isLoadingEnergy;
   const error = errorCombined;
 
   const handleViewDistrictDetails = (district: DistrictInfrastructureData) => {
@@ -178,22 +178,28 @@ export default function InfrastructurePage() {
   }));
 
   // Prepare chart data for services disruptions
-  const servicesChartData = servicesData.map(district => ({
-    district: district.DistrictName.length > 12 ? district.DistrictName.substring(0, 12) + '...' : district.DistrictName,
-    fullDistrict: district.DistrictName,
-    feedersDisconnections: district.TotalFeedersDisconnections,
-    feedersRestored: district.TotalFeedersRestored,
-    waterDisconnections: district.TotalWaterDisconnections,
-    waterRestored: district.TotalWaterRestored,
-    gasDisconnections: district.TotalGasDisconnections,
-    gasRestored: district.TotalGasRestored,
-    ptclDisconnections: district.TotalPTCLDisconnections,
-    ptclRestored: district.TotalPTCLRestored,
-    cellularDisconnections: district.TotalCellularDisconnections,
-    cellularRestored: district.TotalCellularRestored,
-    inaccessibleAreas: district.TotalInaccessibleAreas,
-    reconnectedAreas: district.TotalReconnectedAreas
-  }));
+  const servicesChartData = servicesData
+    .map(district => {
+      const totalDisconnections = 
+        district.TotalFeedersDisconnections +
+        district.TotalWaterDisconnections +
+        district.TotalGasDisconnections +
+        district.TotalPTCLDisconnections +
+        district.TotalCellularDisconnections;
+
+      return {
+        district: district.DistrictName.length > 12 ? district.DistrictName.substring(0, 12) + '...' : district.DistrictName,
+        fullDistrict: district.DistrictName,
+        feedersDisconnections: district.TotalFeedersDisconnections,
+        waterDisconnections: district.TotalWaterDisconnections,
+        gasDisconnections: district.TotalGasDisconnections,
+        ptclDisconnections: district.TotalPTCLDisconnections,
+        cellularDisconnections: district.TotalCellularDisconnections,
+        totalDisconnections
+      };
+    })
+    .filter(district => district.totalDisconnections > 0)
+    .sort((a, b) => b.totalDisconnections - a.totalDisconnections);
 
   // Infrastructure damage type distribution
   const damageTypeData = [
@@ -218,13 +224,16 @@ export default function InfrastructurePage() {
     <div className="space-y-6">
       {/* Main Content Tabs */}
       <Tabs defaultValue="infrastructure" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-9">
           <TabsTrigger value="infrastructure">Community Assets</TabsTrigger>
           <TabsTrigger value="services">Services</TabsTrigger>
-          <TabsTrigger value="phe-assets">Public Health Schemes</TabsTrigger>
+          <TabsTrigger value="phe-assets">Public Health</TabsTrigger>
           <TabsTrigger value="cw-roads-bridges">Roads & Bridges</TabsTrigger>
           <TabsTrigger value="local-govt">Local Government</TabsTrigger>
           <TabsTrigger value="energy-power">Energy & Power</TabsTrigger>
+          <TabsTrigger value="irrigation">Irrigation</TabsTrigger>
+          <TabsTrigger value="education">Education</TabsTrigger>
+          <TabsTrigger value="higher-education">Higher Education</TabsTrigger>
         </TabsList>
 
         {/* Infrastructure Damage Tab */}
@@ -431,6 +440,8 @@ export default function InfrastructurePage() {
                     <Bar dataKey="feedersDisconnections" fill="#eab308" name="Electricity" />
                     <Bar dataKey="waterDisconnections" fill="#3b82f6" name="Water" />
                     <Bar dataKey="gasDisconnections" fill="#ef4444" name="Gas" />
+                    <Bar dataKey="ptclDisconnections" fill="#8b5cf6" name="Phone" />
+                    <Bar dataKey="cellularDisconnections" fill="#06b6d4" name="Cellular" />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -545,8 +556,8 @@ export default function InfrastructurePage() {
 
         {/* PHE Assets Tab */}
         <TabsContent value="phe-assets" className="space-y-6">
-          {pheData ? (
-            <PheAssetsTab data={pheData} />
+          {combinedData.phe ? (
+            <PheAssetsTab data={combinedData.phe} />
           ) : (
             <Card>
               <CardHeader>
@@ -555,6 +566,24 @@ export default function InfrastructurePage() {
               <CardContent>
                 <div className="h-[400px] flex items-center justify-center">
                   <div>No PHE Schemes data available</div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
+        {/* Education Tab */}
+        <TabsContent value="education" className="space-y-6">
+          {schoolsData ? (
+            <EducationTab data={schoolsData} />
+          ) : (
+            <Card>
+              <CardHeader>
+                <h2 className="text-lg font-semibold">Education Infrastructure Data</h2>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[400px] flex items-center justify-center">
+                  <div>No education infrastructure data available</div>
                 </div>
               </CardContent>
             </Card>
@@ -615,6 +644,42 @@ export default function InfrastructurePage() {
               <CardContent>
                 <div className="h-[400px] flex items-center justify-center">
                   <div>No Energy & Power data available</div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
+        {/* Irrigation Tab */}
+        <TabsContent value="irrigation" className="space-y-6">
+          {combinedData.irrigation ? (
+            <IrrigationTab data={combinedData.irrigation} />
+          ) : (
+            <Card>
+              <CardHeader>
+                <h2 className="text-lg font-semibold">Irrigation Data</h2>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[400px] flex items-center justify-center">
+                  <div>No Irrigation data available</div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
+        {/* Higher Education Tab */}
+        <TabsContent value="higher-education" className="space-y-6">
+          {combinedData.higher_education ? (
+            <HigherEducationTab data={combinedData.higher_education} />
+          ) : (
+            <Card>
+              <CardHeader>
+                <h2 className="text-lg font-semibold">Higher Education Data</h2>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[400px] flex items-center justify-center">
+                  <div>No Higher Education data available</div>
                 </div>
               </CardContent>
             </Card>

@@ -22,7 +22,7 @@ import {
   Copy,
   Settings
 } from 'lucide-react';
-import { VisualizeFilters as VisualizeFiltersType } from '@/pages/VisualizePage';
+import type { VisualizeFilters as VisualizeFiltersType } from '@/types/visualize';
 import { DSRAggregates } from '@/api/dsr';
 
 interface VisualizeFiltersProps {

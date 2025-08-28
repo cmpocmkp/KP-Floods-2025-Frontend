@@ -128,12 +128,34 @@ export interface ServicesStatusResponse {
 
 // PHE Schemes Types
 export interface PheSchemeData {
-  district: string;
-  total_schemes: number;
-  damaged_schemes: number;
-  restored_schemes: number;
-  restoration_cost_m: number;
-  rehabilitation_cost_m: number;
+  _id: string;
+  report_date: string;
+  division: {
+    _id: string;
+    name: string;
+  };
+  district: {
+    _id: string;
+    name: string;
+  };
+  department: string;
+  tehsil: string | null;
+  uc: string | null;
+  type_of_scheme: string | null;
+  scheme_name: string | null;
+  nature_of_damage: string | null;
+  damage_status: string | null;
+  components_damaged: string | null;
+  minorly_damaged_no: number | null;
+  partially_damaged_no: number | null;
+  washed_away_no: number | null;
+  total_schemes_no: number | null;
+  estimated_cost_million_pkr: number | null;
+  restoration_status: string | null;
+  notes: string | null;
+  source: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 // C&W Roads & Bridges Types
@@ -224,6 +246,93 @@ export interface LocalGovtResponse {
 }
 
 // Combined Infrastructure and Services Data
+// Education Data Types
+export interface EducationSchoolData {
+  estimated_losses_pkr: {
+    fully: number;
+    partially: number;
+    total: number;
+  };
+  institutions_count: number;
+  fully_damaged: number;
+  partially_damaged: number;
+  rooms_damaged: number;
+  toilets_damaged: number;
+}
+
+export interface EducationHigherEducationInstitute {
+  institute: string;
+  location: string;
+  restoration_status: string;
+  restoration_cost_pkr: number;
+  rehabilitation_cost_pkr: number;
+}
+
+export interface EducationHigherEducationData {
+  institute_count: number;
+  restoration_total_pkr: number;
+  rehabilitation_total_pkr: number;
+  total_pkr: number;
+  institutes: EducationHigherEducationInstitute[];
+}
+
+export interface EducationDistrictData {
+  district: string;
+  schools_esed: EducationSchoolData;
+  higher_education: EducationHigherEducationData;
+  district_total_pkr: number;
+  district_total_million_pkr: number;
+  percentage_of_total_damage: number;
+}
+
+export interface EducationResponse {
+  data: EducationDistrictData[];
+  summary: {
+    total_institutions: number;
+    total_damage_pkr: number;
+    total_damage_million_pkr: number;
+  };
+  total_records: number;
+  source: string;
+}
+
+// Irrigation Data Types
+export interface IrrigationDivisionData {
+  division: string;
+  schemes: number;
+  restoration_million: number;
+  rehabilitation_million: number;
+  combined_from: string[];
+  total_cost_million: number;
+  percentage_of_total_schemes: number;
+}
+
+export interface IrrigationResponse {
+  data: IrrigationDivisionData[];
+  summary: {
+    total_schemes: number;
+    total_restoration_cost: number;
+    total_rehabilitation_cost: number;
+  };
+}
+
+export interface HigherEducationResponse {
+  data: Array<{
+    district: string;
+    colleges_universities_damaged: number;
+    approx_short_term_restoration_pkr: number;
+    approx_complete_rehabilitation_pkr: number;
+  }>;
+  summary: {
+    total_institutions_damaged: number;
+    total_restoration_cost: number;
+    total_rehabilitation_cost: number;
+    districts_affected: number;
+  };
+  total_records: number;
+  source: string;
+}
+
 export interface CombinedInfrastructureData {
   success: boolean;
   message: string;
@@ -231,12 +340,22 @@ export interface CombinedInfrastructureData {
   services: ServicesStatusResponse;
   cw_roads_bridges: CwRoadsBridgesResponse;
   local_govt: LocalGovtResponse;
-  phe_schemes?: {
-    data: PheSchemeData[];
+  education: EducationResponse;
+  higher_education: HigherEducationResponse;
+  irrigation: IrrigationResponse;
+  phe: {
+    data: {
+      division: string;
+      district: string;
+      department: string;
+      numberOfDamagedSchemes: number;
+      tentativeCost: number;
+    }[];
     summary: {
-      total_schemes: number;
-      total_damaged: number;
-      total_restored: number;
+      total_districts: number;
+      total_damaged_schemes: number;
+      total_tentative_cost: number;
+      districts_with_damage: number;
     };
   };
   last_updated: string;

@@ -26,7 +26,7 @@ const TABS = [
   { id: 'compensation', label: 'Compensation' },
   { id: 'analyze', label: 'Analyze' },
   { id: 'visualize', label: 'Visualize' },
-  { id: 'ask-ai', label: 'Brief' },
+ // { id: 'ask-ai', label: 'Brief' },
 ];
 
 export function AppHeader({

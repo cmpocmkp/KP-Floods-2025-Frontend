@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
+import { getIncidentTrends } from '@/lib/overview';
 
 interface DistrictSeries {
   date: string;
@@ -27,19 +28,7 @@ interface IncidentTrendsResponse {
 export function IncidentTrendsChart() {
   const { data: trendsData, isLoading, error } = useQuery({
     queryKey: ['incident-trends-multi-district'],
-    queryFn: async (): Promise<IncidentTrendsResponse> => {
-      const response = await fetch('https://kp-floods-2025-mongo-backend-production.up.railway.app/floods/trends/incidents/by-district?metric=deaths&group_by=daily', {
-        headers: {
-          'Accept': '*/*'
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch incident trends: ${response.status} ${response.statusText}`);
-      }
-
-      return await response.json();
-    },
+    queryFn: () => getIncidentTrends({ metric: 'deaths', group_by: 'daily' }),
     select: (data: IncidentTrendsResponse) => {
       // Filter districts that have actual death data (total value > 0)
       const activeDistricts = data.series.filter((district: DistrictData) =>
