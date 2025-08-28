@@ -23,12 +23,14 @@ import {
   Phone,
   Signal,
   Sprout,
+  Award,
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { getCompensationSummary } from '@/api/compensation';
 import { getLivestockSummary } from '@/api/livestock';
 import { getAgricultureSummary } from '@/api/agriculture';
 import { getCombinedInfrastructureServices } from '@/api/infrastructure';
+import { getReliefOperationsOverview } from '@/api/camps';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import type { CumulativeDashboardResponse } from '@/lib/types';
@@ -176,7 +178,12 @@ export function WarehouseKpis({ data }: { data?: CumulativeDashboardResponse }) 
 }
 
 export function CampsKpis({ data }: { data?: CumulativeDashboardResponse }) {
-  if (!data) {
+  const { data: reliefData, isLoading } = useQuery({
+    queryKey: ['relief-operations'],
+    queryFn: () => getReliefOperationsOverview()
+  });
+
+  if (isLoading || !reliefData) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[...Array(4)].map((_, i) => (
@@ -186,32 +193,33 @@ export function CampsKpis({ data }: { data?: CumulativeDashboardResponse }) {
     );
   }
 
-  const { camps } = data;
+  const { summary } = reliefData;
+  
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <KpiCard
-        title="Total Camps"
-        value={camps.totalCamps}
+        title="Active Relief Camps"
+        value={summary.total_active_camps}
         icon={Tent}
-        color="text-blue-600"
+        color="blue"
       />
       <KpiCard
-        title="Districts with Camps"
-        value={camps.districtsWithCamps}
-        icon={MapPin}
-        color="text-purple-600"
-      />
-      <KpiCard
-        title="Total Occupants"
-        value={camps.totalOccupants}
+        title="People Fed"
+        value={summary.total_people_cooked_food}
         icon={Users}
-        color="text-green-600"
+        color="green"
       />
       <KpiCard
-        title="Capacity Utilization"
-        value={`${camps.capacityUtilizationPct}%`}
-        icon={Building}
-        color="text-yellow-600"
+        title="Compensation Paid"
+        value={summary.total_death_comp_paid + summary.total_injury_comp_paid + summary.total_house_damage_paid + summary.total_livestock_comp_paid + summary.total_agriculture_comp_paid}
+        icon={Award}
+        color="orange"
+      />
+      <KpiCard
+        title="Relief Distributed"
+        value={summary.total_shelter_distributed + summary.total_nfis_distributed}
+        icon={Activity}
+        color="red"
       />
     </div>
   );

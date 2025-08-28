@@ -168,20 +168,18 @@ export function PheAssetsTab() {
       '',
       'Summary Statistics:',
       `Total Schemes,${processedData.summary.totalSchemes}`,
-      `Damaged Schemes,${processedData.summary.damagedSchemes}`,
       `Total Estimated Cost (Million PKR),${processedData.summary.totalCost.toFixed(2)}`,
-      `Damage Percentage,${processedData.summary.damagePercentage}%`,
       '',
       'District-wise Damage:',
-      'District,Total Schemes,Minor Damage,Partial Damage,Washed Away,Total Damaged,Damage %,Estimated Cost (M PKR)',
+      'District,Total Schemes,Minor Damage,Partial Damage,Washed Away,Total Damaged,Estimated Cost (M PKR)',
       ...processedData.districtDamage.map(item =>
-        `${item.district},${item.totalSchemes},${item.minorlyDamaged === 0 ? 'NA' : item.minorlyDamaged},${item.partiallyDamaged === 0 ? 'NA' : item.partiallyDamaged},${item.washedAway === 0 ? 'NA' : item.washedAway},${item.totalDamaged === 0 ? 'NA' : item.totalDamaged},${item.damagePercentage === '0.0' ? 'NA' : item.damagePercentage + '%'},${item.estimatedCost.toFixed(2)}`
+        `${item.district},${item.totalSchemes},${item.minorlyDamaged === 0 ? 'NA' : item.minorlyDamaged},${item.partiallyDamaged === 0 ? 'NA' : item.partiallyDamaged},${item.washedAway === 0 ? 'NA' : item.washedAway},${item.totalDamaged === 0 ? 'NA' : item.totalDamaged},${item.estimatedCost.toFixed(2)}`
       ),
       '',
       'Division Summary:',
-      'Division,Total Schemes,Total Damaged,Districts,Damage %,Total Cost (M PKR)',
+      'Division,Total Schemes,Districts,Total Cost (M PKR)',
       ...processedData.divisionData.map(item =>
-        `${item.division},${item.totalSchemes},${item.totalDamaged},${item.districtCount},${item.damagePercentage}%,${item.totalCost.toFixed(2)}`
+        `${item.division},${item.totalSchemes},${item.districtCount},${item.totalCost.toFixed(2)}`
       )
     ].join('\n');
 
@@ -258,7 +256,7 @@ export function PheAssetsTab() {
   return (
     <div className="space-y-6">
       {/* Summary Statistics */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
@@ -273,33 +271,7 @@ export function PheAssetsTab() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-red-100 rounded-lg">
-                <AlertTriangle className="h-6 w-6 text-red-600" />
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-red-600">{processedData.summary.damagedSchemes.toLocaleString()}</div>
-                <div className="text-sm text-muted-foreground">Damaged Schemes</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-orange-100 rounded-lg">
-                <Wrench className="h-6 w-6 text-orange-600" />
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-orange-600">{processedData.summary.damagePercentage}%</div>
-                <div className="text-sm text-muted-foreground">Damage Rate</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
         <Card>
           <CardContent className="p-4">
@@ -358,8 +330,8 @@ export function PheAssetsTab() {
                 <div key={division.division} className="bg-gray-50 p-4 rounded-lg">
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="font-semibold text-gray-900">{division.division}</h4>
-                    <Badge variant={index === 0 ? "destructive" : "secondary"}>
-                      {division.damagePercentage}% damaged
+                    <Badge variant="secondary">
+                      NA
                     </Badge>
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
@@ -369,7 +341,7 @@ export function PheAssetsTab() {
                     </div>
                     <div>
                       <div className="text-gray-600">Damaged</div>
-                      <div className="font-semibold text-red-600">{division.totalDamaged}</div>
+                      <div className="font-semibold text-gray-500">NA</div>
                     </div>
                     <div>
                       <div className="text-gray-600">Districts</div>
@@ -413,7 +385,6 @@ export function PheAssetsTab() {
                   <TableHead className="text-right">Partial Damage</TableHead>
                   <TableHead className="text-right">Washed Away</TableHead>
                   <TableHead className="text-right">Total Damaged</TableHead>
-                  <TableHead className="text-right">Damage %</TableHead>
                   <TableHead className="text-right">Est. Cost (M PKR)</TableHead>
                 </TableRow>
               </TableHeader>
@@ -442,16 +413,6 @@ export function PheAssetsTab() {
                     </TableCell>
                     <TableCell className="text-right font-semibold text-red-600">
                       {item.totalDamaged === 0 ? 'NA' : item.totalDamaged}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <span className={`font-medium ${
-                        parseFloat(item.damagePercentage) === 0 ? 'text-gray-500' :
-                        parseFloat(item.damagePercentage) > 50 ? 'text-red-600' :
-                        parseFloat(item.damagePercentage) > 25 ? 'text-orange-600' :
-                        'text-green-600'
-                      }`}>
-                        {item.damagePercentage === '0.0' ? 'NA' : `${item.damagePercentage}%`}
-                      </span>
                     </TableCell>
                     <TableCell className="text-right font-semibold text-blue-600">
                       {item.estimatedCost.toFixed(2)}M

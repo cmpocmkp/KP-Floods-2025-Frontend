@@ -21,12 +21,12 @@ const TABS = [
   { id: 'infrastructure', label: 'Infrastructure' },
   { id: 'warehouse', label: 'Warehouse' },
   { id: 'camps', label: 'Relief Camps' },
+  { id: 'livestock', label: 'Livestock' },
+  { id: 'agriculture', label: 'Agriculture' },
   { id: 'compensation', label: 'Compensation' },
-  { id: 'livestock', label: '🐄 Livestock' },
-  { id: 'agriculture', label: '🌾 Agriculture' },
-  { id: 'analyze', label: '📊 Analyze' },
-  { id: 'visualize', label: '📈 Visualize' },
-  { id: 'ask-ai', label: '🧠 Brief' },
+  { id: 'analyze', label: 'Analyze' },
+  { id: 'visualize', label: 'Visualize' },
+  { id: 'ask-ai', label: 'Brief' },
 ];
 
 export function AppHeader({
