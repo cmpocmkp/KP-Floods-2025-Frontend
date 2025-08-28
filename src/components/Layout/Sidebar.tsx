@@ -32,6 +32,8 @@ const menuItems = [
   { id: 'warehouse', label: 'Warehouse', icon: Package },
   { id: 'camps', label: 'Relief Camps', icon: Tent },
   { id: 'compensation', label: 'Compensation', icon: Banknote },
+  { id: 'compensation-policy', label: 'Compensation Policy', icon: Banknote },
+  { id: 'monetary-loss', label: 'Monetary Loss', icon: BarChart3 },
   { id: 'sources-management', label: 'Data Sources', icon: Database },
   { id: 'settings', label: 'Settings', icon: Settings },
 ];

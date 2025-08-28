@@ -72,14 +72,14 @@ export function OverviewKpis({ data }: { data?: CumulativeDashboardResponse }) {
         color="text-yellow-600"
       />
       <KpiCard
-        title="Houses Damaged"
-        value={human.housesDamaged}
+        title="Approx Monetary Loss"
+        value="~48.61B PKR"
         icon={Home}
         color="text-blue-600"
       />
       <KpiCard
-        title="Livestock Lost"
-        value={human.livestockLost}
+        title="Approx Compensation"
+        value="~4.18B PKR"
         icon={Beef}
         color="text-green-600"
       />

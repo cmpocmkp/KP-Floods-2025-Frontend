@@ -22,6 +22,8 @@ const LivestockPage = React.lazy(() => import('./pages/LivestockPage'));
 const AgriculturePage = React.lazy(() => import('./pages/AgriculturePage'));
 const AnalyzePage = React.lazy(() => import('./pages/AnalyzePage'));
 const VisualizePage = React.lazy(() => import('./pages/VisualizePage'));
+const MonetaryLossPage = React.lazy(() => import('./pages/MonetaryLossPage'));
+const CompensationPolicyPage = React.lazy(() => import('./pages/CompensationPolicyPage'));
 
 // Placeholder components
 const SourcesManagement = () => (
@@ -148,6 +150,12 @@ function AppContent() {
       case 'visualize':
         Component = VisualizePage;
         break;
+      case 'monetary-loss':
+        Component = MonetaryLossPage;
+        break;
+      case 'compensation-policy':
+        Component = CompensationPolicyPage;
+        break;
       case 'ask-ai':
         console.log('Rendering Ask AI Coming Soon');
         return <ComingSoon
@@ -215,6 +223,8 @@ function App() {
       <Route path="/livestock" element={<AppContent />} />
       <Route path="/analyze" element={<AppContent />} />
       <Route path="/visualize" element={<AppContent />} />
+      <Route path="/monetary-loss" element={<AppContent />} />
+      <Route path="/compensation-policy" element={<AppContent />} />
       <Route path="/ask-ai" element={<AppContent />} />
       <Route path="/sources-management" element={<AppContent />} />
       <Route path="/settings" element={<AppContent />} />

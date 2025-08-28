@@ -23,9 +23,13 @@ const TABS = [
   { id: 'camps', label: 'Relief' },
   { id: 'livestock', label: 'Livestock' },
   { id: 'agriculture', label: 'Agriculture' },
-  { id: 'compensation', label: 'Compensation' },
   { id: 'analyze', label: 'Analyze' },
   { id: 'visualize', label: 'Visualize' },
+  //{ id: 'compensation', label: 'Compensation' },
+  { id: 'monetary-loss', label: 'Monetary Loss' },
+  { id: 'compensation-policy', label: 'Compensation' },
+ 
+
  // { id: 'ask-ai', label: 'Brief' },
 ];
 
