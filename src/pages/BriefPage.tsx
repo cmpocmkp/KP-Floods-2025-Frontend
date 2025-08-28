@@ -24,7 +24,7 @@ interface Message {
   timestamp: Date;
 }
 
-const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY || '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';
+const OPENAI_API_KEY = import.meta.env.VITE_OPEN_AI_KEY;
 
 export default function BriefPage() {
   const [messages, setMessages] = useState<Message[]>([
@@ -190,6 +190,17 @@ Please provide a comprehensive answer based on the available data:`;
 
   const sendMessage = async () => {
     if (!inputValue.trim() || isLoading) return;
+    
+    if (!OPENAI_API_KEY) {
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        content: "Error: OpenAI API key is not configured. Please set the VITE_OPEN_AI_KEY environment variable.",
+        role: 'assistant',
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, errorMessage]);
+      return;
+    }
 
     const userMessage: Message = {
       id: Date.now().toString(),
