@@ -126,12 +126,45 @@ export interface ServicesStatusResponse {
   source: string;
 }
 
+// C&W Roads & Bridges Types
+export interface CwRoadsBridgesData {
+  district: string;
+  effected_roads: number;
+  damage_spots: number;
+  total_length_km: number;
+  damage_length_km: number;
+  restored_open_all: number;
+  restored_light_traffic: number;
+  not_restored_closed: number;
+  restoration_cost_m: number;
+  rehabilitation_cost_m: number;
+}
+
+export interface CwRoadsBridgesResponse {
+  data: CwRoadsBridgesData[];
+  summary: {
+    total_districts: number;
+    total_effected_roads: number;
+    total_damage_spots: number;
+    total_length_km: number;
+    total_damage_length_km: number;
+    total_restored_open_all: number;
+    total_restored_light_traffic: number;
+    total_not_restored_closed: number;
+    total_restoration_cost_m: number;
+    total_rehabilitation_cost_m: number;
+  };
+  total_records: number;
+  source: string;
+}
+
 // Combined Infrastructure and Services Data
 export interface CombinedInfrastructureData {
   success: boolean;
   message: string;
   infrastructure: InfrastructureDamageResponse;
   services: ServicesStatusResponse;
+  cw_roads_bridges: CwRoadsBridgesResponse;
   last_updated: string;
   data_sources: string[];
 }

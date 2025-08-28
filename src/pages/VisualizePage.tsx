@@ -90,12 +90,25 @@ export default function VisualizePage() {
 
       // Create aggregated DSR response for computeDSRAggregates
       const aggregatedDSR = {
+        success: true,
+        message: "Aggregated DSR data",
+        date: new Date().toISOString(),
+        source: "DMIS API",
         data: {
+          dsr_date: new Date().toISOString(),
+          last_updated: new Date().toISOString(),
           district_summaries: allDistrictSummaries,
           incident_details: allIncidentDetails,
           road_situations: allRoadSituations
         },
-        summary: dsrData.summary
+        summary: {
+          total_district_summaries: allDistrictSummaries.length,
+          total_incident_details: allIncidentDetails.length,
+          total_road_situations: allRoadSituations.length,
+          total_deaths: dsrData.summary.total_deaths,
+          total_injured: dsrData.summary.total_injured,
+          total_houses_damaged: dsrData.summary.total_houses_damaged
+        }
       };
 
       return computeDSRAggregates(aggregatedDSR, severityWeights);

@@ -44,6 +44,7 @@ import {
 import { KpiCard } from '@/components/ui/kpi-card';
 import { ServiceStatusCards } from '@/features/kpis';
 import { PheAssetsTab } from '@/components/infrastructure/PheAssetsTab';
+import { CwRoadsBridgesTab } from '@/components/infrastructure/CwRoadsBridgesTab';
 import {
   getInfrastructureDamage,
   getServicesStatus,
@@ -202,10 +203,11 @@ export default function InfrastructurePage() {
     <div className="space-y-6">
       {/* Main Content Tabs */}
       <Tabs defaultValue="infrastructure" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="infrastructure">🏗️ Infrastructure Damage</TabsTrigger>
-          <TabsTrigger value="services">⚡ Services Status</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="infrastructure">Community Facilities</TabsTrigger>
+          <TabsTrigger value="services">Services</TabsTrigger>
           <TabsTrigger value="phe-assets">Public Health Schemes</TabsTrigger>
+          <TabsTrigger value="cw-roads-bridges">Roads & Bridges</TabsTrigger>
         </TabsList>
 
         {/* Infrastructure Damage Tab */}
@@ -249,18 +251,6 @@ export default function InfrastructurePage() {
                 value={combinedData.infrastructure.summary.total_govt_offices_damaged.toLocaleString()}
                 icon={OfficeBuilding}
                 color="text-indigo-600"
-              />
-              <KpiCard
-                title="Roads Damaged"
-                value={`${combinedData.infrastructure.summary.total_roads_damaged_length_km.toLocaleString()} km`}
-                icon={StretchHorizontal}
-                color="text-green-600"
-              />
-              <KpiCard
-                title="Bridges Damaged"
-                value={(combinedData.infrastructure.summary.total_permanent_bridges_damaged + combinedData.infrastructure.summary.total_pedestrian_bridges_damaged).toLocaleString()}
-                icon={Building2}
-                color="text-teal-600"
               />
             </div>
           </div>
@@ -349,8 +339,6 @@ export default function InfrastructurePage() {
                       <TableHead className="text-right">Education</TableHead>
                       <TableHead className="text-right">Health</TableHead>
                       <TableHead className="text-right">Govt Offices</TableHead>
-                      <TableHead className="text-right">Roads (KM)</TableHead>
-                      <TableHead className="text-right">Bridges</TableHead>
                       <TableHead>Actions</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -375,12 +363,6 @@ export default function InfrastructurePage() {
                         </TableCell>
                         <TableCell className="text-right text-indigo-600">
                           {district.GovtOfficesDamaged.toLocaleString()}
-                        </TableCell>
-                        <TableCell className="text-right text-green-600">
-                          {district.RoadsDamagedLengthKM.toLocaleString()}
-                        </TableCell>
-                        <TableCell className="text-right text-teal-600">
-                          {(district.PermanentBridgesDamaged + district.PedestrianBridgesDamaged).toLocaleString()}
                         </TableCell>
                         <TableCell>
                           <Button
@@ -548,6 +530,27 @@ export default function InfrastructurePage() {
         <TabsContent value="phe-assets" className="space-y-6">
           <PheAssetsTab />
         </TabsContent>
+
+        {/* C&W Roads & Bridges Tab */}
+        <TabsContent value="cw-roads-bridges" className="space-y-6">
+          {combinedData.cw_roads_bridges ? (
+            <CwRoadsBridgesTab 
+              data={combinedData.cw_roads_bridges.data} 
+              summary={combinedData.cw_roads_bridges.summary} 
+            />
+          ) : (
+            <Card>
+              <CardHeader>
+                <h2 className="text-lg font-semibold">C&W Roads & Bridges Data</h2>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[400px] flex items-center justify-center">
+                  <div>No C&W Roads & Bridges data available</div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
       </Tabs>
 
       {/* District Infrastructure Details Modal */}
@@ -588,14 +591,6 @@ export default function InfrastructurePage() {
                 <div className="text-2xl font-bold text-indigo-600">{selectedDistrict.GovtOfficesDamaged}</div>
                 <div className="text-sm text-gray-600">Govt Offices</div>
               </div>
-              <div className="text-center p-3 bg-green-50 rounded">
-                <div className="text-2xl font-bold text-green-600">{selectedDistrict.RoadsDamagedLengthKM} km</div>
-                <div className="text-sm text-gray-600">Roads Damaged</div>
-              </div>
-              <div className="text-center p-3 bg-teal-50 rounded">
-                <div className="text-2xl font-bold text-teal-600">{selectedDistrict.PermanentBridgesDamaged + selectedDistrict.PedestrianBridgesDamaged}</div>
-                <div className="text-sm text-gray-600">Bridges Damaged</div>
-              </div>
             </div>
 
             {selectedDistrict.Tehsil.length > 0 && (
@@ -611,8 +606,6 @@ export default function InfrastructurePage() {
                         <TableHead className="text-right">Shops</TableHead>
                         <TableHead className="text-right">Education</TableHead>
                         <TableHead className="text-right">Health</TableHead>
-                        <TableHead className="text-right">Roads (KM)</TableHead>
-                        <TableHead className="text-right">Bridges</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -624,8 +617,6 @@ export default function InfrastructurePage() {
                           <TableCell className="text-right">{tehsil.ShopsDamaged}</TableCell>
                           <TableCell className="text-right">{tehsil.EducationFacilitiesDamaged}</TableCell>
                           <TableCell className="text-right">{tehsil.HealthFacilitiesDamaged}</TableCell>
-                          <TableCell className="text-right">{tehsil.RoadsDamagedLengthKM}</TableCell>
-                          <TableCell className="text-right">{tehsil.PermanentBridgesDamaged + tehsil.PedestrianBridgesDamaged}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
