@@ -30,7 +30,7 @@ const TABS = [
   { id: 'compensation-policy', label: 'Compensation' },
  
 
- // { id: 'ask-ai', label: 'Brief' },
+  { id: 'ask-ai', label: 'Flood Assistant' },
 ];
 
 export function AppHeader({

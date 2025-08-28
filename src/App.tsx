@@ -24,6 +24,7 @@ const AnalyzePage = React.lazy(() => import('./pages/AnalyzePage'));
 const VisualizePage = React.lazy(() => import('./pages/VisualizePage'));
 const MonetaryLossPage = React.lazy(() => import('./pages/MonetaryLossPage'));
 const CompensationPolicyPage = React.lazy(() => import('./pages/CompensationPolicyPage'));
+const BriefPage = React.lazy(() => import('./pages/BriefPage'));
 
 // Placeholder components
 const SourcesManagement = () => (
@@ -157,11 +158,8 @@ function AppContent() {
         Component = CompensationPolicyPage;
         break;
       case 'ask-ai':
-        console.log('Rendering Ask AI Coming Soon');
-        return <ComingSoon
-          title="🤖 AI-Powered Insights"
-          description="Get intelligent answers and insights from your data using advanced AI technology."
-        />;
+        Component = BriefPage;
+        break;
       case 'sources-management':
         return <SourcesManagement />;
       case 'settings':
