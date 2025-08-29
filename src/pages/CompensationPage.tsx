@@ -19,8 +19,8 @@ const COLORS = ['#3B82F6', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6', '#F97316'
 export default function CompensationPage() {
   const { data: compensationData, isLoading, error } = useQuery({
     queryKey: ['compensation-summary'],
-    queryFn: getCompensationSummary
-  });
+    queryFn: () => getCompensationSummary()
+  }) as { data: any; isLoading: boolean; error: any };
 
   // Prepare chart data
   const compensationByDistrict = React.useMemo(() => {
