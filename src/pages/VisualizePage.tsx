@@ -170,7 +170,7 @@ export default function VisualizePage() {
             <div>
               <p className="text-sm opacity-90">Total Compensation</p>
               <p className="text-2xl font-bold">
-                {compensationData ? formatCurrency(compensationData.totalCompensation) : 'Loading...'}
+                ~4.18B PKR
               </p>
             </div>
             <Users className="h-8 w-8 opacity-80" />

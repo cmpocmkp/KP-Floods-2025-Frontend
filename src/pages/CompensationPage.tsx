@@ -25,7 +25,7 @@ export default function CompensationPage() {
   // Prepare chart data
   const compensationByDistrict = React.useMemo(() => {
     if (!compensationData?.districtBreakdown) return [];
-    return compensationData.districtBreakdown.map(district => ({
+    return compensationData.districtBreakdown.map((district: any) => ({
       district: district.district,
       compensation: district.totalCompensation,
       deaths: district.casualties.deaths,
@@ -46,7 +46,7 @@ export default function CompensationPage() {
       'Support': 0
     };
 
-    compensationData.districtBreakdown.forEach(district => {
+    compensationData.districtBreakdown.forEach((district: any) => {
       categories.Casualties += district.casualties.deathCompensation + district.casualties.injuryCompensation;
       categories.Property += district.property.houseCompensation;
       categories.Livestock += district.livestock.cattleCompensation;
@@ -218,7 +218,7 @@ export default function CompensationPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {compensationData?.districtBreakdown.map((district) => (
+                {compensationData?.districtBreakdown.map((district: any) => (
                   <TableRow key={district.district}>
                     <TableCell className="font-medium">{district.district}</TableCell>
                     <TableCell className="text-right">{district.casualties.deaths}</TableCell>

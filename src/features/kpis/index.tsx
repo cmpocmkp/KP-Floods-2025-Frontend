@@ -79,7 +79,7 @@ export function OverviewKpis({ data }: { data?: CumulativeDashboardResponse }) {
       />
       <KpiCard
         title="Approx Compensation"
-        value="~4.18B PKR"
+        value="4.18B PKR"
         icon={Beef}
         color="text-green-600"
       />
@@ -241,7 +241,8 @@ export function CompensationKpis() {
     );
   }
 
-  const totalCompensation = compensationData?.totalCompensation || 0;
+  // Static Total Compensation value as requested
+  const totalCompensation = 4.18; // 4.18 billion PKR
   const totalDeaths = compensationData?.totalDeaths || 0;
   const totalInjured = compensationData?.totalInjured || 0;
   const totalHousesDamaged = compensationData?.totalHousesDamaged || 0;
@@ -250,7 +251,7 @@ export function CompensationKpis() {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <KpiCard
         title="Total Compensation"
-        value={`PKR ${(totalCompensation / 1000000000).toFixed(1)}B`}
+        value={`PKR ${totalCompensation}B`}
         icon={Banknote}
         color="text-green-600"
       />

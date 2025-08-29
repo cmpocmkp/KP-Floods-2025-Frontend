@@ -15,7 +15,8 @@ import { getLivestockSummary } from '@/api/livestock';
 import { getCampsDetailsByDistrict } from '@/api/camps';
 import { getWarehouseDetails } from '@/api/warehouse';
 import { getDistrictWiseIncidents } from '@/api/incidents';
-import { getDailyDSR } from '@/api/dsr';
+import { getDailyDSR, computeDSRAggregates } from '@/api/dsr';
+import { sendAssistantMessage } from '@/api/assistant';
 
 interface Message {
   id: string;
@@ -24,19 +25,13 @@ interface Message {
   timestamp: Date;
 }
 
-import { env, debugEnvPresence } from '@/lib/env';
-
-// Use centralized environment helper
-const OPENAI_API_KEY = env.OPENAI_API_KEY;
-
-// Debug environment variables safely
-debugEnvPresence();
+// No longer need OpenAI API key since we're using our own assistant endpoint
 
 export default function BriefPage() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: "Hello! I'm your KP Floods AI Assistant. I can help you with questions about flood damage, infrastructure, agriculture, compensation, and recovery efforts. What would you like to know?",
+      content: "Hello! I'm your KP Floods AI Assistant powered by the new flexible assistant API. I can help you with questions about flood damage, infrastructure, agriculture, compensation, and recovery efforts. What would you like to know?",
       role: 'assistant',
       timestamp: new Date()
     }
@@ -126,6 +121,21 @@ export default function BriefPage() {
   };
 
   const prepareContextData = () => {
+    // Helper function to safely compute DSR aggregates
+    const getDSRAggregates = () => {
+      try {
+        if (dsrData && dsrData.data) {
+          return computeDSRAggregates(dsrData);
+        }
+        return null;
+      } catch (error) {
+        console.warn('Failed to compute DSR aggregates:', error);
+        return null;
+      }
+    };
+
+    const dsrAggregates = getDSRAggregates();
+
     const context = {
       infrastructure: {
         summary: infrastructureData?.infrastructure?.summary,
@@ -166,51 +176,20 @@ export default function BriefPage() {
         totalIncidents: Array.isArray(incidentsData) ? incidentsData.length : 0
       },
       dsr: {
-        totalReports: dsrData ? 1 : 0
+        totalReports: dsrData ? 1 : 0,
+        topDeaths: dsrAggregates?.rankings?.topDeaths || [],
+        totalDeaths: dsrAggregates?.totals?.deaths || 0,
+        totalInjured: dsrAggregates?.totals?.injured || 0
       }
     };
 
     return JSON.stringify(context, null, 1);
   };
 
-  const generatePrompt = (question: string, contextData: string) => {
-    return `You are an AI assistant specialized in KP (Khyber Pakhtunkhwa) Floods 2025 data analysis. You have access to comprehensive flood damage and recovery data.
-
-IMPORTANT RESTRICTIONS:
-- ONLY answer questions related to KP Floods 2025, flood damage, infrastructure, agriculture, compensation, relief efforts, or recovery data
-- If the question is NOT related to floods, disaster management, or the provided data, respond with: "I can only answer questions related to KP Floods 2025 and disaster management. Please ask a question about flood damage, infrastructure, agriculture, compensation, relief efforts, or recovery data."
-- Do NOT answer questions about other topics, politics, or unrelated subjects
-
-CONTEXT DATA (KP Floods 2025):
-${contextData}
-
-USER QUESTION: ${question}
-
-INSTRUCTIONS:
-1. Analyze the provided data to answer the question accurately
-2. Use specific numbers and facts from the data
-3. Format currency values appropriately (e.g., "Rs 48.61B" for billions)
-4. Format large numbers appropriately (e.g., "1.2M" for millions)
-5. Provide clear, concise, and helpful responses
-6. If the question cannot be answered with the available data, say so clearly
-7. Always stay focused on flood-related topics only
-
-Please provide a comprehensive answer based on the available data:`;
-  };
+  // No longer need generatePrompt function since we're using the new assistant API
 
   const sendMessage = async () => {
     if (!inputValue.trim() || isLoading) return;
-    
-    if (!OPENAI_API_KEY) {
-      const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        content: "Error: OpenAI API key is not configured. Please set the VITE_OPENAI_API_KEY environment variable.",
-        role: 'assistant',
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, errorMessage]);
-      return;
-    }
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -225,53 +204,26 @@ Please provide a comprehensive answer based on the available data:`;
 
     try {
       const contextData = prepareContextData();
-      const prompt = generatePrompt(inputValue.trim(), contextData);
+      
+      console.log('Sending request to Flood Assistant API...');
 
-      console.log('Sending request to OpenAI...');
-      console.log('API Key:', env.DEV ? (OPENAI_API_KEY ? 'Present' : 'Missing') : 'Configured');
-
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${OPENAI_API_KEY}`
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          messages: [
-            {
-              role: 'system',
-              content: 'You are a helpful AI assistant specialized in KP Floods 2025 data analysis.'
-            },
-            {
-              role: 'user',
-              content: prompt
-            }
-          ],
-          max_tokens: 1000,
-          temperature: 0.7
-        })
+      const response = await sendAssistantMessage({
+        prompt: inputValue.trim(),
+        data: JSON.parse(contextData),
+        model: 'gpt-4o-mini',
+        max_tokens: 1000,
+        temperature: 0.7
       });
 
-      console.log('Response status:', response.status);
-      console.log('Response headers:', response.headers);
+      console.log('Assistant API Response:', response);
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('API Error Response:', errorText);
-        throw new Error(`API request failed: ${response.status} - ${errorText}`);
-      }
-
-      const data = await response.json();
-      console.log('OpenAI Response:', data);
-
-      if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-        throw new Error('Invalid response format from OpenAI');
+      if (!response.success) {
+        throw new Error('Assistant API returned an error');
       }
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: data.choices[0].message.content,
+        content: response.response,
         role: 'assistant',
         timestamp: new Date()
       };
@@ -307,48 +259,7 @@ Please provide a comprehensive answer based on the available data:`;
     "What is the infrastructure damage summary?"
   ];
 
-  // Test API key function
-    const testAPIKey = async () => {
-    try {
-      console.log('Testing API key...');
-      
-      if (!OPENAI_API_KEY) {
-        console.log('API Key is not configured');
-        return;
-      }
-      
-      // Safe debug - only show key prefix in development
-      if (env.DEV) {
-        console.log('Key starts with:', OPENAI_API_KEY.substring(0, 10) + '...');
-      } else {
-        console.log('API Key is present');
-      }
-
-      const response = await fetch('https://api.openai.com/v1/models', {
-        headers: {
-          'Authorization': `Bearer ${OPENAI_API_KEY}`
-        }
-      });
-
-      console.log('API Key test response:', response.status);
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Available models:', data.data?.map((m: any) => m.id).slice(0, 5));
-        console.log('API Key is valid');
-      } else {
-        const errorText = await response.text();
-        console.log('API Key test failed with error:', errorText);
-      }
-    } catch (error) {
-      console.error('API Key test error:', error);
-    }
-  };
-
-  // Test API key on component mount
-  useEffect(() => {
-    testAPIKey();
-  }, []);
+  // No longer need to test API keys since we're using our own assistant endpoint
 
   return (
     <>
@@ -376,7 +287,7 @@ Please provide a comprehensive answer based on the available data:`;
       <div className="max-w-4xl mx-auto h-full flex flex-col">
       {/* Header */}
       <div className="text-center space-y-2 p-6">
-        <p className="text-gray-600">Ask questions about flood damage, infrastructure, agriculture, compensation, and recovery efforts</p>
+        <p className="text-gray-600">Ask questions about flood damage, infrastructure, agriculture, compensation, and recovery efforts using the new flexible assistant API</p>
       </div>
 
       {/* Chat Interface */}
