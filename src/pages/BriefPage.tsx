@@ -26,6 +26,12 @@ interface Message {
 
 const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
 
+// Debug environment variables
+console.log('Environment variables check:');
+console.log('VITE_OPENAI_API_KEY exists:', !!import.meta.env.VITE_OPENAI_API_KEY);
+console.log('VITE_OPENAI_API_KEY value:', import.meta.env.VITE_OPENAI_API_KEY ? 'Present' : 'Missing');
+console.log('All VITE_ env vars:', Object.keys(import.meta.env).filter(key => key.startsWith('VITE_')));
+
 export default function BriefPage() {
   const [messages, setMessages] = useState<Message[]>([
     {
