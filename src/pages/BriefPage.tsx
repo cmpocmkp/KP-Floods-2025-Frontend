@@ -24,7 +24,7 @@ interface Message {
   timestamp: Date;
 }
 
-const OPENAI_API_KEY = import.meta.env.VITE_OPEN_AI_KEY;
+const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
 
 export default function BriefPage() {
   const [messages, setMessages] = useState<Message[]>([
@@ -123,44 +123,48 @@ export default function BriefPage() {
     const context = {
       infrastructure: {
         summary: infrastructureData?.infrastructure?.summary,
-        districts: infrastructureData?.infrastructure?.data?.slice(0, 10) || []
+        topDistricts: infrastructureData?.infrastructure?.data?.slice(0, 5) || []
       },
       monetaryLoss: {
-        totalLoss: monetaryLossData?.totalLossInRupees,
         totalLossInBillions: monetaryLossData?.totalLossInBillions,
-        categories: monetaryLossData?.categories || []
+        topCategories: monetaryLossData?.categories?.slice(0, 8) || []
       },
       compensation: {
         totalCompensation: compensationData?.totalCompensation,
-        totalDistricts: compensationData?.totalDistricts,
         totalDeaths: compensationData?.totalDeaths,
         totalInjured: compensationData?.totalInjured,
         totalHousesDamaged: compensationData?.totalHousesDamaged,
-        totalCattleLost: compensationData?.totalCattleLost
+        totalCattleLost: compensationData?.totalCattleLost,
+        agricultureCompensation: {
+          type: "Crops per acre",
+          compensation: 5000,
+          count: 57892.5,
+          total: 289462500
+        }
       },
       agriculture: {
         summary: agricultureData?.summary,
-        districtBreakdown: agricultureData?.districtBreakdown?.slice(0, 10) || []
+        topDistricts: agricultureData?.districtBreakdown?.slice(0, 5) || []
       },
       livestock: {
-        summary: livestockData,
-        data: livestockData || []
+        summary: livestockData
       },
       camps: {
-        data: campsData || []
+        totalCamps: Array.isArray(campsData) ? campsData.length : 0,
+        totalBeneficiaries: Array.isArray(campsData) ? campsData.reduce((sum: number, camp: any) => sum + (camp.beneficiaries || 0), 0) : 0
       },
       warehouse: {
-        data: warehouseData
+        totalWarehouses: warehouseData ? 1 : 0
       },
       incidents: {
-        data: incidentsData || []
+        totalIncidents: Array.isArray(incidentsData) ? incidentsData.length : 0
       },
       dsr: {
-        data: dsrData
+        totalReports: dsrData ? 1 : 0
       }
     };
 
-    return JSON.stringify(context, null, 2);
+    return JSON.stringify(context, null, 1);
   };
 
   const generatePrompt = (question: string, contextData: string) => {
@@ -194,7 +198,7 @@ Please provide a comprehensive answer based on the available data:`;
     if (!OPENAI_API_KEY) {
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: "Error: OpenAI API key is not configured. Please set the VITE_OPEN_AI_KEY environment variable.",
+        content: "Error: OpenAI API key is not configured. Please set the VITE_OPENAI_API_KEY environment variable.",
         role: 'assistant',
         timestamp: new Date()
       };
@@ -216,6 +220,9 @@ Please provide a comprehensive answer based on the available data:`;
     try {
       const contextData = prepareContextData();
       const prompt = generatePrompt(inputValue.trim(), contextData);
+
+      console.log('Sending request to OpenAI...');
+      console.log('API Key:', OPENAI_API_KEY ? 'Present' : 'Missing');
 
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
@@ -240,11 +247,22 @@ Please provide a comprehensive answer based on the available data:`;
         })
       });
 
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
+
       if (!response.ok) {
-        throw new Error(`API request failed: ${response.status}`);
+        const errorText = await response.text();
+        console.error('API Error Response:', errorText);
+        throw new Error(`API request failed: ${response.status} - ${errorText}`);
       }
 
       const data = await response.json();
+      console.log('OpenAI Response:', data);
+
+      if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+        throw new Error('Invalid response format from OpenAI');
+      }
+
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         content: data.choices[0].message.content,
@@ -257,7 +275,7 @@ Please provide a comprehensive answer based on the available data:`;
       console.error('Error sending message:', error);
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: "I'm sorry, I encountered an error while processing your request. Please try again or rephrase your question.",
+        content: `Error: ${error instanceof Error ? error.message : 'Unknown error occurred'}. Please check the console for more details.`,
         role: 'assistant',
         timestamp: new Date()
       };
@@ -282,6 +300,44 @@ Please provide a comprehensive answer based on the available data:`;
     "Which districts were most affected?",
     "What is the infrastructure damage summary?"
   ];
+
+  // Test API key function
+    const testAPIKey = async () => {
+    try {
+      console.log('Testing API key...');
+      
+      if (!OPENAI_API_KEY) {
+        console.log('API Key is not configured');
+        return;
+      }
+      
+      console.log('Key starts with:', OPENAI_API_KEY.substring(0, 10) + '...');
+
+      const response = await fetch('https://api.openai.com/v1/models', {
+        headers: {
+          'Authorization': `Bearer ${OPENAI_API_KEY}`
+        }
+      });
+
+      console.log('API Key test response:', response.status);
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Available models:', data.data?.map((m: any) => m.id).slice(0, 5));
+        console.log('API Key is valid');
+      } else {
+        const errorText = await response.text();
+        console.log('API Key test failed with error:', errorText);
+      }
+    } catch (error) {
+      console.error('API Key test error:', error);
+    }
+  };
+
+  // Test API key on component mount
+  useEffect(() => {
+    testAPIKey();
+  }, []);
 
   return (
     <>
