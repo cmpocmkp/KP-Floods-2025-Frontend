@@ -92,7 +92,7 @@ export default function EnergyPowerTab({ data }: EnergyPowerTabProps): JSX.Eleme
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
         <KpiCard
-          title="Total Projects"
+          title="Total Affected Projects"
           value={summary.total_projects.toLocaleString()}
           icon={Bolt}
           color="text-blue-600"

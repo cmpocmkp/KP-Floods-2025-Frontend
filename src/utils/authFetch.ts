@@ -1,3 +1,5 @@
+import { env } from '@/lib/env';
+
 // Authenticated fetch wrapper that automatically adds JWT tokens
 export const authFetch = async (url: string, options: RequestInit = {}): Promise<Response> => {
   const token = localStorage.getItem('crux_auth_token');
@@ -32,7 +34,7 @@ export const authFetch = async (url: string, options: RequestInit = {}): Promise
 // Helper function for common API base URL
 export const getApiUrl = (endpoint: string) => {
   // For Railway deployment, use relative URLs since frontend and backend are on same domain
-  const baseUrl = import.meta.env.VITE_API_URL || '/api';
+  const baseUrl = env.API_BASE_URL || '/api';
   return `${baseUrl}${endpoint}`;
 };
 

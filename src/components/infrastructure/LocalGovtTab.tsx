@@ -137,7 +137,7 @@ export function LocalGovtTab({ data, summary }: LocalGovtTabProps) {
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <KpiCard
-          title="Total Districts"
+          title="Total Affected Districts"
           value={summary.total_districts}
           icon={Building2}
           color="blue"

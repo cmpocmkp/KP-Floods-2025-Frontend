@@ -1,8 +1,9 @@
 import { authFetch } from '../utils/authFetch';
 import { MonetaryLossSummary } from '../types/monetaryLoss';
 import { convertToMonetaryLossSummary } from '../lib/monetaryLossUtils';
+import { env } from '../lib/env';
 
-const BASE_URL = import.meta.env.VITE_API_URL;
+const BASE_URL = env.API_BASE_URL;
 
 // Actual total loss data from the provided JSON
 const ACTUAL_LOSS_DATA = {
@@ -50,11 +51,9 @@ const fetchEndpointData = async (endpoint: string) => {
 
 export const fetchMonetaryLossData = async (): Promise<MonetaryLossSummary> => {
   try {
-    // Use actual data in development environment
-    if (import.meta.env.DEV) {
-      console.log('Using actual loss data for monetary loss calculations');
-      return convertToMonetaryLossSummary(ACTUAL_LOSS_DATA);
-    }
+    // Use actual data in development and production (since backend APIs are not available)
+    console.log('Using actual loss data for monetary loss calculations');
+    return convertToMonetaryLossSummary(ACTUAL_LOSS_DATA);
 
     // Endpoints to fetch data from
     const endpoints = {

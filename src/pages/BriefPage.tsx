@@ -24,13 +24,13 @@ interface Message {
   timestamp: Date;
 }
 
-const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
+import { env, debugEnvPresence } from '@/lib/env';
 
-// Debug environment variables
-console.log('Environment variables check:');
-console.log('VITE_OPENAI_API_KEY exists:', !!import.meta.env.VITE_OPENAI_API_KEY);
-console.log('VITE_OPENAI_API_KEY value:', import.meta.env.VITE_OPENAI_API_KEY ? 'Present' : 'Missing');
-console.log('All VITE_ env vars:', Object.keys(import.meta.env).filter(key => key.startsWith('VITE_')));
+// Use centralized environment helper
+const OPENAI_API_KEY = env.OPENAI_API_KEY;
+
+// Debug environment variables safely
+debugEnvPresence();
 
 export default function BriefPage() {
   const [messages, setMessages] = useState<Message[]>([
@@ -228,7 +228,7 @@ Please provide a comprehensive answer based on the available data:`;
       const prompt = generatePrompt(inputValue.trim(), contextData);
 
       console.log('Sending request to OpenAI...');
-      console.log('API Key:', OPENAI_API_KEY ? 'Present' : 'Missing');
+      console.log('API Key:', env.DEV ? (OPENAI_API_KEY ? 'Present' : 'Missing') : 'Configured');
 
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
@@ -317,7 +317,12 @@ Please provide a comprehensive answer based on the available data:`;
         return;
       }
       
-      console.log('Key starts with:', OPENAI_API_KEY.substring(0, 10) + '...');
+      // Safe debug - only show key prefix in development
+      if (env.DEV) {
+        console.log('Key starts with:', OPENAI_API_KEY.substring(0, 10) + '...');
+      } else {
+        console.log('API Key is present');
+      }
 
       const response = await fetch('https://api.openai.com/v1/models', {
         headers: {

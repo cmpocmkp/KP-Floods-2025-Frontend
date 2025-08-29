@@ -93,13 +93,13 @@ export default function PheAssetsTab({ data }: PheAssetsTabProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <KpiCard
           title="Total Districts"
-          value={data.summary.total_districts.toString()}
+          value="38"
           icon={Building2}
           color="text-blue-600"
         />
         <KpiCard
           title="Districts Affected"
-          value={data.summary.districts_with_damage.toString()}
+          value="20"
           icon={AlertTriangle}
           color="text-red-600"
         />

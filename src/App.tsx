@@ -3,11 +3,15 @@ import { Routes, Route } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/contexts/AuthContext';
 import { getCumulativeDashboard } from '@/lib/overview';
+import { debugEnvPresence } from '@/lib/env';
 import Login from './pages/auth/LoginPage';
 import { AppHeader } from './components/Layout/AppHeader';
 import { OverviewHeader } from './features/overview/OverviewHeader';
 import { OverviewKpis, IncidentKpis, WarehouseKpis, CampsKpis, CompensationKpis, LivestockKpis, AgricultureKpis, GlobalSummaryCards } from '@/features/kpis';
 import { ComingSoon } from './components/ComingSoon';
+
+// Debug environment variables on app start
+debugEnvPresence();
 
 
 

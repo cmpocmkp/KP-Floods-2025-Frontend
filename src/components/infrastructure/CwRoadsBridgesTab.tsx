@@ -188,7 +188,7 @@ export default function CwRoadsBridgesTab({ data, summary }: CwRoadsBridgesTabPr
                 {data.map((district, index) => {
                   const totalAffected = district.effected_roads;
                   const totalRestored = district.restored_open_all + district.restored_light_traffic;
-                  const restorationProgress = (totalRestored / totalAffected) * 100;
+                  const restorationProgress = Math.min((totalRestored / totalAffected) * 100, 100);
                   
                   let statusColor = 'bg-red-500';
                   if (restorationProgress >= 75) statusColor = 'bg-green-500';

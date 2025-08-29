@@ -1,3 +1,5 @@
+import { env as clientEnv } from './env';
+
 // Default configuration
 const DEFAULT_CONFIG = {
   apiBaseUrl: 'https://kp-floods-2025-mongo-backend-production.up.railway.app',
@@ -7,7 +9,7 @@ const DEFAULT_CONFIG = {
 
 // Environment Variables with fallbacks
 const env = {
-  apiBaseUrl: import.meta.env.VITE_API_BASE_URL || DEFAULT_CONFIG.apiBaseUrl,
+  apiBaseUrl: clientEnv.API_BASE_URL || DEFAULT_CONFIG.apiBaseUrl,
   defaultDateFrom: import.meta.env.VITE_DEFAULT_DATE_FROM || DEFAULT_CONFIG.defaultDateFrom,
   defaultDateTo: import.meta.env.VITE_DEFAULT_DATE_TO || DEFAULT_CONFIG.defaultDateTo,
 };

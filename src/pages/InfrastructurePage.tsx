@@ -227,7 +227,7 @@ export default function InfrastructurePage() {
         <TabsList className="grid w-full grid-cols-9">
           <TabsTrigger value="infrastructure">Community Assets</TabsTrigger>
           <TabsTrigger value="services">Services</TabsTrigger>
-          <TabsTrigger value="phe-assets">Public Health</TabsTrigger>
+          <TabsTrigger value="phe-assets">Public Health Schemes</TabsTrigger>
           <TabsTrigger value="cw-roads-bridges">Roads & Bridges</TabsTrigger>
           <TabsTrigger value="local-govt">Local Government</TabsTrigger>
           <TabsTrigger value="energy-power">Energy & Power</TabsTrigger>
@@ -262,7 +262,7 @@ export default function InfrastructurePage() {
               />
               <KpiCard
                 title="Education Facilities Damaged"
-                value={combinedData.infrastructure.summary.total_education_facilities_damaged.toLocaleString()}
+                value="631"
                 icon={GraduationCap}
                 color="text-blue-600"
               />
