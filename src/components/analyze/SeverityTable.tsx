@@ -115,7 +115,6 @@ export function SeverityTable({ aggregates, weights, onWeightsChange }: Severity
                     >
                       {index + 1}
                     </Badge>
-                    {index < 3 && <Trophy className="h-4 w-4 text-yellow-500" />}
                   </div>
                 </TableCell>
                 <TableCell className="font-medium">{record.district}</TableCell>

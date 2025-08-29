@@ -373,7 +373,7 @@ export function AgricultureKpis() {
         color="text-red-600"
       />
       <KpiCard
-        title="Crop Area Affected"
+        title="Crop Area"
         value={`${formatLargeNumber(totalCropArea)} acres`}
         icon={Sprout}
         color="text-green-600"

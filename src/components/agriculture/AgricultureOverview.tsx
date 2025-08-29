@@ -58,7 +58,8 @@ const AgricultureOverview: React.FC = () => {
     name: district.district,
     estimatedLosses: district.estimatedLosses,
     damagedAreaGIS: district.damagedAreaGIS,
-    ongroundVerified: district.ongroundVerified
+    ongroundVerified: district.ongroundVerified,
+    structuralDamages: district.structuralDamages
   }));
 
   const damageComparisonData = [
@@ -77,7 +78,7 @@ const AgricultureOverview: React.FC = () => {
             <div className="text-2xl font-bold text-green-600">
               {formatNumber(Math.round(summary.totalDamagedAreaGIS))}
             </div>
-            <div className="text-sm text-gray-600">GIS Damaged Area (Acres)</div>
+            <div className="text-sm text-gray-600">Affected GIS Damaged Area (Acres)</div>
           </div>
         </Card>
         <Card className="p-4">
@@ -137,28 +138,7 @@ const AgricultureOverview: React.FC = () => {
         </Card>
       </div>
 
-      {/* Top Affected Districts */}
-      <Card className="p-6">
-        <h3 className="text-xl font-semibold mb-4">Top 10 Most Affected Districts</h3>
-        <div className="h-[400px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              data={topDistrictsData}
-              layout="horizontal"
-              margin={{ top: 20, right: 30, left: 120, bottom: 20 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis type="number" tickFormatter={(value) => `${value}M`} />
-              <YAxis type="category" dataKey="name" width={120} />
-              <Tooltip
-                formatter={(value: number) => `${value} Million PKR`}
-                labelFormatter={(label) => `District: ${label}`}
-              />
-              <Bar dataKey="estimatedLosses" fill="#FF6B6B" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </Card>
+
 
       {/* Division Selection and Details */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -242,7 +222,7 @@ const AgricultureOverview: React.FC = () => {
               <XAxis 
                 type="number" 
                 dataKey="damagedAreaGIS" 
-                name="GIS Damaged Area (Acres)"
+                name="Affected GIS Damaged Area (Acres)"
                 tickFormatter={(value) => `${value}acres`}
               />
               <YAxis 

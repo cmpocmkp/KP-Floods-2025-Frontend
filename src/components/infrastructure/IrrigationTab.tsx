@@ -17,7 +17,7 @@ import {
   Building2,
   AlertTriangle,
   Banknote,
-  Map
+  Map as MapIcon
 } from 'lucide-react';
 import { KpiCard } from '@/components/ui/kpi-card';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -53,14 +53,45 @@ const COLORS = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#8b5cf6'
 
 export default function IrrigationTab({ data }: IrrigationTabProps) {
   const divisionData = useMemo(() => {
-    return data.data.map(division => ({
-      name: division.division,
-      schemes: division.schemes,
-      restorationCost: division.restoration_million,
-      rehabilitationCost: division.rehabilitation_million,
-      totalCost: division.total_cost_million,
-      percentage: division.percentage_of_total_schemes
-    })).sort((a, b) => b.totalCost - a.totalCost);
+    // Create a map to merge divisions
+    const mergedDivisionsMap = new Map();
+    
+    // Process each division and merge as needed
+    data.data.forEach(division => {
+      let targetDivision = division.division;
+      
+      // Determine target division for merging
+      if (division.division === 'Manshera') {
+        targetDivision = 'Hazara';
+      } else if (division.division === 'Charsada' || division.division === 'Bajur') {
+        targetDivision = 'Peshawar';
+      }
+      
+      // Add or update the target division with merged data
+      if (mergedDivisionsMap.has(targetDivision)) {
+        const existing = mergedDivisionsMap.get(targetDivision);
+        mergedDivisionsMap.set(targetDivision, {
+          name: targetDivision,
+          schemes: existing.schemes + division.schemes,
+          restorationCost: existing.restorationCost + division.restoration_million,
+          rehabilitationCost: existing.rehabilitationCost + division.rehabilitation_million,
+          totalCost: existing.totalCost + division.total_cost_million,
+          percentage: existing.percentage + division.percentage_of_total_schemes
+        });
+      } else {
+        mergedDivisionsMap.set(targetDivision, {
+          name: targetDivision,
+          schemes: division.schemes,
+          restorationCost: division.restoration_million,
+          rehabilitationCost: division.rehabilitation_million,
+          totalCost: division.total_cost_million,
+          percentage: division.percentage_of_total_schemes
+        });
+      }
+    });
+    
+    // Return only the merged divisions, sorted by total cost
+    return Array.from(mergedDivisionsMap.values()).sort((a, b) => b.totalCost - a.totalCost);
   }, [data]);
 
   const costDistributionData = useMemo(() => {
@@ -82,8 +113,8 @@ export default function IrrigationTab({ data }: IrrigationTabProps) {
         />
         <KpiCard
           title="Total Divisions"
-          value={data.data.length.toLocaleString()}
-          icon={Map}
+          value="6"
+          icon={MapIcon}
           color="text-green-600"
         />
         <KpiCard
