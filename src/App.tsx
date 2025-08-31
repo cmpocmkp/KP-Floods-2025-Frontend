@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/contexts/AuthContext';
 import { getCumulativeDashboard } from '@/lib/overview';
@@ -8,10 +8,21 @@ import Login from './pages/auth/LoginPage';
 import { AppHeader } from './components/Layout/AppHeader';
 import { OverviewHeader } from './features/overview/OverviewHeader';
 import { OverviewKpis, IncidentKpis, WarehouseKpis, CampsKpis, CompensationKpis, LivestockKpis, AgricultureKpis, GlobalSummaryCards } from '@/features/kpis';
+import { KpiSummaryBar } from '@/components/shared/KpiSummaryBar';
 import { ComingSoon } from './components/ComingSoon';
 
 // Debug environment variables on app start
 debugEnvPresence();
+
+// KPI routes that should show the KPI summary bar
+const KPI_ROUTES = new Set([
+  'overview',
+  'analyze',
+  'visualize',
+  'monetary-loss',
+  'compensation-policy',
+  'ask-ai',
+]);
 
 
 
@@ -64,6 +75,10 @@ function AppContent() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
   const [user, setUser] = useState<User | null>(null);
+  const location = useLocation();
+  
+  // Check if current route should show KPI bar
+  const showKpis = KPI_ROUTES.has(activeTab);
 
   const { data: kpiData } = useQuery({
     queryKey: ['cumulative-dashboard'],
@@ -96,9 +111,12 @@ function AppContent() {
   }
 
   const renderKpis = () => {
+    // Don't render individual KPI components for routes that use the shared KPI bar
+    if (showKpis) {
+      return null;
+    }
+    
     switch (activeTab) {
-      case 'overview':
-        return <OverviewKpis data={kpiData} />;
       case 'incidents':
         return <IncidentKpis data={kpiData} />;
       case 'infrastructure':
@@ -113,10 +131,6 @@ function AppContent() {
         return <CompensationKpis />;
       case 'livestock':
         return <LivestockKpis />;
-      case 'analyze':
-      case 'visualize':
-      case 'ask-ai':
-        return null; // No KPIs for coming soon features
       default:
         return null;
     }
@@ -191,6 +205,12 @@ function AppContent() {
       {activeTab === 'infrastructure' && (
         <div className="max-w-[1400px] mx-auto px-4 md:px-6 pt-6">
           <GlobalSummaryCards />
+        </div>
+      )}
+      {/* KPI Summary Bar - shown above tabs for specified routes */}
+      {showKpis && (
+        <div className="max-w-[1400px] mx-auto px-4 md:px-6 pt-4 pb-4">
+          <KpiSummaryBar />
         </div>
       )}
       <div className="max-w-[1400px] mx-auto px-4 md:px-6 py-6">

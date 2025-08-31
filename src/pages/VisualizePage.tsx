@@ -9,7 +9,7 @@ import {
 } from 'recharts';
 import {
   TrendingUp, MapPin, AlertTriangle, Home, Building2, Car, TreePine,
-  GraduationCap, Heart, Zap, Droplets, Truck, Users, DollarSign,
+  GraduationCap, Heart, Zap, Droplets, Truck, Users, Banknote,
   BarChart3, PieChart as PieChartIcon, Activity, Globe, Target
 } from 'lucide-react';
 
@@ -159,7 +159,7 @@ export default function VisualizePage() {
                 {monetaryLossData ? formatCurrency(monetaryLossData.totalLossInRupees) : 'Loading...'}
               </p>
             </div>
-            <DollarSign className="h-8 w-8 opacity-80" />
+            <Banknote className="h-8 w-8 opacity-80" />
           </div>
         </CardContent>
       </Card>
@@ -459,7 +459,7 @@ export default function VisualizePage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <DollarSign className="h-5 w-5" />
+                <Banknote className="h-5 w-5" />
                 Economic Impact Summary
               </CardTitle>
             </CardHeader>

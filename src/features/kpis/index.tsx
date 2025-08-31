@@ -24,6 +24,7 @@ import {
   Sprout,
   Award,
   Banknote,
+  HandCoins,
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { getCompensationSummary } from '@/api/compensation';
@@ -74,13 +75,13 @@ export function OverviewKpis({ data }: { data?: CumulativeDashboardResponse }) {
       <KpiCard
         title="Approx Monetary Loss"
         value="~48.61B PKR"
-        icon={Home}
+        icon={Banknote}
         color="text-blue-600"
       />
       <KpiCard
         title="Approx Compensation"
         value="4.18B PKR"
-        icon={Beef}
+        icon={HandCoins}
         color="text-green-600"
       />
     </div>
@@ -252,7 +253,7 @@ export function CompensationKpis() {
       <KpiCard
         title="Total Compensation"
         value={`PKR ${totalCompensation}B`}
-        icon={Banknote}
+        icon={HandCoins}
         color="text-green-600"
       />
       <KpiCard
