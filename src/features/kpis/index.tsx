@@ -80,7 +80,7 @@ export function OverviewKpis({ data }: { data?: CumulativeDashboardResponse }) {
       />
       <KpiCard
         title="Approx Compensation"
-        value="4.18B PKR"
+        value="~4.18B PKR"
         icon={HandCoins}
         color="text-green-600"
       />
