@@ -188,7 +188,7 @@ export default function InfrastructurePage() {
 
   // Services disruption type distribution
   const servicesTypeData = [
-    { name: 'Electricity Disconnections', value: combinedData.services.summary.total_feeders_disconnections, color: '#eab308' },
+    { name: 'Electricity Feeder Disconnections', value: combinedData.services.summary.total_feeders_disconnections, color: '#eab308' },
     { name: 'Water Disconnections', value: combinedData.services.summary.total_water_disconnections, color: '#3b82f6' },
     { name: 'Gas Disconnections', value: combinedData.services.summary.total_gas_disconnections, color: '#ef4444' },
     { name: 'Phone Disconnections', value: combinedData.services.summary.total_ptcl_disconnections, color: '#8b5cf6' },

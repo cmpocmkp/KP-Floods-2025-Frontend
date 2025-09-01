@@ -398,7 +398,7 @@ export function ServicesTrend({ aggregates, filters, crossFilters, onCrossFilter
                     dataKey="electricityDisconnections"
                     stackId="disconnections"
                     fill="#f59e0b"
-                    name="Electricity Disconnections"
+                    name="Electricity Feeder Disconnections"
                   />
                   <Bar
                     dataKey="waterDisconnections"

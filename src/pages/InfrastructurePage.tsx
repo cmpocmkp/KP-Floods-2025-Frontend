@@ -213,7 +213,7 @@ export default function InfrastructurePage() {
 
   // Services disruption type distribution
   const servicesTypeData = [
-    { name: 'Electricity Disconnections', value: combinedData.services.summary.total_feeders_disconnections, color: '#eab308' },
+    { name: 'Electricity Feeder Disconnections', value: combinedData.services.summary.total_feeders_disconnections, color: '#eab308' },
     { name: 'Water Disconnections', value: combinedData.services.summary.total_water_disconnections, color: '#3b82f6' },
     { name: 'Gas Disconnections', value: combinedData.services.summary.total_gas_disconnections, color: '#ef4444' },
     { name: 'Phone Disconnections', value: combinedData.services.summary.total_ptcl_disconnections, color: '#8b5cf6' },
@@ -778,7 +778,7 @@ export default function InfrastructurePage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
               <div className="text-center p-3 bg-yellow-50 rounded">
                 <div className="text-2xl font-bold text-yellow-600">{selectedServicesDistrict.TotalFeedersDisconnections}</div>
-                <div className="text-sm text-gray-600">Electricity Disconnections</div>
+                <div className="text-sm text-gray-600">Electricity Feeder Disconnections</div>
               </div>
               <div className="text-center p-3 bg-green-50 rounded">
                 <div className="text-2xl font-bold text-green-600">{selectedServicesDistrict.TotalFeedersRestored}</div>

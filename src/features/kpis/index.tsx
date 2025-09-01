@@ -516,7 +516,7 @@ export function ServiceStatusCards() {
      
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <KpiCard
-          title="Electricity Disconnections"
+          title="Electricity Feeder Disconnections"
           value={servicesSummary.total_feeders_disconnections.toLocaleString()}
           icon={Zap}
           color="text-yellow-500"
