@@ -1,19 +1,12 @@
 import React, { useState } from 'react';
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
   PieChart,
   Pie,
+  Tooltip,
+  ResponsiveContainer,
   Cell,
   Treemap,
-  Legend,
-  LineChart,
-  Line
+  Legend
 } from 'recharts';
 import { Card } from '../ui/card';
 import { processCompensationData, formatCurrency, formatNumber } from '../../lib/compensationPolicy';
@@ -115,40 +108,48 @@ const CompensationPolicyOverview: React.FC = () => {
 
         {/* Category Comparison */}
         <Card className="p-6">
-          <h3 className="text-xl font-semibold mb-4">Category-wise Compensation</h3>
+          <h3 className="text-xl font-semibold mb-4">Category-wise Distribution</h3>
           <div className="h-[500px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={categoryData}
-                layout="horizontal"
-                margin={{ top: 20, right: 30, left: 150, bottom: 20 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis 
-                  type="number" 
-                  tickFormatter={(value) => `${(value / 1_000_000_000).toFixed(1)}B`}
-                  domain={[0, 'dataMax + 1000000000']}
-                />
-                <YAxis 
-                  type="category" 
-                  dataKey="name" 
-                  width={140}
-                  tick={{ fontSize: 12 }}
-                />
-                <Tooltip
-                  formatter={(value: number) => formatCurrency(value)}
-                  labelFormatter={(label) => `Category: ${label}`}
-                />
-                <Bar
+              <PieChart>
+                <Pie
+                  data={categoryData}
                   dataKey="compensation"
-                  fill="#4ECDC4"
-                  radius={[0, 4, 4, 0]}
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={200}
+                  label={({ name, percent }) => `${name} (${(percent * 100).toFixed(1)}%)`}
+                  labelLine={true}
                 >
                   {categoryData.map((entry, index) => (
                     <Cell key={entry.name} fill={COLORS[index % COLORS.length]} />
                   ))}
-                </Bar>
-              </BarChart>
+                </Pie>
+                <Tooltip
+                  content={({ active, payload }) => {
+                    if (active && payload && payload.length) {
+                      const data = payload[0].payload;
+                      return (
+                        <div className="bg-white p-3 border rounded shadow-lg">
+                          <p className="font-semibold">{data.name}</p>
+                          <p className="text-[#4ECDC4]">
+                            Amount: {formatCurrency(data.compensation)}
+                          </p>
+                          <p className="text-[#FF6B6B]">
+                            Percentage: {data.percentage.toFixed(1)}%
+                          </p>
+                          <p className="text-[#45B7D1]">
+                            Beneficiaries: {formatNumber(data.beneficiaries)}
+                          </p>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
+                />
+                <Legend />
+              </PieChart>
             </ResponsiveContainer>
           </div>
         </Card>
