@@ -19,7 +19,7 @@ export function OverviewSummaryBanner({ reportPeriod, lastUpdated }: OverviewSum
     <div className="bg-gradient-to-r from-[#1DA1F2] via-[#3B82F6] to-[#4F46E5] text-white rounded-2xl shadow-sm p-5 md:p-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold mb-1">KP Floods 2025</h1>
+          <h1 className="text-xl font-bold mb-1">KP D3</h1>
           <div className="text-sm text-white/90">Report Period: {formattedPeriod}</div>
         </div>
         <div className="text-sm text-white/90">

@@ -1,6 +1,6 @@
-# KP Floods 2025 Impact Assessment — Annex III
+# KP D3 Impact Assessment — Annex III
 
-This module provides a comprehensive system for generating Annex III reports for the 2025 KP floods impact assessment. The system follows the standardized Annex III format used for reporting damage, loss, and needs assessments following major disasters.
+This module provides a comprehensive system for generating Annex III reports for the KP D3 impact assessment. The system follows the standardized Annex III format used for reporting damage, loss, and needs assessments following major disasters.
 
 ## Overview
 
@@ -75,7 +75,7 @@ interface AnnexIII2025Data {
 ### 1. Generate Report Data
 
 ```typescript
-import { buildAnnexIII2025Payload } from '@/server/services/annexIII2025';
+import { buildAnnexIII2025Payload } from "@/server/services/annexIII2025";
 
 const reportData = await buildAnnexIII2025Payload();
 ```
@@ -83,7 +83,7 @@ const reportData = await buildAnnexIII2025Payload();
 ### 2. Display Report
 
 ```typescript
-import { AnnexIII2025Page } from '@/features/reports/annexIII2025';
+import { AnnexIII2025Page } from "@/features/reports/annexIII2025";
 
 function App() {
   return <AnnexIII2025Page />;
@@ -93,7 +93,7 @@ function App() {
 ### 3. Export to PDF
 
 ```typescript
-import { generateAnnexIII2025PDF } from '@/server/services/annexIII2025';
+import { generateAnnexIII2025PDF } from "@/server/services/annexIII2025";
 
 const pdfBuffer = await generateAnnexIII2025PDF(reportData);
 ```
@@ -101,14 +101,14 @@ const pdfBuffer = await generateAnnexIII2025PDF(reportData);
 ### 4. Export to DOCX
 
 ```typescript
-import { generateAnnexIII2025DOCX } from '@/server/services/annexIII2025';
+import { generateAnnexIII2025DOCX } from "@/server/services/annexIII2025";
 
 const docxBuffer = await generateAnnexIII2025DOCX(reportData);
 ```
 
 ## Data Sources
 
-The system integrates with existing KP Floods 2025 data sources:
+The system integrates with existing KP D3 data sources:
 
 - **Infrastructure Damage** - Housing, roads, bridges, public facilities
 - **Monetary Losses** - Economic impact calculations
@@ -119,18 +119,21 @@ The system integrates with existing KP Floods 2025 data sources:
 ## Export Features
 
 ### PDF Export
+
 - A4 format with proper margins (18mm top/right/left, 20mm bottom)
 - Print-optimized styling with Times New Roman font
 - Automatic page breaks and repeating table headers
 - Page numbering (Page X of Y)
 
 ### DOCX Export
+
 - Clean Word document format
 - Proper table structure with borders and shading
 - Section headers and formatting
 - Compatible with Microsoft Word and LibreOffice
 
 ### Print Support
+
 - Browser-optimized print layout
 - CSS print media queries
 - Proper page breaks and styling
@@ -172,11 +175,13 @@ npm test -- annexIII2025Data.test.ts
 ## Dependencies
 
 ### Frontend
+
 - React 18+
 - Tailwind CSS
 - UI components from `@/components/ui`
 
 ### Backend
+
 - Puppeteer (PDF generation)
 - docx library (DOCX generation)
 - Express.js (API routes)
@@ -184,9 +189,11 @@ npm test -- annexIII2025Data.test.ts
 ## Configuration
 
 ### Environment Variables
+
 - `VITE_MAPTILER_API_KEY` - For map snapshot generation (optional)
 
 ### API Configuration
+
 - Base URL: Configured in individual API modules
 - Timeout: Default 30 seconds for data fetching
 - Retry logic: Implemented for failed API calls
@@ -228,4 +235,4 @@ For issues or questions:
 
 ## License
 
-This module is part of the KP Floods 2025 Frontend project and follows the same licensing terms. 
+This module is part of the KP Floods 2025 Frontend project and follows the same licensing terms.

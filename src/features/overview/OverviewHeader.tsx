@@ -21,7 +21,7 @@ export function OverviewHeader({ reportPeriod, lastUpdated }: OverviewHeaderProp
   return (
     <div className="bg-gradient-to-r from-[#1DA1F2] via-[#3B82F6] to-[#4F46E5] text-white px-4 md:px-6 py-4">
       <div className="max-w-[1400px] mx-auto">
-        <h1 className="text-2xl font-bold mb-2">KP Floods 2025</h1>
+        <h1 className="text-2xl font-bold mb-2">KP D3</h1>
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <div className="text-base font-medium">
             <span className="text-white/90 font-normal">Report Period:</span>{' '}

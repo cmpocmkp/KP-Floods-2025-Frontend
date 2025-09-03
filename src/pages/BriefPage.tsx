@@ -31,7 +31,7 @@ export default function BriefPage() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: "Hello! I'm your KP Floods AI Assistant powered by the new flexible assistant API. I can help you with questions about flood damage, infrastructure, agriculture, compensation, and recovery efforts. What would you like to know?",
+        content: "Hello! I'm your KP D3 AI Assistant powered by the new flexible assistant API. I can help you with questions about damages, disasters, and directories. What would you like to know?",
       role: 'assistant',
       timestamp: new Date()
     }
@@ -369,7 +369,7 @@ export default function BriefPage() {
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="Ask a question about KP Floods 2025..."
+                  placeholder="Ask a question about KP D3..."
                   disabled={isLoading}
                   className="flex-1"
                 />

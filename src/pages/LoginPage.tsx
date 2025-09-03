@@ -27,9 +27,21 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
-          KP Floods 2025
+        <h2 className="text-center text-4xl font-bold text-gray-900 mb-4">
+          KP D3
         </h2>
+        
+        {/* Expanded meaning */}
+        <div className="text-center mb-8">
+          <div className="flex justify-center space-x-4 text-sm text-gray-600">
+            <span className="text-blue-600 font-medium">Disasters</span>
+            <span className="text-gray-400">•</span>
+            <span className="text-red-600 font-medium">Damages</span>
+            <span className="text-gray-400">•</span>
+            <span className="text-green-600 font-medium">Directories</span>
+          </div>
+        </div>
+
         <p className="mt-2 text-center text-sm text-gray-600">
           Sign in to access the dashboard
         </p>

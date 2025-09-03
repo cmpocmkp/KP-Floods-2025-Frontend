@@ -13,7 +13,7 @@ export interface AssistantResponse {
   response: string;
 }
 
-// Comprehensive static data for KP Floods 2025
+// Comprehensive static data for KP D3
 export const KP_FLOODS_STATIC_DATA = {
 
   incidentReport: [

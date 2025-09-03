@@ -1,8 +1,8 @@
-# KP Floods 2025 Dashboard - Refactor Summary
+# KP D3 Dashboard - Refactor Summary
 
 ## Overview
 
-The web application has been successfully refactored to match the KP Floods 2025 dashboard specifications from the provided screenshots. The application now features a comprehensive flood damage assessment and relief management system.
+The web application has been successfully refactored to match the KP D3 dashboard specifications from the provided screenshots. The application now features a comprehensive damage, disaster, and directory management system.
 
 ## Key Features Implemented
 
@@ -219,9 +219,9 @@ src/
 │   ├── SourcesManagement/ # Data sources management (preserved)
 │   ├── shared/            # New reusable UI components
 │   └── BrandLogo.tsx      # Brand component
-├── pages/                 # New KP Floods dashboard pages
+      ├── pages/                 # New KP D3 dashboard pages
 ├── lib/                   # New API layer and utilities
 └── services/              # Only sourcesApi.ts remains
 ```
 
-The refactored application successfully matches the provided screenshots while maintaining the existing authentication system and preserving the Settings and Data Sources functionality as requested. All legacy code has been removed for a clean, maintainable codebase focused solely on the KP Floods 2025 dashboard functionality.
+The refactored application successfully matches the provided screenshots while maintaining the existing authentication system and preserving the Settings and Data Sources functionality as requested. All legacy code has been removed for a clean, maintainable codebase focused solely on the KP D3 dashboard functionality.

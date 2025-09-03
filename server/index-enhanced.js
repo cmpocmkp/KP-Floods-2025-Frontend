@@ -10,9 +10,9 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.static(path.join(__dirname, '../dist')));
 
-// Enhanced sample report data for KP Floods 2025
+// Enhanced sample report data for KP D3
 const sampleReportData = {
-  title: "KP FLOODS 2025 IMPACT ASSESSMENT",
+      title: "KP D3 IMPACT ASSESSMENT",
   subtitle: "ANNEXURE - III",
   source: "Khyber Pakhtunkhwa Economic Survey 2025-26",
   generatedOn: "15 January 2025",
@@ -1207,7 +1207,7 @@ app.get('/health', (req, res) => {
   res.json({
     status: 'OK',
     timestamp: new Date().toISOString(),
-    message: 'KP Floods Reports Server is running'
+            message: 'KP D3 Reports Server is running'
   });
 });
 
@@ -1217,7 +1217,7 @@ app.get('*', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`KP Floods Reports Server running on port ${PORT}`);
+  console.log(`KP D3 Reports Server running on port ${PORT}`);
   console.log(`Health check: http://localhost:${PORT}/health`);
   console.log(`Reports API: http://localhost:${PORT}/api/reports`);
 }); 

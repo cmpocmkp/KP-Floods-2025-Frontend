@@ -21,7 +21,7 @@ export default function BrandLogo({ size = 'md', className = '', asLink = false 
 
   return (
     <Wrapper
-      aria-label="CRUX"
+      aria-label="KP D3"
       className={[
         'relative inline-flex items-center font-extrabold tracking-tight select-none',
         sizeMap[size],
@@ -29,20 +29,10 @@ export default function BrandLogo({ size = 'md', className = '', asLink = false 
       ].join(' ')}
       {...wrapperProps}
     >
-      {/* CRU */}
-      <span className="text-black dark:text-black">CRU</span>
-
-      {/* X with circuit flair */}
-      <span className="relative inline-block text-blue-600 dark:text-blue-400 tracking-[-0.01em] scale-x-[1.12] origin-left ml-[1px]">
-        X
-
-        {/* Circuit line top-left */}
-        <span className="pointer-events-none absolute -top-1 -left-2 h-px w-3 bg-blue-600/40 dark:bg-blue-400/40" />
-        <span className="pointer-events-none absolute -top-1.5 -left-2.5 h-1.5 w-1.5 rounded-full bg-blue-600/60 dark:bg-blue-400/60" />
-
-        {/* Circuit line bottom-right */}
-        <span className="pointer-events-none absolute -bottom-1 -right-2 h-px w-3 bg-blue-600/40 dark:bg-blue-400/40" />
-        <span className="pointer-events-none absolute -bottom-1.5 -right-2.5 h-1.5 w-1.5 rounded-full bg-blue-600/60 dark:bg-blue-400/60 animate-pulse" />
+      <span className="text-black dark:text-black">KP</span>
+      <span className="relative inline-block text-blue-600 dark:text-blue-400 tracking-[-0.01em] ml-2">
+        D
+        <span className="text-red-600">3</span>
       </span>
     </Wrapper>
   );

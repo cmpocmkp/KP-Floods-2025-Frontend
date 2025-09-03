@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import KPFloodsLogo from "@/components/brand/KPFloodsLogo";
+
 import { Shield, Lock } from "lucide-react";
 
 interface LoginCardProps {
@@ -43,7 +43,16 @@ export default function LoginCard({ onLoginSuccess }: LoginCardProps) {
     <div className="relative z-10 w-full max-w-[480px]">
       <div className="rounded-2xl border border-slate-200/60 bg-white/85 backdrop-blur shadow-xl p-8 md:p-10">
         <div className="mb-8 flex flex-col items-center">
-          <KPFloodsLogo className="h-14 w-auto" />
+          <div className="text-center">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">KP D3</h2>
+            <div className="flex justify-center space-x-4 text-sm">
+              <span className="text-blue-600 font-medium">Disasters</span>
+              <span className="text-gray-400">•</span>
+              <span className="text-red-600 font-medium">Damages</span>
+              <span className="text-gray-400">•</span>
+              <span className="text-green-600 font-medium">Directories</span>
+            </div>
+          </div>
         </div>
 
         {err && (
