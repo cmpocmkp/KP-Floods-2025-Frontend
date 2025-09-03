@@ -40,6 +40,7 @@ const VisualizePage = React.lazy(() => import('./pages/VisualizePage'));
 const MonetaryLossPage = React.lazy(() => import('./pages/MonetaryLossPage'));
 const CompensationPolicyPage = React.lazy(() => import('./pages/CompensationPolicyPage'));
 const BriefPage = React.lazy(() => import('./pages/BriefPage'));
+const TestReportPage = React.lazy(() => import('./pages/TestReportPage'));
 
 // Placeholder components
 const SourcesManagement = () => (
@@ -178,6 +179,9 @@ function AppContent() {
       case 'ask-ai':
         Component = BriefPage;
         break;
+      case 'test-report':
+        Component = TestReportPage;
+        break;
       case 'sources-management':
         return <SourcesManagement />;
       case 'settings':
@@ -248,6 +252,7 @@ function App() {
       <Route path="/monetary-loss" element={<AppContent />} />
       <Route path="/compensation-policy" element={<AppContent />} />
       <Route path="/ask-ai" element={<AppContent />} />
+      <Route path="/test-report" element={<AppContent />} />
       <Route path="/sources-management" element={<AppContent />} />
       <Route path="/settings" element={<AppContent />} />
     </Routes>

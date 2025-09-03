@@ -1,127 +1,146 @@
 import React from 'react';
-import { AnnexIII2025Data } from '../../../../server/services/annexIII2025';
 import { DamageDonutChart } from './DamageDonutChart';
+
+interface AnnexIII2025Data {
+  title: string;
+  generatedOn: string;
+  introText: string;
+  mapPng: string;
+  tableRegionRows: Array<{
+    region: string;
+    damageBPKR: number;
+    lossBPKR: number;
+    needsBPKR: number;
+    damageUSD?: number;
+    lossUSD?: number;
+    needsUSD?: number;
+  }>;
+  totals: {
+    damageBPKR: number;
+    lossBPKR: number;
+    needsBPKR: number;
+    damageUSD?: number;
+    lossUSD?: number;
+    needsUSD?: number;
+  };
+  notes: string[];
+  sectors: Array<{
+    name: string;
+    summary: string;
+  }>;
+  vulnerable: string[];
+  responseNotes: string[];
+}
 
 interface AnnexIII2025PrintProps {
   data: AnnexIII2025Data;
-  className?: string;
 }
 
-export const AnnexIII2025Print: React.FC<AnnexIII2025PrintProps> = ({ 
-  data, 
-  className = '' 
-}) => {
-  const { 
-    title, 
-    generatedOn, 
-    introText, 
-    tableRegionRows, 
-    totals, 
-    notes, 
-    sectors, 
-    vulnerable, 
-    responseNotes 
-  } = data;
+export const AnnexIII2025Print: React.FC<AnnexIII2025PrintProps> = ({ data }) => {
+  // Sample data for demonstration - replace with actual data
+  const sampleData = {
+    title: "KP FLOODS 2025 IMPACT ASSESSMENT — Annex III",
+    generatedOn: "15 January 2025",
+    introText: "The 2025 floods have shown Khyber Pakhtunkhwa's high vulnerability to climate change despite contributing less than one percent of global greenhouse gas emissions. This disaster has demonstrated what this vulnerability looks like for the people of the province. Since July 2025, the provincial authorities have been working tirelessly to manage the ongoing massive relief efforts across KP, together with local, national, and international partners.",
+    mapPng: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==",
+    tableRegionRows: [
+      {
+        region: "Khyber Pakhtunkhwa",
+        damageBPKR: 245.0,
+        lossBPKR: 172.4,
+        needsBPKR: 204.4,
+        damageUSD: 935,
+        lossUSD: 658,
+        needsUSD: 780
+      }
+    ],
+    totals: {
+      damageBPKR: 245.0,
+      lossBPKR: 172.4,
+      needsBPKR: 204.4,
+      damageUSD: 935,
+      lossUSD: 658,
+      needsUSD: 780
+    },
+    notes: [
+      "Damages: direct physical destruction of assets and infrastructure",
+      "Losses: changes in economic flows resulting from the disaster",
+      "Needs: financing required for recovery and reconstruction"
+    ],
+    sectors: [
+      { name: "Housing", summary: "US$2.8 billion in reconstruction needs" },
+      { name: "Agriculture, Food, Livestock and Fisheries", summary: "US$4.0 billion in recovery needs" },
+      { name: "Transport and Communications", summary: "US$5.0 billion in reconstruction needs" }
+    ],
+    vulnerable: [
+      "Women, children, people with disabilities disproportionately affected",
+      "Limited access to social protection and coping mechanisms",
+      "Increased vulnerability to gender-based violence",
+      "Over 800,000 Afghan refugees in affected districts"
+    ],
+    responseNotes: [
+      "Provincial government immediately launched rescue and relief operations",
+      "Over 20,000 security personnel deployed in relief operations",
+      "Medical camps established across affected areas",
+      "Comprehensive health plan implemented with international support"
+    ]
+  };
+
+  const reportData = data || sampleData;
 
   return (
-    <div className={`annex-iii-2025-print ${className}`}>
-      {/* Page 1: Title and Introduction */}
-      <div className="report-page">
-        <div className="report-header">
-          <h1 className="report-title">
-            ANNEXURE - III
-          </h1>
-          <h2 className="report-subtitle">
-            {title}
-          </h2>
-        </div>
-        
-        <div className="intro-section">
-          <p className="intro-text">
-            {introText}
-          </p>
-        </div>
-        
-        <div className="section-rule"></div>
-        
-        <h2 className="section-title">
-          Estimates of Damage and Loss Due to Flood 2025
-        </h2>
-        
-        <p className="section-text">
-          The damage is estimated at US${(totals.damageBPKR * 0.0036).toFixed(1)} billion, the loss to the GDP at US${(totals.lossBPKR * 0.0036).toFixed(1)} billion, and the total needs of rehabilitation at US${(totals.needsBPKR * 0.0036).toFixed(1)} billion. The sectors that suffered the most damage are housing at US${(sectors.find(s => s.name.includes('Housing'))?.damageValue * 0.0036 || 0).toFixed(1)} billion; agriculture, food, livestock, and fisheries at US${(sectors.find(s => s.name.includes('Agriculture'))?.damageValue * 0.0036 || 0).toFixed(1)} billion; and transport and communications at US${(sectors.find(s => s.name.includes('Transport'))?.damageValue * 0.0036 || 0).toFixed(1)} billion.
-        </p>
-        
-        <p className="section-text">
-          Damage is defined as the direct costs of destroyed or damaged physical assets. It is valued in monetary terms, with costs estimated based on replacing or repairing physical assets and infrastructure, considering the replacement price prevailing before the crisis. Loss is defined as changes in economic flows resulting from the disaster and valued in monetary terms. Together, damage and loss constitute the effects of the crisis. Needs costing draws on the monetary value of damage and loss but is not equal to the sum of those estimates.
-        </p>
-        
-        {/* Damage Breakdown Chart */}
-        <div className="chart-section">
-          <DamageDonutChart 
-            data={[
-              {
-                name: "Housing",
-                value: Math.round(sectors.find(s => s.name.includes('Housing'))?.damageValue * 3.6 || 0),
-                percentage: ((sectors.find(s => s.name.includes('Housing'))?.damageValue || 0) / totals.damageBPKR) * 100,
-                color: "#2E8B57"
-              },
-              {
-                name: "Agriculture, Food, Livestock and Fisheries",
-                value: Math.round(sectors.find(s => s.name.includes('Agriculture'))?.damageValue * 3.6 || 0),
-                percentage: ((sectors.find(s => s.name.includes('Agriculture'))?.damageValue || 0) / totals.damageBPKR) * 100,
-                color: "#4169E1"
-              },
-              {
-                name: "Transport and Communications",
-                value: Math.round(sectors.find(s => s.name.includes('Transport'))?.damageValue * 3.6 || 0),
-                percentage: ((sectors.find(s => s.name.includes('Transport'))?.damageValue || 0) / totals.damageBPKR) * 100,
-                color: "#FF8C00"
-              },
-              {
-                name: "Health and Education",
-                value: Math.round((totals.damageBPKR * 0.0477) * 3.6),
-                percentage: 4.77,
-                color: "#87CEEB"
-              },
-              {
-                name: "Energy and Infrastructure",
-                value: Math.round((totals.damageBPKR * 0.0385) * 3.6),
-                percentage: 3.85,
-                color: "#FFB6C1"
-              },
-              {
-                name: "Other Sectors",
-                value: Math.round((totals.damageBPKR * 0.0375) * 3.6),
-                percentage: 3.75,
-                color: "#708090"
-              }
-            ]}
-            totalDamage={Math.round(totals.damageBPKR * 3.6)}
-          />
-        </div>
-        
-        {/* Map Section */}
-        <div className="map-section">
-          <h3 className="map-title">Affected Areas Map</h3>
-          <div className="map-container">
-            {/* Map will be rendered here */}
-            <div className="map-placeholder">
-              <p>Map visualization of affected areas in Khyber Pakhtunkhwa</p>
-            </div>
-          </div>
-        </div>
+    <div className="annex-iii-print">
+      {/* Header */}
+      <div className="report-header">
+        <p className="annex-label">ANNEXURE - III</p>
+        <h1 className="report-title">{reportData.title}</h1>
       </div>
-      
-      {/* Page 2: Data Tables */}
-      <div className="report-page" style={{ pageBreakBefore: 'always' }}>
-        <div className="section-rule"></div>
-        
-        <h2 className="section-title">
-          Table 1: Damage, Loss, and Needs by Region
-        </h2>
-        
-        <table className="data-table">
+
+      {/* Introduction */}
+      <div className="report-intro">
+        <p>{reportData.introText}</p>
+      </div>
+
+      {/* Map Section */}
+      <div className="map-section">
+        <img 
+          src={reportData.mapPng} 
+          alt="Affected Areas Map" 
+          className="map-image"
+        />
+        <p className="map-caption">Figure 1: Affected Areas in Khyber Pakhtunkhwa</p>
+      </div>
+
+      {/* Damage and Loss Estimates */}
+      <div className="estimates-section">
+        <h2>Estimates of Damage and Loss Due to Flood 2025</h2>
+        <p>
+          The damage is estimated at US${reportData.totals.damageUSD} million, the loss to the GDP at US${reportData.totals.lossUSD} million, 
+          and the total needs of rehabilitation at US${reportData.totals.needsUSD} million. The sectors that suffered the most damage 
+          include housing, agriculture, food, livestock, and fisheries, and transport and communications.
+        </p>
+      </div>
+
+      {/* Definitions */}
+      <div className="definitions-section">
+        <p>
+          <strong>Damage</strong> is defined as the direct costs of destroyed or damaged physical assets. 
+          It is valued in monetary terms, with costs estimated based on replacing or repairing physical assets 
+          and infrastructure, considering the replacement price prevailing before the crisis.
+        </p>
+        <p>
+          <strong>Loss</strong> is defined as changes in economic flows resulting from the disaster and valued in monetary terms. 
+          Together, damage and loss constitute the effects of the crisis.
+        </p>
+        <p>
+          <strong>Needs</strong> costing draws on the monetary value of damage and loss but is not equal to the sum of those estimates.
+        </p>
+      </div>
+
+      {/* Damage Table */}
+      <div className="table-section">
+        <h2>Table 1: Damage, Loss, and Needs by Region</h2>
+        <table className="damage-table">
           <thead>
             <tr>
               <th rowSpan={2}>Region</th>
@@ -139,43 +158,37 @@ export const AnnexIII2025Print: React.FC<AnnexIII2025PrintProps> = ({
             </tr>
           </thead>
           <tbody>
-            {tableRegionRows.map((row, index) => (
+            {reportData.tableRegionRows.map((row, index) => (
               <tr key={index}>
-                <td className="region-name">{row.region}</td>
-                <td className="numeric-value">{row.damageBPKR.toFixed(2)}</td>
-                <td className="numeric-value">{Math.round(row.damageBPKR * 3.6)}</td>
-                <td className="numeric-value">{row.lossBPKR.toFixed(2)}</td>
-                <td className="numeric-value">{Math.round(row.lossBPKR * 3.6)}</td>
-                <td className="numeric-value">{row.needsBPKR.toFixed(2)}</td>
-                <td className="numeric-value">{Math.round(row.needsBPKR * 3.6)}</td>
+                <td>{row.region}</td>
+                <td className="text-right">{row.damageBPKR.toFixed(2)}</td>
+                <td className="text-right">{row.damageUSD?.toLocaleString()}</td>
+                <td className="text-right">{row.lossBPKR.toFixed(2)}</td>
+                <td className="text-right">{row.lossUSD?.toLocaleString()}</td>
+                <td className="text-right">{row.needsBPKR.toFixed(2)}</td>
+                <td className="text-right">{row.needsUSD?.toLocaleString()}</td>
               </tr>
             ))}
             <tr className="totals-row">
-              <td><strong>Grand Total</strong></td>
-              <td className="numeric-value"><strong>{totals.damageBPKR.toFixed(2)}</strong></td>
-              <td className="numeric-value"><strong>{Math.round(totals.damageBPKR * 3.6)}</strong></td>
-              <td className="numeric-value"><strong>{totals.lossBPKR.toFixed(2)}</strong></td>
-              <td className="numeric-value"><strong>{Math.round(totals.lossBPKR * 3.6)}</strong></td>
-              <td className="numeric-value"><strong>{totals.needsBPKR.toFixed(2)}</strong></td>
-              <td className="numeric-value"><strong>{Math.round(totals.needsBPKR * 3.6)}</strong></td>
+              <td><strong>Total</strong></td>
+              <td className="text-right"><strong>{reportData.totals.damageBPKR.toFixed(2)}</strong></td>
+              <td className="text-right"><strong>{reportData.totals.damageUSD?.toLocaleString()}</strong></td>
+              <td className="text-right"><strong>{reportData.totals.lossBPKR.toFixed(2)}</strong></td>
+              <td className="text-right"><strong>{reportData.totals.lossUSD?.toLocaleString()}</strong></td>
+              <td className="text-right"><strong>{reportData.totals.needsBPKR.toFixed(2)}</strong></td>
+              <td className="text-right"><strong>{reportData.totals.needsUSD?.toLocaleString()}</strong></td>
             </tr>
           </tbody>
         </table>
-        
-        <div className="source-note">
-          <strong>Source:</strong> KP Floods 2025 Impact Assessment
-        </div>
-        
-        <div className="section-rule"></div>
-        
-        <h2 className="section-title">
-          Damage, Loss, And Needs by Sector Group and Sector
-        </h2>
-        
+      </div>
+
+      {/* Sector Breakdown */}
+      <div className="sectors-section">
+        <h2>Damage, Loss, and Needs by Sector Group and Sector</h2>
         <div className="sectors-grid">
-          <div className="sector-group">
-            <h3 className="sector-group-title">PRODUCTIVE SECTORS</h3>
-            <ul className="sector-list">
+          <div className="sector-column">
+            <h3>PRODUCTIVE SECTORS</h3>
+            <ul>
               <li>Agriculture, Food, Livestock and Fisheries</li>
               <li>Water Resources and Irrigation</li>
               <li>Commerce and Industries</li>
@@ -183,29 +196,9 @@ export const AnnexIII2025Print: React.FC<AnnexIII2025PrintProps> = ({
               <li>Tourism</li>
             </ul>
           </div>
-          
-          <div className="sector-group">
-            <h3 className="sector-group-title">SOCIAL SECTORS</h3>
-            <ul className="sector-list">
-              <li>Housing</li>
-              <li>Health</li>
-              <li>Education</li>
-              <li>Culture and Heritage</li>
-            </ul>
-          </div>
-          
-          <div className="sector-group">
-            <h3 className="sector-group-title">INFRASTRUCTURE SECTORS</h3>
-            <ul className="sector-list">
-              <li>Transport and Communications</li>
-              <li>Energy</li>
-              <li>Wash, Municipal Services and Community Infrastructure</li>
-            </ul>
-          </div>
-          
-          <div className="sector-group">
-            <h3 className="sector-group-title">CROSS-CUTTING SECTORS</h3>
-            <ul className="sector-list">
+          <div className="sector-column">
+            <h3>CROSS-CUTTING SECTORS</h3>
+            <ul>
               <li>Governance</li>
               <li>Social Sustainability, Inclusion and Gender</li>
               <li>Social Protection, Livelihoods and Jobs</li>
@@ -213,352 +206,271 @@ export const AnnexIII2025Print: React.FC<AnnexIII2025PrintProps> = ({
               <li>Disaster Risk Reduction and Resilience</li>
             </ul>
           </div>
+          <div className="sector-column">
+            <h3>SOCIAL SECTORS</h3>
+            <ul>
+              <li>Housing</li>
+              <li>Health</li>
+              <li>Education</li>
+              <li>Culture and Heritage</li>
+            </ul>
+          </div>
+          <div className="sector-column">
+            <h3>INFRASTRUCTURE SECTORS</h3>
+            <ul>
+              <li>Transport and Communications</li>
+              <li>Energy</li>
+              <li>WASH, Municipal Services and Community Infrastructure</li>
+            </ul>
+          </div>
         </div>
       </div>
-      
-      {/* Page 3: Vulnerable Segments and Government Response */}
-      <div className="report-page" style={{ pageBreakBefore: 'always' }}>
-        <div className="section-rule"></div>
-        
-        <h2 className="section-title">
-          National Response and Vulnerable Segment
-        </h2>
-        
-        <div className="vulnerable-section">
-          <p className="section-text">
-            Vulnerable groups such as women, children, people with disabilities, and refugees are likely disproportionally affected by the floods, given their dire circumstances and limited access to social protection and coping mechanisms. The impact of the floods is likely to exacerbate already existing gender inequalities, revealing serious differences in safety, education, decision-making, and employment.
-          </p>
-          
-          <ul className="vulnerable-list">
-            {vulnerable.map((item, index) => (
-              <li key={index} className="vulnerable-item">{item}</li>
-            ))}
-          </ul>
-        </div>
-        
-        <div className="section-rule"></div>
-        
-        <h2 className="section-title">
-          Government Response
-        </h2>
-        
-        <div className="response-section">
-          <p className="section-text">
-            Government of Pakistan (including Provincial Governments) immediately launched rescue and relief operations which NDMA conducted at the federal level and relevant agencies at provincial level, assisted by Pakistan Armed Forces and various UN agencies in coordination with MoPD&SI.
-          </p>
-          
-          <ul className="response-list">
-            {responseNotes.map((item, index) => (
-              <li key={index} className="response-item">{item}</li>
-            ))}
-          </ul>
-        </div>
-        
-        <div className="section-rule"></div>
-        
-        <h2 className="section-title">
-          Recovery and Reconstruction
-        </h2>
-        
-        <p className="section-text">
-          Finally, programs and policies to support recovery need to reach the worst affected geographic areas and all types of households. Livelihood assistance supports future income generation. Grants, especially for small holding farmers, could secure their survival while contributing to the future food supply.
+
+      {/* Donut Chart */}
+      <div className="chart-section">
+        <h2>Damage Distribution by Sector</h2>
+        <DamageDonutChart
+          data={[
+            { name: "Housing", value: 28, percentage: 28, color: "#FF6B6B" },
+            { name: "Agriculture", value: 37, percentage: 37, color: "#4ECDC4" },
+            { name: "Transport", value: 33, percentage: 33, color: "#45B7D1" },
+            { name: "Other", value: 2, percentage: 2, color: "#96CEB4" }
+          ]}
+          totalDamage={100}
+          className="damage-chart"
+        />
+      </div>
+
+      {/* Vulnerable Segments */}
+      <div className="vulnerable-section">
+        <h2>National Response and Vulnerable Segments</h2>
+        <p>
+          Vulnerable groups such as women, children, people with disabilities, and refugees are likely 
+          disproportionally affected by the floods, given their dire circumstances and limited access to 
+          social protection and coping mechanisms.
         </p>
-        
-        <p className="section-text">
-          International evidence suggests that labor-intensive construction works, such as cash-for-work schemes in infrastructure rehabilitation, will support livelihood restoration and income-generating opportunities. Such schemes should include technical facilitation and skills development on climate adaptation and resilience buildings.
+        <ul>
+          {reportData.vulnerable.map((item, index) => (
+            <li key={index}>{item}</li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Government Response */}
+      <div className="response-section">
+        <h2>Government Response</h2>
+        <p>
+          The Government of Khyber Pakhtunkhwa (including relevant agencies) immediately launched 
+          rescue and relief operations, assisted by Pakistan Armed Forces and various UN agencies.
         </p>
+        <ul>
+          {reportData.responseNotes.map((item, index) => (
+            <li key={index}>{item}</li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Footer */}
+      <div className="report-footer">
+        <p>Generated on: {reportData.generatedOn}</p>
+        <p>Source: KP Floods 2025 Impact Assessment</p>
       </div>
 
       <style jsx>{`
-        .annex-iii-2025-print {
-          font-family: "Times New Roman", "Noto Serif", serif;
-          line-height: 1.35;
-          font-size: 11pt;
+        .annex-iii-print {
+          font-family: 'Times New Roman', serif;
+          line-height: 1.6;
           color: #000;
-          margin: 0;
-          padding: 0;
+          max-width: 210mm;
+          margin: 0 auto;
+          padding: 20mm;
           background: white;
         }
-        
-        .report-page {
-          min-height: 297mm;
-          max-height: 297mm;
-          padding: 0;
-          margin: 0;
-          position: relative;
-          page-break-after: always;
-          page-break-inside: avoid;
-          break-inside: avoid;
-          overflow: hidden;
-          box-sizing: border-box;
-        }
-        
-        .report-page:last-child {
-          page-break-after: auto;
-          max-height: none;
-        }
-        
-        /* Ensure proper page breaks */
-        .report-page + .report-page {
-          margin-top: 0;
-          padding-top: 0;
-        }
-        
-        /* Content height control */
-        .report-page > * {
-          max-width: 100%;
-          box-sizing: border-box;
-        }
-        
+
         .report-header {
           text-align: center;
-          margin-bottom: 20mm;
-          padding-top: 10mm;
+          margin-bottom: 20px;
         }
-        
-        .report-title {
-          font-size: 18pt;
-          font-weight: bold;
-          text-transform: uppercase;
-          letter-spacing: 0.5pt;
-          margin: 0 0 8mm 0;
-          line-height: 1.2;
-        }
-        
-        .report-subtitle {
-          font-size: 16pt;
-          font-weight: bold;
-          margin: 0;
-          line-height: 1.2;
-        }
-        
-        .intro-section {
-          margin-bottom: 15mm;
-          max-height: 80mm;
-          overflow: hidden;
-        }
-        
-        .intro-text {
-          text-align: justify;
-          margin: 0 0 6mm 0;
-          line-height: 1.4;
-        }
-        
-        .section-rule {
-          border-top: 1px solid #2a2a2a;
-          margin: 10mm 0 6mm 0;
-        }
-        
-        .section-title {
+
+        .annex-label {
           font-size: 14pt;
           font-weight: bold;
-          margin: 0 0 6mm 0;
-          color: #2a2a2a;
-          break-after: avoid;
-          break-inside: avoid;
+          margin: 0;
+          padding: 7pt 0 3pt 0;
         }
-        
-        .section-text {
-          text-align: justify;
-          margin: 0 0 4mm 0;
-          line-height: 1.4;
-        }
-        
-        .chart-section {
-          text-align: center;
-          margin: 8mm 0 15mm 0;
-          break-inside: avoid;
-          page-break-inside: avoid;
-          max-height: 120mm;
-          overflow: hidden;
-        }
-        
-        .map-section {
-          margin: 15mm 0;
-          break-inside: avoid;
-          page-break-inside: avoid;
-          max-height: 80mm;
-          overflow: hidden;
-        }
-        
-        .map-title {
-          font-size: 12pt;
+
+        .report-title {
+          font-size: 26pt;
           font-weight: bold;
-          margin: 0 0 6mm 0;
-          text-align: center;
-          color: #2a2a2a;
+          margin: 0;
+          padding: 3pt 0;
         }
-        
-        .map-container {
+
+        .report-intro {
+          text-align: justify;
+          margin-bottom: 20px;
+        }
+
+        .map-section {
+          text-align: center;
+          margin: 20px 0;
+        }
+
+        .map-image {
+          max-width: 100%;
+          height: auto;
           border: 1px solid #ccc;
-          padding: 8mm;
-          background-color: #f9f9f9;
-          text-align: center;
-          min-height: 60mm;
-          display: flex;
-          align-items: center;
-          justify-content: center;
         }
-        
-        .map-placeholder {
-          color: #666;
+
+        .map-caption {
           font-style: italic;
+          margin-top: 10px;
         }
-        
-        .data-table {
+
+        .estimates-section h2 {
+          font-size: 14pt;
+          font-weight: bold;
+          margin: 20px 0 10px 0;
+        }
+
+        .definitions-section {
+          margin: 20px 0;
+        }
+
+        .definitions-section p {
+          margin: 10px 0;
+        }
+
+        .table-section {
+          margin: 20px 0;
+        }
+
+        .table-section h2 {
+          font-size: 14pt;
+          font-weight: bold;
+          margin-bottom: 15px;
+        }
+
+        .damage-table {
           width: 100%;
           border-collapse: collapse;
-          margin: 6mm 0 10mm 0;
-          break-inside: avoid;
-        }
-        
-        .data-table thead {
-          display: table-header-group;
-        }
-        
-        .data-table th,
-        .data-table td {
-          border: 1px solid #000;
-          padding: 3mm 2mm;
-          text-align: center;
-          vertical-align: top;
           font-size: 10pt;
         }
-        
-        .data-table th {
-          background-color: #f5f5f5 !important;
-          font-weight: bold;
+
+        .damage-table th,
+        .damage-table td {
+          border: 1px solid #000;
+          padding: 8px;
           text-align: center;
         }
-        
-        .data-table tbody tr {
-          break-inside: avoid;
-        }
-        
-        .region-name {
-          font-weight: 500;
-          text-align: left;
-        }
-        
-        .numeric-value {
-          text-align: right;
-          font-family: "Courier New", monospace;
-        }
-        
-        .totals-row {
+
+        .damage-table th {
           background-color: #f0f0f0;
           font-weight: bold;
         }
-        
-        .source-note {
+
+        .text-right {
           text-align: right;
-          font-size: 10pt;
-          font-style: italic;
-          margin-top: 4mm;
         }
-        
+
+        .totals-row {
+          background-color: #f9f9f9;
+          font-weight: bold;
+        }
+
+        .sectors-section {
+          margin: 20px 0;
+        }
+
+        .sectors-section h2 {
+          font-size: 14pt;
+          font-weight: bold;
+          margin-bottom: 15px;
+        }
+
         .sectors-grid {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 8mm;
-          margin: 6mm 0;
+          gap: 20px;
         }
-        
-        .sector-group {
-          break-inside: avoid;
-        }
-        
-        .sector-group-title {
+
+        .sector-column h3 {
           font-size: 12pt;
           font-weight: bold;
-          margin: 0 0 3mm 0;
-          color: #2a2a2a;
-          text-transform: uppercase;
+          margin-bottom: 10px;
+          color: #4F81BC;
         }
-        
-        .sector-list {
-          list-style-type: none;
-          margin: 0;
+
+        .sector-column ul {
+          list-style: none;
           padding: 0;
         }
-        
-        .sector-list li {
-          margin-bottom: 2mm;
-          line-height: 1.3;
-          padding-left: 3mm;
+
+        .sector-column li {
+          margin: 5px 0;
+          padding-left: 20px;
           position: relative;
         }
-        
-        .sector-list li:before {
-          content: "•";
+
+        .sector-column li:before {
+          content: "◆";
+          color: #4F81BC;
           position: absolute;
           left: 0;
         }
-        
+
+        .chart-section {
+          margin: 20px 0;
+          text-align: center;
+        }
+
+        .chart-section h2 {
+          font-size: 14pt;
+          font-weight: bold;
+          margin-bottom: 15px;
+        }
+
         .vulnerable-section,
         .response-section {
-          margin-top: 8mm;
+          margin: 20px 0;
         }
-        
-        .vulnerable-list,
-        .response-list {
-          list-style-type: disc;
-          margin: 0;
-          padding-left: 6mm;
+
+        .vulnerable-section h2,
+        .response-section h2 {
+          font-size: 14pt;
+          font-weight: bold;
+          margin-bottom: 15px;
         }
-        
-        .vulnerable-item,
-        .response-item {
-          margin-bottom: 2mm;
-          line-height: 1.3;
+
+        .vulnerable-section ul,
+        .response-section ul {
+          padding-left: 20px;
         }
-        
-        /* Print-specific styles */
+
+        .vulnerable-section li,
+        .response-section li {
+          margin: 8px 0;
+        }
+
+        .report-footer {
+          margin-top: 30px;
+          text-align: center;
+          font-size: 10pt;
+          color: #666;
+        }
+
         @media print {
-          @page {
-            size: A4;
-            margin: 18mm 18mm 20mm 18mm;
+          .annex-iii-print {
+            padding: 0;
+            margin: 0;
           }
           
-          body {
-            -webkit-print-color-adjust: exact;
-            color-adjust: exact;
+          .damage-table thead {
+            display: table-header-group;
           }
           
-          .annex-iii-2025-print {
-            background: white;
-          }
-          
-          /* Force page breaks */
-          .report-page {
-            page-break-after: always;
-            page-break-inside: avoid;
-            break-inside: avoid;
-          }
-          
-          .report-page:last-child {
-            page-break-after: auto;
-          }
-          
-          /* Ensure chart and map don't break across pages */
-          .chart-section,
-          .map-section {
-            page-break-inside: avoid;
-            break-inside: avoid;
-          }
-          
-          /* Strict height control for print */
-          .report-page {
-            height: 297mm !important;
-            max-height: 297mm !important;
-            overflow: hidden !important;
-          }
-          
-          .intro-section,
-          .chart-section,
-          .map-section {
-            max-height: none !important;
-            overflow: visible !important;
+          .damage-table tfoot {
+            display: table-footer-group;
           }
         }
       `}</style>

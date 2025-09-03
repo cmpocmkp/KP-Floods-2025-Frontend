@@ -1000,6 +1000,7 @@ app.post('/api/reports/annex-iii-2025/docx', (req, res) => {
             <td>${reportData.totals.lossUSD}</td>
             <td>${reportData.totals.needsBPKR}</td>
             <td>${reportData.totals.needsUSD}</td>
+            </td>
           </tr>
         </tbody>
       </table>
