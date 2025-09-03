@@ -65,7 +65,7 @@ export default function Sidebar({ activeTab, setActiveTab, userRole }: SidebarPr
       <div className="p-4 sm:p-6 border-b border-gray-200">
         <div className="flex flex-col items-start space-y-2">
           <BrandLogo size="md" />
-          <p className="text-xs text-gray-500">KP D3</p>
+          <p className="text-xs text-gray-500">KPD3</p>
         </div>
       </div>
       

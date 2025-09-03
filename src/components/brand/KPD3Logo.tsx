@@ -1,4 +1,4 @@
-export default function KPD3Logo({ className = "h-9 w-auto", title = "KP D3" }) {
+export default function KPD3Logo({ className = "h-9 w-auto", title = "KPD3" }) {
   return (
     <svg viewBox="0 0 320 80" className={className} role="img" aria-label={title}>
       <defs>
@@ -62,7 +62,7 @@ export default function KPD3Logo({ className = "h-9 w-auto", title = "KP D3" }) 
         <tspan dx="8" fill="#6B7280">•</tspan>
         <tspan dx="8" fill="url(#disasterGradient)">Disasters</tspan>
         <tspan dx="8" fill="#6B7280">•</tspan>
-        <tspan dx="8" fill="url(#directoryGradient)">Directories</tspan>
+        <tspan dx="8" fill="url(#directoryGradient)">Directory</tspan>
       </text>
 
       {/* Animated connecting lines between the three elements */}

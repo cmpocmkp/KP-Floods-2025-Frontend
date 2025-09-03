@@ -1,6 +1,6 @@
-# KP D3 Impact Assessment — Annex III
+# KPD3 Impact Assessment — Annex III
 
-This module provides a comprehensive system for generating Annex III reports for the KP D3 impact assessment. The system follows the standardized Annex III format used for reporting damage, loss, and needs assessments following major disasters.
+This module provides a comprehensive system for generating Annex III reports for the KPD3 impact assessment. The system follows the standardized Annex III format used for reporting damage, loss, and needs assessments following major disasters.
 
 ## Overview
 
@@ -108,7 +108,7 @@ const docxBuffer = await generateAnnexIII2025DOCX(reportData);
 
 ## Data Sources
 
-The system integrates with existing KP D3 data sources:
+The system integrates with existing KPD3 data sources:
 
 - **Infrastructure Damage** - Housing, roads, bridges, public facilities
 - **Monetary Losses** - Economic impact calculations

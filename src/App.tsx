@@ -46,7 +46,7 @@ const TestReportPage = React.lazy(() => import('./pages/TestReportPage'));
 const SourcesManagement = () => (
   <div className="p-6 bg-white rounded-lg shadow">
     <h2 className="text-2xl font-bold mb-4">Data Sources Management</h2>
-            <p className="text-gray-600">Configure and manage data sources for the KP D3 dashboard.</p>
+            <p className="text-gray-600">Configure and manage data sources for the KPD3 dashboard.</p>
   </div>
 );
 

@@ -28,7 +28,7 @@ export const AnnexIII2025Page: React.FC<AnnexIII2025PageProps> = ({ className = 
     });
 
     return {
-              title: "KP D3 IMPACT ASSESSMENT — Annex III",
+              title: "KPD3 IMPACT ASSESSMENT — Annex III",
       generatedOn: new Date().toLocaleDateString('en-GB', { 
         day: 'numeric', 
         month: 'long', 
@@ -182,7 +182,7 @@ export const AnnexIII2025Page: React.FC<AnnexIII2025PageProps> = ({ className = 
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            KP D3 Impact Assessment — Annex III
+            KPD3 Impact Assessment — Annex III
           </h1>
           <p className="text-gray-600 text-lg">
             Generate comprehensive reports for damage, loss, and needs assessment following the Annex III format.

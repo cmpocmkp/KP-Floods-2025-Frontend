@@ -30,12 +30,8 @@ export default function LoginPage() {
         <div className="text-center mb-8">
           <div className="relative inline-block bg-white p-3 rounded-lg shadow-sm">
             {/* Main Logo */}
-            <div className="flex items-center text-6xl font-bold">
-              <span className="text-gray-800">KP</span>
-              <div className="flex items-center ml-3">
-                <span className="text-blue-600">D</span>
-                <span className="text-red-600 -ml-1">3</span>
-              </div>
+            <div className="text-6xl font-bold text-blue-600">
+              KPD3
             </div>
           </div>
 
@@ -43,7 +39,7 @@ export default function LoginPage() {
           <div className="mt-4 flex justify-center items-center space-x-3 text-sm font-medium">
             <span className="text-blue-600">Disasters</span>
             <span className="text-gray-400">•</span>
-            <span className="text-red-600">Damages</span>
+                          <span className="text-blue-600">Damages</span>
             <span className="text-gray-400">•</span>
             <span className="text-blue-600">Directories</span>
           </div>

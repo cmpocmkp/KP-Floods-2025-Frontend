@@ -39,7 +39,7 @@ interface AnnexIII2025PrintProps {
 export const AnnexIII2025Print: React.FC<AnnexIII2025PrintProps> = ({ data }) => {
   // Sample data for demonstration - replace with actual data
   const sampleData = {
-            title: "KP D3 IMPACT ASSESSMENT — Annex III",
+            title: "KPD3 IMPACT ASSESSMENT — Annex III",
     generatedOn: "15 January 2025",
     introText: "The 2025 floods have shown Khyber Pakhtunkhwa's high vulnerability to climate change despite contributing less than one percent of global greenhouse gas emissions. This disaster has demonstrated what this vulnerability looks like for the people of the province. Since July 2025, the provincial authorities have been working tirelessly to manage the ongoing massive relief efforts across KP, together with local, national, and international partners.",
     mapPng: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==",
@@ -273,7 +273,7 @@ export const AnnexIII2025Print: React.FC<AnnexIII2025PrintProps> = ({ data }) =>
       {/* Footer */}
       <div className="report-footer">
         <p>Generated on: {reportData.generatedOn}</p>
-        <p>Source: KP D3 Impact Assessment</p>
+        <p>Source: KPD3 Impact Assessment</p>
       </div>
 
       <style jsx>{`

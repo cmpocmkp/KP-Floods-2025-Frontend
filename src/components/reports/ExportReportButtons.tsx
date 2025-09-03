@@ -222,7 +222,7 @@ export const ExportReportButtons: React.FC = () => {
           <div className="relative z-10 w-full max-w-4xl max-h-[90vh] bg-white rounded-lg shadow-2xl overflow-hidden">
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b bg-gray-50">
-              <h2 className="text-xl font-semibold">KP D3 Impact Assessment — Annex III</h2>
+              <h2 className="text-xl font-semibold">KPD3 Impact Assessment — Annex III</h2>
               <Button
                 variant="ghost"
                 size="sm"
@@ -290,7 +290,7 @@ export const ExportReportButtons: React.FC = () => {
                   
                   <div className="mt-6 text-sm text-gray-600">
                     <p><strong>Generated on:</strong> {reportData.generatedOn}</p>
-                    <p><strong>Source:</strong> KP D3 Impact Assessment</p>
+                    <p><strong>Source:</strong> KPD3 Impact Assessment</p>
                   </div>
                 </div>
               )}

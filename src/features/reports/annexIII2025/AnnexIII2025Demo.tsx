@@ -6,7 +6,7 @@ import { AnnexIII2025Print } from './AnnexIII2025Print';
 
 // Sample data for demonstration
 const sampleData = {
-          title: "KP D3 IMPACT ASSESSMENT — Annex III",
+          title: "KPD3 IMPACT ASSESSMENT — Annex III",
   generatedOn: "15 January 2025",
   introText: "This report presents a comprehensive assessment of damages, losses, and needs resulting from the devastating floods that affected Khyber Pakhtunkhwa in 2025. The assessment covers infrastructure damage, property losses, agricultural impacts, and human casualties across affected regions. The data represents the most current information available and provides a foundation for recovery planning and resource allocation.",
   mapSpec: {
@@ -80,7 +80,7 @@ export const AnnexIII2025Demo: React.FC = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            KP D3 Impact Assessment
+            KPD3 Impact Assessment
           </h1>
           <p className="text-xl text-gray-600">
             Annex III Report System Demo

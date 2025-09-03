@@ -5,13 +5,13 @@ const TestReportPage: React.FC = () => {
   return (
     <div className="container mx-auto p-6">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6">KP D3 Report Export Test</h1>
+        <h1 className="text-3xl font-bold mb-6">KPD3 Report Export Test</h1>
         
         <div className="bg-white rounded-lg shadow-lg p-6">
           <h2 className="text-xl font-semibold mb-4">Annex III 2025 Impact Assessment</h2>
           <p className="text-gray-600 mb-6">
             This page demonstrates the working PDF and DOCX export functionality for the 
-            KP D3 Impact Assessment — Annex III report.
+            KPD3 Impact Assessment — Annex III report.
           </p>
           
           <ExportReportButtons />

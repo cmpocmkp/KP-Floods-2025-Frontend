@@ -46,22 +46,18 @@ export default function LoginCard({ onLoginSuccess }: LoginCardProps) {
           <div className="text-center">
             <div className="relative inline-block bg-white p-2 rounded-lg shadow-sm">
               {/* Main Logo */}
-              <div className="flex items-center text-5xl font-bold">
-                <span className="text-gray-800">KP</span>
-                <div className="flex items-center ml-2">
-                  <span className="text-blue-600">D</span>
-                  <span className="text-red-600 -ml-1">3</span>
-                </div>
+              <div className="text-5xl font-bold text-blue-600">
+                KPD3
               </div>
             </div>
 
             {/* Expanded meaning */}
             <div className="mt-4 flex justify-center items-center space-x-3 text-sm font-medium">
-              <span className="text-blue-600">Disasters</span>
+              <span className="text-blue-600">Disaster</span>
               <span className="text-gray-400">•</span>
-              <span className="text-red-600">Damages</span>
+              <span className="text-blue-600">Damages</span>
               <span className="text-gray-400">•</span>
-              <span className="text-blue-600">Directories</span>
+              <span className="text-blue-600">Directory</span>
             </div>
           </div>
         </div>

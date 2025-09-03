@@ -1,7 +1,7 @@
 {
   "name": "kp-floods-reports-server",
   "version": "1.0.0",
-  "description": "Backend server for KP D3 Annex III report generation",
+  "description": "Backend server for KPD3 Annex III report generation",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",

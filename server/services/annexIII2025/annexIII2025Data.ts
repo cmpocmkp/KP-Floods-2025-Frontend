@@ -209,7 +209,7 @@ export async function buildAnnexIII2025Payload() {
     })));
 
     return {
-              title: "KP D3 IMPACT ASSESSMENT — Annex III",
+              title: "KPD3 IMPACT ASSESSMENT — Annex III",
       generatedOn: new Date().toLocaleDateString('en-GB', { 
         day: 'numeric', 
         month: 'long', 

@@ -21,7 +21,7 @@ export default function BrandLogo({ size = 'md', className = '', asLink = false 
 
   return (
     <Wrapper
-      aria-label="KP D3"
+      aria-label="KPD3"
       className={[
         'relative inline-flex items-center font-extrabold tracking-tight select-none',
         sizeMap[size],
