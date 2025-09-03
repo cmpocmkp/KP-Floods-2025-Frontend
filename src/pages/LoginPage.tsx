@@ -27,18 +27,25 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="text-center text-4xl font-bold text-gray-900 mb-4">
-          KP D3
-        </h2>
-        
-        {/* Expanded meaning */}
         <div className="text-center mb-8">
-          <div className="flex justify-center space-x-4 text-sm text-gray-600">
-            <span className="text-blue-600 font-medium">Disasters</span>
+          <div className="relative inline-block bg-white p-3 rounded-lg shadow-sm">
+            {/* Main Logo */}
+            <div className="flex items-center text-6xl font-bold">
+              <span className="text-gray-800">KP</span>
+              <div className="flex items-center ml-3">
+                <span className="text-blue-600">D</span>
+                <span className="text-red-600 -ml-1">3</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Expanded meaning */}
+          <div className="mt-4 flex justify-center items-center space-x-3 text-sm font-medium">
+            <span className="text-blue-600">Disasters</span>
             <span className="text-gray-400">•</span>
-            <span className="text-red-600 font-medium">Damages</span>
+            <span className="text-red-600">Damages</span>
             <span className="text-gray-400">•</span>
-            <span className="text-green-600 font-medium">Directories</span>
+            <span className="text-blue-600">Directories</span>
           </div>
         </div>
 
