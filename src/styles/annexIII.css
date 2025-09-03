@@ -1,0 +1,437 @@
+/* Annex III Report Styles - Print Perfect A4 */
+
+/* Base styles for both screen and print */
+.annex-iii-report {
+  font-family: "Times New Roman", "Noto Serif", serif;
+  line-height: 1.35;
+  font-size: 11pt;
+  color: #000;
+  background: white;
+  max-width: 210mm;
+  margin: 0 auto;
+  position: relative; /* Ensure proper positioning context */
+}
+
+/* Page structure */
+.report-page {
+  min-height: 297mm;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  page-break-after: always;
+}
+
+.report-page:last-child {
+  page-break-after: auto;
+}
+
+/* Header block */
+.report-header {
+  text-align: center;
+  margin-bottom: 20mm;
+  padding-top: 10mm;
+}
+
+.report-title {
+  font-size: 18pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5pt;
+  margin: 0 0 8mm 0;
+  line-height: 1.2;
+}
+
+.generated-date {
+  text-align: right;
+  font-size: 10pt;
+  color: #666;
+  margin-bottom: 15mm;
+}
+
+/* Introduction section */
+.intro-section {
+  margin-bottom: 15mm;
+}
+
+.intro-text {
+  text-align: justify;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Map section */
+.map-section {
+  text-align: center;
+  margin-bottom: 15mm;
+  position: relative; /* Ensure proper positioning */
+  z-index: 1; /* Lower z-index to prevent overlapping */
+}
+
+.map-image {
+  width: 100%;
+  max-height: 95mm;
+  object-fit: contain;
+  border: 1px solid #ccc;
+  break-inside: avoid;
+  display: block; /* Ensure proper block display */
+}
+
+.map-placeholder {
+  width: 100%;
+  height: 95mm;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  break-inside: avoid;
+}
+
+.placeholder-text {
+  color: #666;
+  font-style: italic;
+}
+
+.map-caption {
+  font-size: 10pt;
+  font-weight: bold;
+  margin-top: 3mm;
+  text-align: center;
+}
+
+/* Section rules */
+.section-rule {
+  border-top: 1px solid #2a2a2a;
+  margin: 10mm 0 6mm 0;
+}
+
+/* Section titles */
+.section-title {
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 0 0 6mm 0;
+  color: #2a2a2a;
+  break-after: avoid;
+}
+
+/* Data table */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 6mm 0 10mm 0;
+  break-inside: avoid;
+}
+
+.data-table th,
+.data-table td {
+  border: 1px solid #000;
+  padding: 3mm 2mm;
+  text-align: left;
+  vertical-align: top;
+}
+
+.data-table th {
+  background-color: #f5f5f5 !important;
+  font-weight: bold;
+  text-align: center;
+  font-size: 10pt;
+}
+
+.data-table td {
+  font-size: 10pt;
+}
+
+.region-name {
+  font-weight: 500;
+  text-align: left;
+}
+
+.numeric-value {
+  text-align: right;
+  font-family: "Courier New", monospace;
+}
+
+/* Notes section */
+.notes-section {
+  margin-top: 8mm;
+}
+
+.notes-list {
+  list-style-type: disc;
+  margin: 0;
+  padding-left: 6mm;
+}
+
+.note-item {
+  margin-bottom: 2mm;
+  line-height: 1.3;
+}
+
+/* Footer */
+.report-footer {
+  position: fixed;
+  bottom: 20mm;
+  left: 18mm;
+  right: 18mm;
+  text-align: center;
+  z-index: 10; /* Higher z-index for footer */
+}
+
+.page-number {
+  font-size: 10pt;
+  color: #666;
+}
+
+.page-number::after {
+  content: "Page " counter(page) " of " counter(pages);
+}
+
+/* Print-specific styles */
+@media print {
+  /* A4 page setup */
+  @page {
+    size: A4;
+    margin: 18mm 18mm 20mm 18mm;
+  }
+
+  /* Ensure proper color rendering */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hide non-printable elements */
+  .no-print {
+    display: none !important;
+  }
+
+  /* Page break controls */
+  .report-page {
+    page-break-after: always;
+  }
+
+  .report-page:last-child {
+    page-break-after: auto;
+  }
+
+  /* Table print behavior */
+  .data-table thead {
+    display: table-header-group;
+  }
+
+  .data-table tbody tr {
+    break-inside: avoid;
+  }
+
+  /* Ensure headers don't break from content */
+  .section-title {
+    break-after: avoid;
+    break-inside: avoid;
+  }
+
+  /* Prevent orphaned list items */
+  .note-item {
+    break-inside: avoid;
+  }
+
+  /* Ensure images don't break across pages */
+  .map-image,
+  .map-placeholder {
+    break-inside: avoid;
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Footer positioning for print */
+  .report-footer {
+    position: running(footer);
+  }
+
+  @page {
+    @bottom-center {
+      content: "Page " counter(page) " of " counter(pages);
+      font-size: 10pt;
+      color: #666;
+    }
+  }
+
+  /* Ensure proper spacing and layout */
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  .annex-iii-report {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+/* Screen preview styles */
+@media screen {
+  .annex-iii-report {
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background: white;
+    position: relative;
+    overflow: visible; /* Allow content to flow naturally */
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .report-page {
+    min-height: auto;
+    margin-bottom: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    position: relative;
+    overflow: visible;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .report-page:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Ensure map section doesn't overlap in screen mode */
+  .map-section {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 15mm;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .map-image {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    box-sizing: border-box;
+  }
+
+  .map-placeholder {
+    width: 100%;
+    height: auto;
+    min-height: 200px;
+    box-sizing: border-box;
+  }
+
+  /* Footer positioning for screen */
+  .report-footer {
+    position: static;
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+    z-index: auto;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .page-number::after {
+    content: "Page 1 of 2";
+  }
+
+  /* Ensure proper spacing between elements */
+  .intro-section {
+    margin-bottom: 15mm;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .section-rule {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .data-table {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .notes-section {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Modal-specific fixes */
+  .annex-iii-report[data-modal="true"] {
+    max-width: none;
+    width: 100%;
+  }
+
+  /* Ensure all content is visible in modal */
+  .annex-iii-report * {
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+}
+
+/* Additional fixes for modal display */
+[data-radix-dialog-content] .annex-iii-report {
+  max-width: none !important;
+  width: 100% !important;
+  overflow: visible !important;
+}
+
+[data-radix-dialog-content] .report-page {
+  width: 100% !important;
+  max-width: none !important;
+  overflow: visible !important;
+}
+
+/* Modal-specific overrides */
+[data-radix-dialog-content] {
+  overflow: visible !important;
+}
+
+[data-radix-dialog-content] .annex-iii-report {
+  padding: 10px !important;
+  margin: 0 !important;
+}
+
+[data-radix-dialog-content] .report-page {
+  padding: 15px !important;
+  margin-bottom: 15px !important;
+  min-height: auto !important;
+}
+
+[data-radix-dialog-content] .map-section {
+  margin-bottom: 20px !important;
+}
+
+[data-radix-dialog-content] .map-image {
+  max-height: 300px !important;
+  width: 100% !important;
+}
+
+[data-radix-dialog-content] .map-placeholder {
+  height: 300px !important;
+  min-height: 300px !important;
+}
+
+/* Ensure modal content doesn't overflow */
+[data-radix-dialog-content] .overflow-y-auto {
+  overflow-y: auto !important;
+  max-height: 80vh !important;
+}
+
+/* Fix for any remaining positioning issues */
+[data-radix-dialog-content] * {
+  position: relative !important;
+  z-index: auto !important;
+}
+
+[data-radix-dialog-content] .report-footer {
+  position: static !important;
+  margin-top: 15px !important;
+} 

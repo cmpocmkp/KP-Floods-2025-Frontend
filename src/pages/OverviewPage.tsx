@@ -5,10 +5,14 @@ import { LeafletMap } from '@/features/overview/LeafletMap';
 import { IncidentTrendsChart } from '@/features/overview/IncidentTrendsChart';
 import { DamageDonut } from '@/features/overview/DamageDonut';
 import { DivisionSummaryTable } from '@/features/overview/DivisionSummaryTable';
+import { ExportReportButtons } from '@/components/reports/ExportReportButtons';
 
 export default function OverviewPage() {
   return (
     <div className="space-y-6">
+      {/* Export Report Section */}
+      <ExportReportButtons />
+      
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
         <div className="xl:col-span-7">
           <LeafletMap />
