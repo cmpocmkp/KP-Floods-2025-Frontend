@@ -1,0 +1,88 @@
+/* Modal Overrides to prevent map overlapping */
+
+/* Ensure modal has highest z-index */
+[data-radix-dialog-content] {
+  z-index: 9999 !important;
+}
+
+[data-radix-dialog-overlay] {
+  z-index: 9998 !important;
+}
+
+/* Force Leaflet map to have lower z-index when modal is open */
+body[data-modal-open="true"] .leaflet-container,
+body[data-modal-open="true"] .leaflet-pane,
+body[data-modal-open="true"] .leaflet-control {
+  z-index: 1 !important;
+}
+
+/* Alternative approach - target specific map containers */
+body[data-modal-open="true"] [class*="leaflet"],
+body[data-modal-open="true"] [class*="map"] {
+  z-index: 1 !important;
+}
+
+/* Ensure modal content is always on top */
+.dialog-content,
+[role="dialog"] {
+  z-index: 9999 !important;
+  position: relative;
+}
+
+/* Fix modal visibility issues */
+[data-radix-dialog-content] {
+  z-index: 9999 !important;
+  position: fixed !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
+}
+
+[data-radix-dialog-content] * {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Force all modal elements to have proper z-index */
+[data-radix-dialog-content] * {
+  position: relative;
+  z-index: auto;
+}
+
+/* Specific dialog content fixes */
+[data-radix-dialog-content] {
+  transform: translate(-50%, -50%) !important;
+  left: 50% !important;
+  top: 50% !important;
+  width: auto !important;
+  height: auto !important;
+  max-width: 90vw !important;
+  max-height: 90vh !important;
+  overflow: visible !important;
+}
+
+/* Ensure dialog content is not clipped */
+[data-radix-dialog-content] > * {
+  overflow: visible !important;
+  max-height: none !important;
+}
+
+/* Specific fix for Leaflet map overlapping */
+.leaflet-container {
+  z-index: 1;
+}
+
+.leaflet-pane {
+  z-index: 1;
+}
+
+.leaflet-control {
+  z-index: 1;
+}
+
+/* When modal is open, ensure map doesn't interfere */
+[data-radix-dialog-content] ~ .leaflet-container,
+[data-radix-dialog-content] ~ .leaflet-pane,
+[data-radix-dialog-content] ~ .leaflet-control {
+  z-index: 1 !important;
+} 
