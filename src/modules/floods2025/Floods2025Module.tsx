@@ -10,6 +10,7 @@ import AgriculturePage from '@/pages/AgriculturePage';
 import AnalyzePage from '@/pages/AnalyzePage';
 import VisualizePage from '@/pages/VisualizePage';
 import MonetaryLossPage from '@/pages/MonetaryLossPage';
+import EconomicLossPage from '@/pages/EconomicLossPage';
 import CompensationPolicyPage from '@/pages/CompensationPolicyPage';
 import BriefPage from '@/pages/BriefPage';
 import TestReportPage from '@/pages/TestReportPage';
@@ -87,6 +88,8 @@ export default function Floods2025Module() {
         return <OverviewKpis data={kpiData} />; // Use overview KPIs for visualize
       case 'monetary-loss':
         return <OverviewKpis data={kpiData} />; // Use overview KPIs for monetary loss
+      case 'economic-loss':
+        return <OverviewKpis data={kpiData} />; // Use overview KPIs for economic loss
       case 'compensation-policy':
         return <OverviewKpis data={kpiData} />; // Use overview KPIs for compensation policy
       case 'brief':
@@ -128,6 +131,7 @@ export default function Floods2025Module() {
           <Route path="analyze" element={<AnalyzePage />} />
           <Route path="visualize" element={<VisualizePage />} />
           <Route path="monetary-loss" element={<MonetaryLossPage />} />
+          <Route path="economic-loss" element={<EconomicLossPage />} />
           <Route path="compensation-policy" element={<CompensationPolicyPage />} />
           <Route path="test-report" element={<TestReportPage />} />
           <Route path="sources" element={<SourcesManagement />} />

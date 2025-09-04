@@ -33,7 +33,9 @@ const ACTUAL_LOSS_DATA = {
   "Local government": 1008000000.0,
   "Energy and Power": 402000000.0,
   "irrigation": 9227000000.0,
-  "public health": 1070000000.0
+  "public health": 1070000000.0,
+  "Archeology": 426000000.0,
+  "Industries": 32200000.0
 };
 
 const fetchEndpointData = async (endpoint: string) => {

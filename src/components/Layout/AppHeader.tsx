@@ -26,6 +26,7 @@ const TABS = [
   { id: 'analyze', label: 'Analyze' },
   { id: 'visualize', label: 'Visualize' },
   { id: 'monetary-loss', label: 'Monetary Loss' },
+  { id: 'economic-loss', label: 'Economic Loss' },
   { id: 'compensation-policy', label: 'Compensation' },
   { id: 'brief', label: 'Flood Assistant' },
 ];

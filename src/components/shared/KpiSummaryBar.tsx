@@ -50,14 +50,14 @@ export function KpiSummaryBar({ totals, isLoading, isError }: KpiSummaryBarProps
         color="text-red-600"
       />
       <KpiCard
-        title="Total Injured"
-        value={human.injured}
-        icon={Activity}
+        title="Approx Economic Loss"
+        value="~124.6B PKR"
+        icon={Banknote}
         color="text-yellow-600"
       />
       <KpiCard
         title="Approx Monetary Loss"
-        value="~48.61B PKR"
+        value="~49.07B PKR"
         icon={Banknote}
         color="text-blue-600"
       />

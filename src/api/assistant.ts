@@ -3003,7 +3003,7 @@ districtsWiseCasualities:[
   monetaryLossRates: {
     "House Fully": 7352000000.0,
     "House Partially": 8589000000.0,
-    "Big cattles": 937763103.96,
+    "Big cattles": 937763103.9599999,
     "small Cattles": 351280000.0,
     "Educational Facilities Damaged fully": 2083000000.0,
     "Educational Facilities Damaged Partially": 987000000.0,
@@ -3027,7 +3027,9 @@ districtsWiseCasualities:[
     "Local government": 1008000000.0,
     "Energy and Power": 402000000.0,
     "irrigation": 9227000000.0,
-    "public health": 1070000000.0
+    "public health": 1070000000.0,
+    "Archeology": 426000000.0,
+    "Industries": 32200000.0
   },
 
   // Compensation Rates (in PKR)
@@ -3070,7 +3072,7 @@ districtsWiseCasualities:[
 
   // Key Statistics Summary (Updated with incident data)
   summaryStats: {
-    totalMonetaryLoss: 48610497854.96, // Rs 48.61B
+    totalMonetaryLoss: 49068697854.96, // Rs 49.07B
     totalCompensation: 4180000000, // Rs 4.18B (static value)
     totalDeaths: 406,
     totalInjured: 248,

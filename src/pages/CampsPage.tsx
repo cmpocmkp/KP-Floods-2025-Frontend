@@ -68,7 +68,7 @@ export default function CampsPage() {
 
   // Transform data for charts
   const compensationProgressData = [
-    { category: 'Death Compensation', reported: summary.total_death_comp_reported, paid: summary.total_death_comp_paid, percentage: getPercentage(summary.total_death_comp_paid, summary.total_death_comp_reported) },
+    { category: 'Death Compensation', reported: 415, paid: summary.total_death_comp_paid, percentage: getPercentage(summary.total_death_comp_paid, summary.total_death_comp_reported) },
     { category: 'Injury Compensation', reported: summary.total_injury_comp_reported, paid: summary.total_injury_comp_paid, percentage: getPercentage(summary.total_injury_comp_paid, summary.total_injury_comp_reported) },
     { category: 'House Damage', reported: summary.total_house_damage_reported, paid: summary.total_house_damage_paid, percentage: getPercentage(summary.total_house_damage_paid, summary.total_house_damage_reported) },
     { category: 'Livestock', reported: summary.total_livestock_comp_reported, paid: summary.total_livestock_comp_paid, percentage: getPercentage(summary.total_livestock_comp_paid, summary.total_livestock_comp_reported) },

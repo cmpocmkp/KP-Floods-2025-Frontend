@@ -27,7 +27,9 @@ export const LOSS_RATES: LossRate[] = [
   { type: "Local government", value: 1008000000.0 },
   { type: "Energy and Power", value: 402000000.0 },
   { type: "irrigation", value: 9227000000.0 },
-  { type: "public health", value: 1070000000.0 }
+  { type: "public health", value: 1070000000.0 },
+  { type: "Archeology", value: 426000000.0 },
+  { type: "Industries", value: 32200000.0 }
 ];
 
 export const LOSS_CATEGORIES = {
@@ -70,6 +72,8 @@ export const LOSS_CATEGORIES = {
     "Public Offices",
     "Health facilities",
     "Local government",
-    "public health"
+    "public health",
+    "Archeology",
+    "Industries"
   ]
 };

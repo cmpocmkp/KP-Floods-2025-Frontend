@@ -23,15 +23,14 @@ export default function OverviewPage() {
     <div className="space-y-6">
       {/* PDF Report Buttons */}
       <div className="flex gap-4">
-    
-        <Button 
+        {/* <Button 
           onClick={handleGenerateDetail}
           variant="outline"
           className="flex items-center gap-2 border-green-600 text-green-600 hover:bg-green-50"
         >
           <FileText className="h-4 w-4" />
           Generate Report
-        </Button>
+        </Button> */}
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
