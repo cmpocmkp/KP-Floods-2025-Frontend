@@ -27,7 +27,7 @@ const TABS = [
   { id: 'visualize', label: 'Visualize' },
   { id: 'monetary-loss', label: 'Monetary Loss' },
   { id: 'compensation-policy', label: 'Compensation' },
-  { id: 'ask-ai', label: 'Flood Assistant' },
+  { id: 'brief', label: 'Flood Assistant' },
 ];
 
 export function AppHeader({

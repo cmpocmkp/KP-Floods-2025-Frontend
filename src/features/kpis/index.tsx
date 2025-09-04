@@ -32,6 +32,9 @@ import { getLivestockSummary } from '@/api/livestock';
 import { getAgricultureImpacts } from '@/api/agriculture';
 import { getCombinedInfrastructureServices } from '@/api/infrastructure';
 import { getReliefOperationsOverview } from '@/api/camps';
+import { getDailyDSR } from '@/api/dsr';
+import { fetchMonetaryLossData } from '@/api/monetaryLoss';
+import { getCumulativeDashboard } from '@/lib/overview';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import type { CumulativeDashboardResponse } from '@/lib/types';
@@ -131,9 +134,51 @@ export function IncidentKpis({ data }: { data?: CumulativeDashboardResponse }) {
 }
 
 export function InfrastructureKpis() {
-  // This component is now empty since Infrastructure Damage KPIs moved to InfrastructurePage
-  // and Services Status KPIs moved to ServiceStatusCards component
-  return null;
+  const { data: combinedData, isLoading } = useQuery({
+    queryKey: ['combined-infrastructure-services'],
+    queryFn: () => getCombinedInfrastructureServices()
+  });
+
+  if (isLoading || !combinedData?.infrastructure?.summary) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="h-24 bg-muted/50 rounded-lg animate-pulse" />
+        ))}
+      </div>
+    );
+  }
+
+  const { summary } = combinedData.infrastructure;
+  
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <KpiCard
+        title="Houses Fully Damaged"
+        value={summary.total_houses_fully_damaged.toLocaleString()}
+        icon={Home}
+        color="text-red-600"
+      />
+      <KpiCard
+        title="Houses Partially Damaged"
+        value={summary.total_houses_partially_damaged.toLocaleString()}
+        icon={Home}
+        color="text-orange-600"
+      />
+      <KpiCard
+        title="Education Facilities"
+        value="631"
+        icon={Building}
+        color="text-blue-600"
+      />
+      <KpiCard
+        title="Health Facilities"
+        value={summary.total_health_facilities_damaged.toLocaleString()}
+        icon={Building}
+        color="text-purple-600"
+      />
+    </div>
+  );
 }
 
 export function WarehouseKpis({ data }: { data?: CumulativeDashboardResponse }) {
@@ -564,6 +609,54 @@ export function ServiceStatusCards() {
           color="text-pink-500"
         />
       </div>
+    </div>
+  );
+}
+
+export function VisualizeKpis() {
+  const { data: infrastructureData, isLoading } = useQuery({
+    queryKey: ['combined-infrastructure-services'],
+    queryFn: () => getCombinedInfrastructureServices()
+  });
+
+  if (isLoading || !infrastructureData || !infrastructureData.infrastructure?.summary || !infrastructureData.services?.summary) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="h-24 bg-muted/50 rounded-lg animate-pulse" />
+        ))}
+      </div>
+    );
+  }
+
+  const { infrastructure, services } = infrastructureData;
+  
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <KpiCard
+        title="Total Houses Damaged"
+        value={(infrastructure.summary.total_houses_fully_damaged + infrastructure.summary.total_houses_partially_damaged).toLocaleString()}
+        icon={Home}
+        color="text-red-600"
+      />
+      <KpiCard
+        title="Services Disrupted"
+        value={(services.summary.total_water_disconnections + services.summary.total_gas_disconnections + services.summary.total_ptcl_disconnections).toLocaleString()}
+        icon={Zap}
+        color="text-yellow-600"
+      />
+      <KpiCard
+        title="Districts Affected"
+        value={infrastructure.summary.total_districts}
+        icon={MapPin}
+        color="text-blue-600"
+      />
+      <KpiCard
+        title="Education Facilities"
+        value="631"
+        icon={Building}
+        color="text-purple-600"
+      />
     </div>
   );
 }
