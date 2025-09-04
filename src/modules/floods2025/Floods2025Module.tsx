@@ -98,43 +98,45 @@ export default function Floods2025Module() {
   
   return (
     <div className={`min-h-screen bg-slate-50 ${pad}`}>
-      {/* Blue header above KPI cards */}
-      <div className="bg-gradient-to-r from-sky-600 to-indigo-600 text-white px-6 py-4 shadow-md">
-        <h1 className="text-2xl font-bold">KP Floods 2025</h1>
-      </div>
-      
-      {/* Render KPI cards above the tab list */}
-      <div className="px-6 py-4 bg-white border-b border-gray-200">
-        {renderKpis()}
-      </div>
-      
-      <AppHeader 
-        activeTab={activeTab} 
-        onTabChange={handleTabChange} 
-        onLogout={handleLogout} 
-      />
-      <main className="pt-4">
-        <div className="px-4 pb-8">
-          <Routes>
-            <Route path="brief" element={<BriefPage />} />
-            <Route path="incidents" element={<IncidentsPage />} />
-            <Route path="infrastructure" element={<InfrastructurePage />} />
-            <Route path="warehouse" element={<WarehousePage />} />
-            <Route path="camps" element={<CampsPage />} />
-            <Route path="compensation" element={<CompensationPage />} />
-            <Route path="livestock" element={<LivestockPage />} />
-            <Route path="agriculture" element={<AgriculturePage />} />
-            <Route path="analyze" element={<AnalyzePage />} />
-            <Route path="visualize" element={<VisualizePage />} />
-            <Route path="monetary-loss" element={<MonetaryLossPage />} />
-            <Route path="compensation-policy" element={<CompensationPolicyPage />} />
-            <Route path="test-report" element={<TestReportPage />} />
-            <Route path="sources" element={<SourcesManagement />} />
-            <Route index element={<OverviewPage />} />
-            <Route path="*" element={<OverviewPage />} />
-          </Routes>
-        </div>
-      </main>
+    {/* Blue header above KPI cards */}
+    <div className="bg-[#077fc9] text-white px-6 py-4 shadow-md">
+      <h1 className="text-2xl font-extrabold tracking-tight">KP Floods 2025</h1>
     </div>
+    
+    {/* Render KPI cards above the tab list */}
+    <div className="px-6 py-4 bg-white border-b border-gray-200">
+      {renderKpis()}
+    </div>
+  
+    <AppHeader 
+      activeTab={activeTab} 
+      onTabChange={handleTabChange} 
+      onLogout={handleLogout} 
+    />
+  
+    <main className="pt-4">
+      <div className="px-4 pb-8">
+        <Routes>
+          <Route path="brief" element={<BriefPage />} />
+          <Route path="incidents" element={<IncidentsPage />} />
+          <Route path="infrastructure" element={<InfrastructurePage />} />
+          <Route path="warehouse" element={<WarehousePage />} />
+          <Route path="camps" element={<CampsPage />} />
+          <Route path="compensation" element={<CompensationPage />} />
+          <Route path="livestock" element={<LivestockPage />} />
+          <Route path="agriculture" element={<AgriculturePage />} />
+          <Route path="analyze" element={<AnalyzePage />} />
+          <Route path="visualize" element={<VisualizePage />} />
+          <Route path="monetary-loss" element={<MonetaryLossPage />} />
+          <Route path="compensation-policy" element={<CompensationPolicyPage />} />
+          <Route path="test-report" element={<TestReportPage />} />
+          <Route path="sources" element={<SourcesManagement />} />
+          <Route index element={<OverviewPage />} />
+          <Route path="*" element={<OverviewPage />} />
+        </Routes>
+      </div>
+    </main>
+  </div>
+  
   );
 }
