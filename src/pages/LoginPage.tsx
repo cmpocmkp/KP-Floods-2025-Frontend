@@ -107,6 +107,18 @@ export default function LoginPage() {
           </form>
         </div>
       </div>
+
+      {/* Powered by */}
+      <div className="mt-8 flex justify-center">
+        <div className="flex items-center space-x-2 bg-[#077fc9] px-4 py-2 rounded-lg">
+          <div className="text-lg text-white font-bold">Powered By</div>
+          <img 
+            src="/src/components/nav/cmpo_logo.jpg" 
+            alt="CRUX CMPO Logo" 
+            className="h-10 w-auto"
+          />
+        </div>
+      </div>
     </div>
   );
 }

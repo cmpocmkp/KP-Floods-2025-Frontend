@@ -46,18 +46,18 @@ export default function LoginCard({ onLoginSuccess }: LoginCardProps) {
           <div className="text-center">
             <div className="relative inline-block bg-white p-2 rounded-lg shadow-sm">
               {/* Main Logo */}
-              <div className="text-5xl font-bold text-blue-600">
+              <div className="text-6xl font-bold text-[#077fc9]">
                 KPD3
               </div>
             </div>
 
             {/* Expanded meaning */}
-            <div className="mt-4 flex justify-center items-center space-x-3 text-sm font-medium">
-              <span className="text-blue-600">Disaster</span>
+            <div className="mt-4 flex justify-center items-center space-x-3 text-base font-semibold">
+              <span className="text-[#077fc9]">Disaster</span>
               <span className="text-gray-400">•</span>
-              <span className="text-blue-600">Damages</span>
+              <span className="text-[#077fc9]">Damages</span>
               <span className="text-gray-400">•</span>
-              <span className="text-blue-600">Directory</span>
+              <span className="text-[#077fc9]">Directory</span>
             </div>
           </div>
         </div>
@@ -105,10 +105,22 @@ export default function LoginCard({ onLoginSuccess }: LoginCardProps) {
           <Button 
             type="submit" 
             disabled={loading} 
-            className="h-11 w-full rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white"
+            className="h-11 w-full rounded-xl bg-[#077fc9] text-white hover:bg-[#0669a8]"
           >
             {loading ? "Signing in…" : "Sign in"}
           </Button>
+
+          {/* Powered by */}
+          <div className="mt-6 flex justify-center">
+            <div className="flex items-center space-x-2 bg-w px-4 py-2 rounded-lg">
+              <div className="text-lg black-white font-bold">Powered By</div>
+              <img 
+                src="/src/components/nav/cmpo_logo.jpg" 
+                alt="CRUX CMPO Logo" 
+                className="h-16 w-auto"
+              />
+            </div>
+          </div>
         </form>
 
         <div className="mt-6 flex items-center justify-center gap-4 text-sm text-muted-foreground">
