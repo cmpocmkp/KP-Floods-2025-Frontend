@@ -40,16 +40,6 @@ export function AppHeader({
   return (
     <div className="relative">
       <div className="bg-white border-b border-gray-200 px-4 md:px-6 py-2">
-        <div className="flex flex-col">
-          <h1 className="text-2xl font-bold">KPD3</h1>
-          <div className="flex items-center space-x-2 text-xs font-medium mt-1">
-            <span className="text-blue-600">Disasters</span>
-            <span className="text-gray-400">•</span>
-            <span className="text-blue-600">Damages</span>
-            <span className="text-gray-400">•</span>
-            <span className="text-blue-600">Directories</span>
-          </div>
-        </div>
       </div>
 
       <TabsBar

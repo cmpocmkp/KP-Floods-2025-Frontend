@@ -213,11 +213,11 @@ function AppContent() {
       )}
       {/* KPI Summary Bar - shown above tabs for specified routes */}
       {showKpis && (
-        <div className="max-w-[1400px] mx-auto px-4 md:px-6 pt-4 pb-4">
+        <div className="max-w-[1400px] mx-auto px-4 md:px-6 pt-2 pb-2">
           <KpiSummaryBar />
         </div>
       )}
-      <div className="max-w-[1400px] mx-auto px-4 md:px-6 py-6">
+      <div className="max-w-[1400px] mx-auto px-4 md:px-6 py-2">
         {renderKpis()}
       </div>
       <AppHeader
@@ -227,7 +227,7 @@ function AppContent() {
         userName={user?.user_name}
         onLogout={handleLogout}
       />
-      <main className="max-w-[1400px] mx-auto px-4 md:px-6 pt-4">
+      <main className="max-w-[1400px] mx-auto px-4 md:px-6 pt-2">
         {renderContent()}
       </main>
     </div>
