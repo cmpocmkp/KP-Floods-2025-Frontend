@@ -1,4 +1,6 @@
+import SettingsPage from '@/pages/SettingsPage';
+
 export default function SettingsModule() {
-  return <div className="text-slate-700">Settings </div>;
+  return <SettingsPage />;
 }
 
