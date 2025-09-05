@@ -48,7 +48,7 @@ const CompensationPolicyOverview: React.FC = () => {
       {/* Total Compensation Banner */}
       <Card className="p-8 bg-gradient-to-r from-green-500 via-blue-500 to-green-600 text-white">
         <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Compensation Policy Summary</h1>
+          <h1 className="text-4xl font-bold mb-4">Compensation</h1>
           <div className="text-6xl font-bold mb-2">
             ~{formatCurrency(Math.round(data.totalCompensation))}
           </div>

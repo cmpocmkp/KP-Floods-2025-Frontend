@@ -172,7 +172,7 @@ export default function EconomicLossPage() {
       {/* Big Total Loss Tile */}
       <Card className="p-8 bg-gradient-to-r from-red-500 via-purple-500 to-red-600 text-white">
         <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Total Economic Loss</h1>
+          <h1 className="text-4xl font-bold mb-4">Economic Loss</h1>
           <div className="text-6xl font-bold mb-2">
             ~Rs {economicData.totals.total_combined_pkr}
           </div>
