@@ -3073,7 +3073,7 @@ districtsWiseCasualities:[
   // Key Statistics Summary (Updated with incident data)
   summaryStats: {
     totalMonetaryLoss: 49068697854.96, // Rs 49.07B
-    totalCompensation: 4180000000, // Rs 4.18B (static value)
+    totalCompensation: 4180000000, // Rs 4.23B (static value)
     totalDeaths: 406,
     totalInjured: 248,
     totalHousesDamaged: 3661, // 978 fully + 2683 partially

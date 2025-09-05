@@ -63,7 +63,7 @@ export function KpiSummaryBar({ totals, isLoading, isError }: KpiSummaryBarProps
       />
       <KpiCard
         title="Approx Compensation"
-        value="~4.18B PKR"
+        value="~4.23B PKR"
         icon={HandCoins}
         color="text-green-600"
       />

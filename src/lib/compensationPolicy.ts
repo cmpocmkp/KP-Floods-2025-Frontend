@@ -38,6 +38,12 @@ export const COMPENSATION_DATA: CompensationItem[] = [
     total: 30000000
   },
   {
+    type: "Heavy Vehicle Fully Damaged",
+    compensation: 200000,
+    count: 115,
+    total: 23000000
+  },
+  {
     type: "Big Cattles (cows,buffalos,Horse)",
     compensation: 80000,
     count: 3972,
@@ -52,8 +58,8 @@ export const COMPENSATION_DATA: CompensationItem[] = [
   {
     type: "Crops per acre",
     compensation: 5000,
-    count: 57892.5,
-    total: 289462500
+    count: 64188,
+    total: 320940000
   }
 ];
 
@@ -68,7 +74,8 @@ export const COMPENSATION_CATEGORIES = {
     "Shops, Kiosk or other business establishment Fully Damaged"
   ],
   [CompensationCategoryType.VEHICLE_DAMAGE]: [
-    "Vehicle Fully Damaged"
+    "Vehicle Fully Damaged",
+    "Heavy Vehicle Fully Damaged"
   ],
   [CompensationCategoryType.LIVESTOCK_LOSS]: [
     "Big Cattles (cows,buffalos,Horse)",
