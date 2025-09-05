@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { DataCoveragePeriod } from '@/components/shared/DataCoveragePeriod';
 import {
   BarChart,
   Bar,
@@ -146,6 +147,7 @@ export default function LivestockPage() {
 
   return (
     <div className="space-y-6">
+      <DataCoveragePeriod />
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* District-wise Cattle Losses */}

@@ -13,6 +13,7 @@ import {
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { getWarehouseDetails } from '@/api/warehouse';
+import { DataCoveragePeriod } from '@/components/shared/DataCoveragePeriod';
 
 const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#6366F1', '#EC4899'];
 
@@ -37,6 +38,7 @@ export default function WarehousePage() {
 
   return (
     <div className="space-y-6">
+      <DataCoveragePeriod />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Stock by Division */}
         <Card>

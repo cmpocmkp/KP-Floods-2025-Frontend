@@ -7,6 +7,7 @@ import { LeafletMap } from '@/features/overview/LeafletMap';
 import { IncidentTrendsChart } from '@/features/overview/IncidentTrendsChart';
 import { DamageDonut } from '@/features/overview/DamageDonut';
 import { DivisionSummaryTable } from '@/features/overview/DivisionSummaryTable';
+import { DataCoveragePeriod } from '@/components/shared/DataCoveragePeriod';
 
 export default function OverviewPage() {
   const handleGenerateSummary = () => {
@@ -21,6 +22,7 @@ export default function OverviewPage() {
 
   return (
     <div className="space-y-6">
+      <DataCoveragePeriod />
       {/* PDF Report Buttons */}
       <div className="flex gap-4">
         {/* <Button 

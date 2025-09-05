@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DataCoveragePeriod } from '@/components/shared/DataCoveragePeriod';
 import {
   BarChart,
   Bar,
@@ -222,6 +223,7 @@ export default function InfrastructurePage() {
 
   return (
     <div className="space-y-6">
+      <DataCoveragePeriod />
       {/* Main Content Tabs */}
       <Tabs defaultValue="infrastructure" className="space-y-6">
         <TabsList className="grid w-full grid-cols-9">

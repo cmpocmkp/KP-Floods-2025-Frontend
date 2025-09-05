@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Bot, User, Send, Loader2, AlertCircle } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
+import { DataCoveragePeriod } from '@/components/shared/DataCoveragePeriod';
 
 // Import all data sources for context
 import { getCombinedInfrastructureServices } from '@/api/infrastructure';
@@ -285,6 +286,7 @@ export default function BriefPage() {
         }
       `}</style>
       <div className="max-w-4xl mx-auto h-full flex flex-col">
+      <DataCoveragePeriod />
       {/* Header */}
       <div className="text-center space-y-2 p-6">
         <p className="text-gray-600">Ask questions about flood damage, infrastructure, agriculture, compensation, and recovery efforts using the new flexible assistant API</p>

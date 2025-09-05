@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Info, TrendingUp, Calculator, Globe, Building2 } from "lucide-react";
+import { DataCoveragePeriod } from '@/components/shared/DataCoveragePeriod';
 
 const economicData = {
   sectors: [
@@ -155,19 +156,9 @@ export default function EconomicLossPage() {
 
   return (
     <div className="space-y-6">
+      <DataCoveragePeriod />
       {/* Header with PDNA Info */}
-      <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-blue-900">
-            <Globe className="h-6 w-6" />
-            <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-              PDNA Data
-            </Badge>
-            Economic Loss Assessment - KP Floods 2025
-          </CardTitle>
-         
-        </CardHeader>
-      </Card>
+   
 
       {/* Big Total Loss Tile */}
       <Card className="p-8 bg-gradient-to-r from-red-500 via-purple-500 to-red-600 text-white">

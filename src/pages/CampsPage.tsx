@@ -16,6 +16,7 @@ import {
   PieChart, Pie, Cell, LineChart, Line, ScatterChart, Scatter, ZAxis,
   AreaChart, Area, ComposedChart
 } from 'recharts';
+import { DataCoveragePeriod } from '@/components/shared/DataCoveragePeriod';
 import { 
   Tent, Users, Building, MapPin, Activity, TrendingUp, 
   AlertTriangle, CheckCircle, Clock, Target, Award, Shield
@@ -139,6 +140,7 @@ export default function CampsPage() {
 
   return (
     <div className="space-y-6">
+      <DataCoveragePeriod />
       {/* Header with Summary Stats */}
       <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6">
         <div className="flex items-center justify-between mb-4">

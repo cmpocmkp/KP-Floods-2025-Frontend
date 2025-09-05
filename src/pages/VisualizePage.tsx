@@ -11,6 +11,7 @@ import {
   MapPin, Building2,
   BarChart3, PieChart as PieChartIcon
 } from 'lucide-react';
+import { DataCoveragePeriod } from '@/components/shared/DataCoveragePeriod';
 
 // Import API functions
 import { getCombinedInfrastructureServices } from '@/api/infrastructure';
@@ -254,6 +255,7 @@ export default function VisualizePage() {
 
   return (
     <div className="space-y-6">
+      <DataCoveragePeriod />
       {/* Header */}
       <div className="text-center space-y-2">
         <p className="text-gray-600">Interactive analysis of all flood impact sectors and recovery progress</p>

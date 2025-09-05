@@ -8,6 +8,7 @@ import { SeverityTable } from '@/components/analyze/SeverityTable';
 import { NarrativeDigest } from '@/components/analyze/NarrativeDigest';
 import { RoadsBoard } from '@/components/analyze/RoadsBoard';
 import { getDailyDSR, computeDSRAggregates, SeverityWeights } from '@/api/dsr';
+import { DataCoveragePeriod } from '@/components/shared/DataCoveragePeriod';
 
 export default function AnalyzePage() {
   const [selectedDate, setSelectedDate] = useState('2025-08-15');
@@ -133,6 +134,7 @@ export default function AnalyzePage() {
 
   return (
     <div className="space-y-6">
+      <DataCoveragePeriod />
       {/* Filters */}
       <AnalyzeFilters
         date={selectedDate}

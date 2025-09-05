@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { format } from 'date-fns';
 import { getDistrictWiseIncidents, type DistrictIncidentSummary } from '@/api/incidents';
 import { useState } from 'react';
+import { DataCoveragePeriod } from '@/components/shared/DataCoveragePeriod';
 
 export default function IncidentsPage() {
   const [showModal, setShowModal] = useState(false);
@@ -94,6 +95,7 @@ export default function IncidentsPage() {
 
   return (
     <div className="space-y-6">
+      <DataCoveragePeriod />
 
       {/* Incidents Table */}
       <Card>
