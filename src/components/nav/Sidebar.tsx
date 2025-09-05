@@ -69,7 +69,7 @@ export default function Sidebar() {
         <div className="text-xl text-white font-bold">Powered By</div>
         <div className="flex items-center justify-center">
           <img 
-            src="/crux-cmpo-logo.png" 
+            src="/cmpo-logo.jpg" 
             alt="CRUX CMPO Logo" 
             className="h-12 w-auto"
           />
