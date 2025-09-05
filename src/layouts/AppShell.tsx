@@ -36,15 +36,7 @@ export default function AppShell() {
       <Sidebar />
       {!isFloodsRoute && (
         <>
-          <header className={`sticky top-0 z-20 bg-gradient-to-r from-sky-600 to-indigo-600 ${pad}`}>
-            <div className="h-16 flex items-center justify-between px-4">
-              <button className="opacity-0 pointer-events-none"><Menu className="h-6 w-6" /></button>
-              <div className="flex-1 flex justify-center md:justify-start">
-                <h1 className="font-semibold">KPD3</h1>
-              </div>
-              <button className="hidden" data-kpd3-signout />
-            </div>
-          </header>
+         
 
           <main className={`relative z-0 pointer-events-auto pt-4 ${pad}`}>
             <div className="px-4 pb-8">

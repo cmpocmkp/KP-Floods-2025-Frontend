@@ -16,7 +16,7 @@ export default function Sidebar() {
   return (
     <aside
     className={`fixed top-0 left-0 h-screen
-                bg-[#077fc9]
+                bg-[#2b547d]
                 text-white z-50 pointer-events-auto
                 ${collapsed ? "w-20" : "w-65"} transition-[width] duration-200`}
     aria-label="Main navigation"
@@ -64,7 +64,7 @@ export default function Sidebar() {
     </div>
 
     {/* Powered by */}
-    <div className="absolute bottom-0 left-0 right-0 px-1 py-0.5 bg-[#077fc9]">
+    <div className="absolute bottom-0 left-0 right-0 px-1 py-0.5 bg-[#2b547d]">
       <div className="flex items-center justify-center space-x-2">
         <div className="text-xl text-white font-bold">Powered By</div>
         <div className="flex items-center justify-center">

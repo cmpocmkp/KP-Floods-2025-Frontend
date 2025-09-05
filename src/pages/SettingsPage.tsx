@@ -106,10 +106,10 @@ export default function SettingsPage() {
           <CardContent className="space-y-4">
             <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
               <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                {user?.name?.charAt(0) || 'U'}
+                {user?.user_name?.charAt(0) || 'U'}
               </div>
               <div>
-                <h3 className="font-semibold">{user?.name || 'User'}</h3>
+                <h3 className="font-semibold">{user?.user_name || 'User'}</h3>
                 <p className="text-sm text-gray-600">{user?.email || 'user@example.com'}</p>
                 <Badge variant="secondary" className="mt-1">
                   {user?.role || 'User'}
@@ -121,7 +121,7 @@ export default function SettingsPage() {
                 <Label htmlFor="displayName">Display Name</Label>
                 <Input 
                   id="displayName" 
-                  defaultValue={user?.name || ''} 
+                  defaultValue={user?.user_name || ''} 
                   placeholder="Enter your display name"
                 />
               </div>
@@ -297,15 +297,7 @@ export default function SettingsPage() {
             </div>
             
             <div className="flex items-center justify-between">
-              <div>
-                <Label htmlFor="sms-notifications">SMS Notifications</Label>
-                <p className="text-sm text-gray-600">Receive text message alerts</p>
-              </div>
-              <Switch
-                id="sms-notifications"
-                checked={notifications.sms}
-                onCheckedChange={(checked) => setNotifications(prev => ({ ...prev, sms: checked }))}
-              />
+      
             </div>
           </CardContent>
         </Card>

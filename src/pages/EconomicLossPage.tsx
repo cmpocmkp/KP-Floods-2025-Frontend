@@ -159,10 +159,7 @@ export default function EconomicLossPage() {
             </Badge>
             Economic Loss Assessment - KP Floods 2025
           </CardTitle>
-          <p className="text-blue-700 text-sm">
-            Post-Disaster Needs Assessment (PDNA) data from World Bank collaboration, 
-            showing comprehensive economic impact including direct losses, PDNA losses, and input-output ripple effects across sectors.
-          </p>
+         
         </CardHeader>
       </Card>
 

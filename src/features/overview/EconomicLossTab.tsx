@@ -1,23 +1,8 @@
-import React from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Info } from "lucide-react";
 
-interface EconomicSector {
-  sector: string;
-  direct_pkr: string;
-  pdna_loss_pkr: string;
-  pdna_total_pkr: string;
-  io_ripple_pkr: string;
-  combined_pkr: string;
-}
-
-interface EconomicTotals {
-  total_direct_pkr: string;
-  total_pdna_loss_pkr: string;
-  total_pdna_total_pkr: string;
-  total_io_ripple_pkr: string;
-  total_combined_pkr: string;
-}
 
 const economicData = {
   sectors: [
@@ -128,6 +113,8 @@ const economicData = {
 };
 
 export function EconomicLossTab() {
+  const [isInfoExpanded, setIsInfoExpanded] = useState(false);
+
   const formatCurrency = (value: string) => {
     const numValue = parseFloat(value.replace(/,/g, ''));
     if (numValue >= 1e9) {
@@ -157,10 +144,7 @@ export function EconomicLossTab() {
             </Badge>
             Economic Loss Assessment
           </CardTitle>
-          <p className="text-blue-700 text-sm">
-            Post-Disaster Needs Assessment (PDNA) data from World Bank collaboration, 
-            showing direct losses, PDNA losses, and input-output ripple effects across sectors.
-          </p>
+        
         </CardHeader>
       </Card>
 
@@ -288,26 +272,72 @@ export function EconomicLossTab() {
         </CardContent>
       </Card>
 
-      {/* Methodology Explanation */}
-      <Card className="bg-amber-50 border-amber-200">
-        <CardHeader>
-          <CardTitle className="text-amber-900">Methodology</CardTitle>
-        </CardHeader>
-        <CardContent className="text-amber-800 text-sm space-y-2">
-          <p>
-            <strong>Direct Losses:</strong> Immediate infrastructure and asset damage from floods
-          </p>
-          <p>
-            <strong>PDNA Losses:</strong> Additional losses identified through Post-Disaster Needs Assessment
-          </p>
-          <p>
-            <strong>IO Ripple Effects:</strong> Economic multiplier effects calculated using input-output analysis
-          </p>
-          <p>
-            <strong>Combined Impact:</strong> Total economic impact including all direct, indirect, and ripple effects
-          </p>
-        </CardContent>
-      </Card>
+      {/* Expandable PDNA & Methodology Info */}
+      <div className="relative">
+        <button
+          onClick={() => setIsInfoExpanded(!isInfoExpanded)}
+          className="absolute top-2 right-2 p-1 rounded-full bg-blue-100 hover:bg-blue-200 text-blue-600 hover:text-blue-700 transition-colors"
+          title="Understanding PDNA & World Bank Multiplier Factors"
+        >
+          <Info className="h-4 w-4" />
+        </button>
+        
+        {isInfoExpanded && (
+          <Card className="bg-blue-50 border-blue-200 mt-8">
+            <CardHeader>
+              <CardTitle className="text-blue-900">
+                Understanding PDNA & World Bank Multiplier Factors
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="text-blue-800 text-sm space-y-4">
+            <div>
+              <h4 className="font-semibold text-blue-900 mb-2">What is PDNA?</h4>
+              <p className="mb-2">
+                Post-Disaster Needs Assessment (PDNA) is a standardized methodology developed by the World Bank, 
+                United Nations, and European Union to assess the full extent of disaster damage and losses. It provides:
+              </p>
+              <ul className="list-disc list-inside space-y-1 ml-4">
+                <li>Comprehensive damage assessment across all sectors</li>
+                <li>Standardized loss calculation methodologies</li>
+                <li>Basis for international aid and recovery planning</li>
+                <li>Credible data for policy decisions and funding allocation</li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold text-blue-900 mb-2">Input-Output Ripple Effects</h4>
+              <p className="mb-2">
+                Economic Multiplier Effects represent the cascading economic impact beyond direct losses:
+              </p>
+              <ul className="list-disc list-inside space-y-1 ml-4">
+                <li>Supply chain disruptions affecting other industries</li>
+                <li>Reduced economic activity due to infrastructure damage</li>
+                <li>Employment losses and reduced consumer spending</li>
+                <li>Long-term economic recovery challenges</li>
+              </ul>
+            </div>
+
+            <div className="bg-blue-100 p-3 rounded-lg">
+              <h4 className="font-semibold text-blue-900 mb-2">Methodology Breakdown</h4>
+              <div className="space-y-2">
+                <p>
+                  <strong>Direct Losses:</strong> Immediate infrastructure and asset damage from floods
+                </p>
+                <p>
+                  <strong>PDNA Losses:</strong> Additional losses identified through Post-Disaster Needs Assessment
+                </p>
+                <p>
+                  <strong>IO Ripple Effects:</strong> Economic multiplier effects calculated using input-output analysis
+                </p>
+                <p>
+                  <strong>Combined Impact:</strong> Total economic impact including all direct, indirect, and ripple effects
+                </p>
+              </div>
+            </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
     </div>
   );
 }

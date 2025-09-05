@@ -110,7 +110,7 @@ export default function LoginPage() {
 
       {/* Powered by */}
       <div className="mt-8 flex justify-center">
-        <div className="flex items-center space-x-2 bg-[#077fc9] px-4 py-2 rounded-lg">
+        <div className="flex items-center space-x-2 bg-[#2b547d] px-4 py-2 rounded-lg">
           <div className="text-lg text-white font-bold">Powered By</div>
           <img 
             src="/cmpo-logo.jpg" 

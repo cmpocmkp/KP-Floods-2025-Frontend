@@ -102,7 +102,7 @@ export default function Floods2025Module() {
   return (
     <div className={`min-h-screen bg-slate-50 ${pad}`}>
     {/* Blue header above KPI cards */}
-    <div className="bg-[#077fc9] text-white px-6 py-4 shadow-md">
+    <div className="bg-[#2b547d] text-white px-6 py-4 shadow-md">
       <h1 className="text-2xl font-extrabold tracking-tight">KP Floods 2025</h1>
     </div>
     

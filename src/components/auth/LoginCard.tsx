@@ -46,18 +46,18 @@ export default function LoginCard({ onLoginSuccess }: LoginCardProps) {
           <div className="text-center">
             <div className="relative inline-block bg-white p-2 rounded-lg shadow-sm">
               {/* Main Logo */}
-              <div className="text-6xl font-bold text-[#077fc9]">
+              <div className="text-6xl font-bold text-[#2b547d]">
                 KPD3
               </div>
             </div>
 
             {/* Expanded meaning */}
             <div className="mt-4 flex justify-center items-center space-x-3 text-base font-semibold">
-              <span className="text-[#077fc9]">Disaster</span>
+              <span className="text-[#2b547d]">Disaster</span>
               <span className="text-gray-400">•</span>
-              <span className="text-[#077fc9]">Damages</span>
+              <span className="text-[#2b547d]">Damages</span>
               <span className="text-gray-400">•</span>
-              <span className="text-[#077fc9]">Directory</span>
+              <span className="text-[#2b547d]">Directory</span>
             </div>
           </div>
         </div>
@@ -105,7 +105,7 @@ export default function LoginCard({ onLoginSuccess }: LoginCardProps) {
           <Button 
             type="submit" 
             disabled={loading} 
-            className="h-11 w-full rounded-xl bg-[#077fc9] text-white hover:bg-[#0669a8]"
+            className="h-11 w-full rounded-xl bg-[#2b547d] text-white hover:bg-[#0669a8]"
           >
             {loading ? "Signing in…" : "Sign in"}
           </Button>
