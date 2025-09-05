@@ -366,7 +366,7 @@ export default function EconomicLossPage() {
                     <div>Economic Losses (PKR)</div>
                   </th>
                   <th className="text-right p-2 font-medium">
-                    <div>Combined (PKR)</div>
+                    <div>Total Losses (PKR)</div>
                   </th>
                   <th className="text-right p-2 font-medium">% of Total</th>
                 </tr>
