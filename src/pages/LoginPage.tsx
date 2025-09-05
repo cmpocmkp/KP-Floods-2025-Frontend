@@ -113,7 +113,7 @@ export default function LoginPage() {
         <div className="flex items-center space-x-2 bg-[#077fc9] px-4 py-2 rounded-lg">
           <div className="text-lg text-white font-bold">Powered By</div>
           <img 
-            src="/src/components/nav/cmpo_logo.jpg" 
+            src="/crux-cmpo-logo.png" 
             alt="CRUX CMPO Logo" 
             className="h-10 w-auto"
           />

@@ -115,7 +115,7 @@ export default function LoginCard({ onLoginSuccess }: LoginCardProps) {
             <div className="flex items-center space-x-2 bg-w px-4 py-2 rounded-lg">
               <div className="text-lg black-white font-bold">Powered By</div>
               <img 
-                src="/src/components/nav/cmpo_logo.jpg" 
+                src="/crux-cmpo-logo.png" 
                 alt="CRUX CMPO Logo" 
                 className="h-16 w-auto"
               />
