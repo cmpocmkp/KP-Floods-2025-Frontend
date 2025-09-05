@@ -50,20 +50,20 @@ export function KpiSummaryBar({ totals, isLoading, isError }: KpiSummaryBarProps
         color="text-red-600"
       />
       <KpiCard
-        title="Approx Economic Loss"
-        value="~124.6B PKR"
+        title="Economic Loss"
+        value="~124.6 B PKR"
         icon={Banknote}
         color="text-yellow-600"
       />
       <KpiCard
-        title="Approx Monetary Loss"
-        value="~49.07B PKR"
+        title="Monetary Loss"
+        value="~49.07 B PKR"
         icon={Banknote}
         color="text-blue-600"
       />
       <KpiCard
-        title="Approx Compensation"
-        value="~4.23B PKR"
+        title="Compensation"
+        value="~4.23 B PKR"
         icon={HandCoins}
         color="text-green-600"
       />

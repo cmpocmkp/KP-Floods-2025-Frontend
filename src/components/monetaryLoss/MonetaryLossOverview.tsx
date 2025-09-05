@@ -77,12 +77,12 @@ const MonetaryLossOverview: React.FC = () => {
       {/* Total Loss Banner */}
       <Card className="p-8 bg-gradient-to-r from-red-500 via-orange-500 to-red-600 text-white">
         <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Total Monetary Loss</h1>
+          <h1 className="text-4xl font-bold mb-4">Monetary Loss</h1>
           <div className="text-6xl font-bold mb-2">
             ~{formatCurrency(Math.round(totalLoss))}
           </div>
           <div className="text-2xl opacity-90">
-            (~{Math.round(totalLossInBillions * 100) / 100} Billion PKR)
+            (~{Math.round(totalLossInBillions * 100) / 100} B PKR)
           </div>
           <div className="text-lg mt-4 opacity-80">
             Comprehensive damage assessment across all sectors
@@ -107,7 +107,7 @@ const MonetaryLossOverview: React.FC = () => {
               <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }}></div>
             </div>
             <div className="text-2xl font-bold text-gray-800">
-              ~{(Math.round((category.totalLoss / 1_000_000_000) * 100) / 100).toFixed(2)}B
+              ~{(Math.round((category.totalLoss / 1_000_000_000) * 100) / 100).toFixed(2)} B PKR
             </div>
             <div className="text-sm text-gray-600">
               {((category.totalLoss / totalLoss) * 100).toFixed(1)}% of total
@@ -160,7 +160,7 @@ const MonetaryLossOverview: React.FC = () => {
                           fill="#fff"
                           fontSize={10}
                         >
-                          ~{(Math.round((value / 1_000_000_000) * 100) / 100).toFixed(2)}B
+                          ~{(Math.round((value / 1_000_000_000) * 100) / 100).toFixed(2)} B PKR
                         </text>
                       </>
                     )}
@@ -242,7 +242,7 @@ const MonetaryLossOverview: React.FC = () => {
                   ~{formatCurrency(Math.round(item.totalLoss))}
                 </div>
                 <div className="text-sm text-gray-600">
-                  ~{(Math.round((item.totalLoss / 1_000_000_000) * 1000) / 1000).toFixed(3)} Billion PKR
+                  ~{(Math.round((item.totalLoss / 1_000_000_000) * 1000) / 1000).toFixed(3)} B PKR
                 </div>
               </div>
             ))}
@@ -286,7 +286,7 @@ const MonetaryLossOverview: React.FC = () => {
                       ~{formatCurrency(Math.round(item.totalLoss))}
                     </div>
                     <div className="text-xs text-gray-600">
-                      ~{(Math.round((item.totalLoss / 1_000_000_000) * 1000) / 1000).toFixed(3)} Billion PKR
+                      ~{(Math.round((item.totalLoss / 1_000_000_000) * 1000) / 1000).toFixed(3)} B PKR
                     </div>
                   </div>
                 ))}
@@ -314,7 +314,7 @@ const MonetaryLossOverview: React.FC = () => {
           </div>
           <div className="text-center">
             <div className="text-3xl font-bold text-red-600">
-              ~{Math.round(totalLossInBillions * 100) / 100}B
+              ~{Math.round(totalLossInBillions * 100) / 100} B PKR
             </div>
             <div className="text-sm text-gray-600">Total Loss (PKR)</div>
           </div>

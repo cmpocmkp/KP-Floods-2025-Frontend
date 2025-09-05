@@ -19,7 +19,7 @@ export default function EarthquakeModule() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-red-900">
               <Activity className="h-6 w-6" />
-              Earthquake Monitoring System
+              Earthquake
             </CardTitle>
           </CardHeader>
           <CardContent>

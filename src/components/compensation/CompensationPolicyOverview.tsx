@@ -53,7 +53,7 @@ const CompensationPolicyOverview: React.FC = () => {
             ~{formatCurrency(Math.round(data.totalCompensation))}
           </div>
           <div className="text-2xl opacity-90">
-            (~{Math.round(data.totalCompensation / 1_000_000_000 * 100) / 100} Billion PKR)
+            (~{Math.round(data.totalCompensation / 1_000_000_000 * 100) / 100} B PKR)
           </div>
           <div className="text-lg mt-4 opacity-80">
             Total Beneficiaries: ~76,350
@@ -78,7 +78,7 @@ const CompensationPolicyOverview: React.FC = () => {
               <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }}></div>
             </div>
             <div className="text-2xl font-bold text-gray-800">
-              {(category.totalCompensation / 1_000_000_000).toFixed(2)}B
+              {(category.totalCompensation / 1_000_000_000).toFixed(2)} B PKR
             </div>
             <div className="text-sm text-gray-600">
               ~{formatNumber(Math.round(category.totalCount))} beneficiaries
@@ -262,7 +262,7 @@ const CompensationPolicyOverview: React.FC = () => {
           </div>
           <div className="text-center">
             <div className="text-3xl font-bold text-red-600">
-              {(data.totalCompensation / 1_000_000_000).toFixed(2)}B
+              {(data.totalCompensation / 1_000_000_000).toFixed(2)} B PKR
             </div>
             <div className="text-sm text-gray-600">Total Compensation (PKR)</div>
           </div>

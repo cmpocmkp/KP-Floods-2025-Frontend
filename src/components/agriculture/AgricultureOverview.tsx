@@ -265,7 +265,7 @@ const AgricultureOverview: React.FC = () => {
           </div>
           <div className="text-center">
             <div className="text-3xl font-bold text-red-600">
-              {summary.totalEstimatedLosses.toFixed(2)}B
+              {summary.totalEstimatedLosses.toFixed(2)} B PKR
             </div>
             <div className="text-sm text-gray-600">Total Estimated Losses (PKR)</div>
           </div>

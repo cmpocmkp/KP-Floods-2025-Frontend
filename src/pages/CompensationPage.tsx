@@ -118,7 +118,7 @@ export default function CompensationPage() {
                   <XAxis dataKey="district" />
                   <YAxis
                     tickFormatter={(value) =>
-                      `${(value / 1000000000).toFixed(1)}B`
+                      `${(value / 1000000000).toFixed(1)} B PKR`
                     }
                   />
                   <Tooltip

@@ -255,11 +255,11 @@ export const ExportReportButtons: React.FC = () => {
                           <th className="border border-gray-300 p-2" colSpan={2}>Needs</th>
                         </tr>
                         <tr className="bg-gray-100">
-                          <th className="border border-gray-300 p-2">(Billion PKR)</th>
+                          <th className="border border-gray-300 p-2">(B PKR)</th>
                           <th className="border border-gray-300 p-2">(Million US$)</th>
-                          <th className="border border-gray-300 p-2">(Billion PKR)</th>
+                          <th className="border border-gray-300 p-2">(B PKR)</th>
                           <th className="border border-gray-300 p-2">(Million US$)</th>
-                          <th className="border border-gray-300 p-2">(Billion PKR)</th>
+                          <th className="border border-gray-300 p-2">(B PKR)</th>
                           <th className="border border-gray-300 p-2">(Million US$)</th>
                         </tr>
                       </thead>

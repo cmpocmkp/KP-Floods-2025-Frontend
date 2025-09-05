@@ -62,12 +62,12 @@ export const AnnexIII2025Page: React.FC<AnnexIII2025PageProps> = ({ className = 
       sectors: [
         {
           name: "Housing and Infrastructure",
-          summary: "Significant damage to residential and commercial structures, roads, bridges, and public facilities. Estimated damage value: 125.50 billion PKR.",
+          summary: "Significant damage to residential and commercial structures, roads, bridges, and public facilities. Estimated damage value: 125.50 B PKR.",
           damageValue: 125.50,
         },
         {
           name: "Agriculture and Livestock",
-          summary: "Extensive crop damage and livestock losses affecting food security and rural livelihoods. Estimated losses: 89.25 billion PKR.",
+          summary: "Extensive crop damage and livestock losses affecting food security and rural livelihoods. Estimated losses: 89.25 B PKR.",
           damageValue: 89.25,
         },
         {
@@ -82,7 +82,7 @@ export const AnnexIII2025Page: React.FC<AnnexIII2025PageProps> = ({ className = 
         "Agricultural impact: 18 districts affected, with significant crop and livestock losses."
       ],
       responseNotes: [
-        "Compensation disbursed: 172.40 billion PKR allocated for immediate relief.",
+        "Compensation disbursed: 172.40 B PKR allocated for immediate relief.",
         "Emergency response operations ongoing with coordination between federal and provincial authorities.",
         "Recovery and reconstruction planning in progress with international support mobilization."
       ],

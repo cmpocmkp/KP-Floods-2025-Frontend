@@ -149,11 +149,11 @@ export const AnnexIII2025Print: React.FC<AnnexIII2025PrintProps> = ({ data }) =>
               <th colSpan={2}>Needs</th>
             </tr>
             <tr>
-              <th>(Billion PKR)</th>
+              <th>(B PKR)</th>
               <th>(Million US$)</th>
-              <th>(Billion PKR)</th>
+              <th>(B PKR)</th>
               <th>(Million US$)</th>
-              <th>(Billion PKR)</th>
+              <th>(B PKR)</th>
               <th>(Million US$)</th>
             </tr>
           </thead>

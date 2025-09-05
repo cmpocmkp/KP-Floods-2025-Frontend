@@ -32,13 +32,13 @@ const formatNumber = (num: number): string => {
 
 const formatCurrency = (amount: number): string => {
   if (amount >= 1_000_000_000) {
-    return `Rs ${(amount / 1_000_000_000).toFixed(2)}B`;
+    return `${(amount / 1_000_000_000).toFixed(2)} B PKR`;
   } else if (amount >= 1_000_000) {
-    return `Rs ${(amount / 1_000_000).toFixed(2)}M`;
+    return `${(amount / 1_000_000).toFixed(2)} M PKR`;
   } else if (amount >= 1_000) {
-    return `Rs ${(amount / 1_000).toFixed(2)}K`;
+    return `${(amount / 1_000).toFixed(2)} K PKR`;
   }
-  return `Rs ${amount.toFixed(2)}`;
+  return `${amount.toFixed(2)} PKR`;
 };
 
 export const InfrastructureDamageAnalysis: React.FC<InfrastructureDamageAnalysisProps> = ({ data }) => {

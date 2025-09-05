@@ -70,20 +70,20 @@ export function OverviewKpis({ data }: { data?: CumulativeDashboardResponse }) {
         color="text-red-600"
       />
       <KpiCard
-        title="Approx Economic Loss"
-        value="~124.6B PKR"
+        title="Economic Loss"
+        value="~124.6 B PKR"
         icon={Banknote}
         color="text-yellow-600"
       />
       <KpiCard
-        title="Approx Monetary Loss"
-        value="~49.07B PKR"
+        title="Monetary Loss"
+        value="~49.07 B PKR"
         icon={Banknote}
         color="text-blue-600"
       />
       <KpiCard
-        title="Approx Compensation"
-        value="~4.23B PKR"
+        title="Compensation"
+        value="~4.23 B PKR"
         icon={HandCoins}
         color="text-green-600"
       />
@@ -288,7 +288,7 @@ export function CompensationKpis() {
   }
 
   // Static Total Compensation value as requested
-  const totalCompensation = 4.18; // 4.18 billion PKR
+  const totalCompensation = 4.18; // 4.18 B PKR
   const totalDeaths = compensationData?.totalDeaths || 0;
   const totalInjured = compensationData?.totalInjured || 0;
   const totalHousesDamaged = compensationData?.totalHousesDamaged || 0;
@@ -297,7 +297,7 @@ export function CompensationKpis() {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <KpiCard
         title="Total Compensation"
-        value={`PKR ${totalCompensation}B`}
+        value={`${totalCompensation} B PKR`}
         icon={HandCoins}
         color="text-green-600"
       />
@@ -427,7 +427,7 @@ export function AgricultureKpis() {
       />
       <KpiCard
         title="Economic Loss"
-        value={`PKR ${(totalLoss / 1000).toFixed(1)}B`}
+        value={`${(totalLoss / 1000).toFixed(1)} B PKR`}
         icon={Banknote}
         color="text-orange-600"
       />

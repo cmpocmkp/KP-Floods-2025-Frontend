@@ -19,7 +19,7 @@ export default function GLOFModule() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-blue-900">
               <Snowflake className="h-6 w-6" />
-              GLOF Monitoring System
+              GLOF
             </CardTitle>
           </CardHeader>
           <CardContent>

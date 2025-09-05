@@ -9,96 +9,120 @@ const economicData = {
     {
       sector: "Agriculture",
       direct_pkr: "8,107,000,000",
+      pdna_multiplier: "2.48",
       pdna_loss_pkr: "20,105,360,000",
       pdna_total_pkr: "28,212,360,000",
+      economic_multiplier: "1.43",
       io_ripple_pkr: "28,750,664,800",
       combined_pkr: "56,963,024,800"
     },
     {
       sector: "Retail services",
       direct_pkr: "3,301,000,000",
+      pdna_multiplier: "0.60",
       pdna_loss_pkr: "1,980,600,000",
       pdna_total_pkr: "5,281,600,000",
+      economic_multiplier: "1.28",
       io_ripple_pkr: "2,535,168,000",
       combined_pkr: "7,816,768,000"
     },
     {
       sector: "Education",
       direct_pkr: "3,084,000,000",
+      pdna_multiplier: "0.39",
       pdna_loss_pkr: "1,208,928,000",
       pdna_total_pkr: "4,292,928,000",
+      economic_multiplier: "1.37",
       io_ripple_pkr: "1,656,231,360",
       combined_pkr: "5,949,159,360"
     },
     {
       sector: "Energy",
       direct_pkr: "2,402,000,000",
+      pdna_multiplier: "0.05",
       pdna_loss_pkr: "127,306,000",
       pdna_total_pkr: "2,529,306,000",
+      economic_multiplier: "2.44",
       io_ripple_pkr: "310,626,640",
       combined_pkr: "2,839,932,640"
     },
     {
       sector: "Health (facilities)",
       direct_pkr: "320,000,000",
+      pdna_multiplier: "0.30",
       pdna_loss_pkr: "97,280,000",
       pdna_total_pkr: "417,280,000",
+      economic_multiplier: "1.37",
       io_ripple_pkr: "133,273,600",
       combined_pkr: "550,553,600"
     },
     {
       sector: "Housing",
       direct_pkr: "15,941,000,000",
+      pdna_multiplier: "0.11",
       pdna_loss_pkr: "1,817,274,000",
       pdna_total_pkr: "17,758,274,000",
+      economic_multiplier: "1.37",
       io_ripple_pkr: "2,489,665,380",
       combined_pkr: "20,247,939,380"
     },
     {
       sector: "Public administration",
       direct_pkr: "1,611,000,000",
+      pdna_multiplier: "0.11",
       pdna_loss_pkr: "183,654,000",
       pdna_total_pkr: "1,794,654,000",
+      economic_multiplier: "1.67",
       io_ripple_pkr: "306,702,180",
       combined_pkr: "2,101,356,180"
     },
     {
       sector: "Transport",
       direct_pkr: "3,227,000,000",
+      pdna_multiplier: "0.09",
       pdna_loss_pkr: "277,522,000",
       pdna_total_pkr: "3,504,522,000",
+      economic_multiplier: "1.65",
       io_ripple_pkr: "457,911,300",
       combined_pkr: "3,962,433,300"
     },
     {
       sector: "Vehicles",
       direct_pkr: "300,000,000",
+      pdna_multiplier: "0.11",
       pdna_loss_pkr: "34,200,000",
       pdna_total_pkr: "334,200,000",
+      economic_multiplier: "1.37",
       io_ripple_pkr: "46,854,000",
       combined_pkr: "381,054,000"
     },
     {
       sector: "WASH (incl public health)",
       direct_pkr: "1,070,000,000",
+      pdna_multiplier: "0.20",
       pdna_loss_pkr: "209,720,000",
       pdna_total_pkr: "1,279,720,000",
+      economic_multiplier: "1.37",
       io_ripple_pkr: "287,316,400",
       combined_pkr: "1,567,036,400"
     },
     {
       sector: "Water resources (irrigation)",
       direct_pkr: "9,227,000,000",
+      pdna_multiplier: "0.00",
       pdna_loss_pkr: "0",
       pdna_total_pkr: "9,227,000,000",
+      economic_multiplier: "0.00",
       io_ripple_pkr: "0",
       combined_pkr: "9,227,000,000"
     },
     {
       sector: "Tourism",
       direct_pkr: "13,000,000,000",
+      pdna_multiplier: "0.00",
       pdna_loss_pkr: "0",
       pdna_total_pkr: "13,000,000,000",
+      economic_multiplier: "0.00",
       io_ripple_pkr: "0",
       combined_pkr: "13,000,000,000"
     }
@@ -114,17 +138,19 @@ const economicData = {
 
 export function EconomicLossTab() {
   const [isInfoExpanded, setIsInfoExpanded] = useState(false);
+  
+  // Updated with new data including multiplier columns
 
   const formatCurrency = (value: string) => {
     const numValue = parseFloat(value.replace(/,/g, ''));
     if (numValue >= 1e9) {
-      return `PKR ${(numValue / 1e9).toFixed(1)}B`;
+      return `${(numValue / 1e9).toFixed(1)} B PKR`;
     } else if (numValue >= 1e6) {
-      return `PKR ${(numValue / 1e6).toFixed(1)}M`;
+      return `${(numValue / 1e6).toFixed(1)} M PKR`;
     } else if (numValue >= 1e3) {
-      return `PKR ${(numValue / 1e3).toFixed(1)}K`;
+      return `${(numValue / 1e3).toFixed(1)} K PKR`;
     }
-    return `PKR ${value}`;
+    return `${value} PKR`;
   };
 
   const calculatePercentage = (sectorValue: string, totalValue: string) => {
@@ -153,7 +179,7 @@ export function EconomicLossTab() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Direct Losses
+              Total Direct Damages
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -213,9 +239,11 @@ export function EconomicLossTab() {
               <thead>
                 <tr className="border-b">
                   <th className="text-left p-2 font-medium">Sector</th>
-                  <th className="text-right p-2 font-medium">Direct Losses</th>
+                  <th className="text-right p-2 font-medium">Direct Damages</th>
+                  <th className="text-right p-2 font-medium">PDNA Mult.</th>
                   <th className="text-right p-2 font-medium">PDNA Losses</th>
                   <th className="text-right p-2 font-medium">PDNA Total</th>
+                  <th className="text-right p-2 font-medium">Econ. Mult.</th>
                   <th className="text-right p-2 font-medium">IO Ripple</th>
                   <th className="text-right p-2 font-medium">Combined</th>
                   <th className="text-right p-2 font-medium">% of Total</th>
@@ -228,11 +256,17 @@ export function EconomicLossTab() {
                     <td className="p-2 text-right text-red-600">
                       {formatCurrency(sector.direct_pkr)}
                     </td>
+                    <td className="p-2 text-right text-blue-500 font-medium">
+                      {sector.pdna_multiplier}
+                    </td>
                     <td className="p-2 text-right text-orange-600">
                       {formatCurrency(sector.pdna_loss_pkr)}
                     </td>
                     <td className="p-2 text-right text-blue-600">
                       {formatCurrency(sector.pdna_total_pkr)}
+                    </td>
+                    <td className="p-2 text-right text-green-500 font-medium">
+                      {sector.economic_multiplier}
                     </td>
                     <td className="p-2 text-right text-green-600">
                       {formatCurrency(sector.io_ripple_pkr)}
@@ -252,11 +286,17 @@ export function EconomicLossTab() {
                   <td className="p-2 text-right text-red-600 font-bold">
                     {formatCurrency(economicData.totals.total_direct_pkr)}
                   </td>
+                  <td className="p-2 text-right text-blue-500 font-bold">
+                    -
+                  </td>
                   <td className="p-2 text-right text-orange-600 font-bold">
                     {formatCurrency(economicData.totals.total_pdna_loss_pkr)}
                   </td>
                   <td className="p-2 text-right text-blue-600 font-bold">
                     {formatCurrency(economicData.totals.total_pdna_total_pkr)}
+                  </td>
+                  <td className="p-2 text-right text-green-500 font-bold">
+                    -
                   </td>
                   <td className="p-2 text-right text-green-600 font-bold">
                     {formatCurrency(economicData.totals.total_io_ripple_pkr)}
@@ -307,7 +347,7 @@ export function EconomicLossTab() {
             <div>
               <h4 className="font-semibold text-blue-900 mb-2">Input-Output Ripple Effects</h4>
               <p className="mb-2">
-                Economic Multiplier Effects represent the cascading economic impact beyond direct losses:
+                Economic Multiplier Effects represent the cascading economic impact beyond Direct Damages:
               </p>
               <ul className="list-disc list-inside space-y-1 ml-4">
                 <li>Supply chain disruptions affecting other industries</li>
@@ -321,7 +361,7 @@ export function EconomicLossTab() {
               <h4 className="font-semibold text-blue-900 mb-2">Methodology Breakdown</h4>
               <div className="space-y-2">
                 <p>
-                  <strong>Direct Losses:</strong> Immediate infrastructure and asset damage from floods
+                  <strong>Direct Damages:</strong> Immediate infrastructure and asset damage from floods
                 </p>
                 <p>
                   <strong>PDNA Losses:</strong> Additional losses identified through Post-Disaster Needs Assessment

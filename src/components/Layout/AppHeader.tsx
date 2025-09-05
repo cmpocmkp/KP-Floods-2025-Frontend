@@ -17,7 +17,7 @@ interface AppHeaderProps {
 
 const TABS = [
   { id: 'overview', label: 'Overview' },
-  { id: 'incidents', label: 'Incident Reports' },
+  { id: 'incidents', label: 'Incidents' },
   { id: 'infrastructure', label: 'Infrastructure' },
   { id: 'livestock', label: 'Livestock' },
   { id: 'agriculture', label: 'Agriculture' },
@@ -25,9 +25,9 @@ const TABS = [
   { id: 'camps', label: 'Relief' },
   { id: 'analyze', label: 'Analyze' },
   { id: 'visualize', label: 'Visualize' },
+  { id: 'compensation-policy', label: 'Compensation' },
   { id: 'monetary-loss', label: 'Monetary Loss' },
   { id: 'economic-loss', label: 'Economic Loss' },
-  { id: 'compensation-policy', label: 'Compensation' },
   { id: 'brief', label: 'Flood Assistant' },
 ];
 
