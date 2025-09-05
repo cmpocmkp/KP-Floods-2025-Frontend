@@ -127,45 +127,6 @@ const MonetaryLossOverview: React.FC = () => {
                 dataKey="value"
                 stroke="#fff"
                 fill="#8884d8"
-                content={({ root, depth, x, y, width, height, index, payload, colors, rank, name, value }) => (
-                  <g>
-                    <rect
-                      x={x}
-                      y={y}
-                      width={width}
-                      height={height}
-                      style={{
-                        fill: COLORS[index % COLORS.length],
-                        stroke: '#fff',
-                        strokeWidth: 2,
-                        strokeOpacity: 1 / (depth + 1e-10),
-                      }}
-                    />
-                    {width > 80 && height > 40 && (
-                      <>
-                        <text
-                          x={x + width / 2}
-                          y={y + height / 2 - 10}
-                          textAnchor="middle"
-                          fill="#fff"
-                          fontSize={12}
-                          fontWeight="bold"
-                        >
-                          {name}
-                        </text>
-                        <text
-                          x={x + width / 2}
-                          y={y + height / 2 + 10}
-                          textAnchor="middle"
-                          fill="#fff"
-                          fontSize={10}
-                        >
-                          ~{(Math.round((value / 1_000_000_000) * 100) / 100).toFixed(2)} B PKR
-                        </text>
-                      </>
-                    )}
-                  </g>
-                )}
               />
             </ResponsiveContainer>
           </div>
