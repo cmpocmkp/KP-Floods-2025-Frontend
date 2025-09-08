@@ -226,17 +226,19 @@ export default function InfrastructurePage() {
       <DataCoveragePeriod />
       {/* Main Content Tabs */}
       <Tabs defaultValue="infrastructure" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-9">
-          <TabsTrigger value="infrastructure">Community Assets</TabsTrigger>
-          <TabsTrigger value="services">Services</TabsTrigger>
-          <TabsTrigger value="phe-assets">Public Health Schemes</TabsTrigger>
-          <TabsTrigger value="cw-roads-bridges">Roads & Bridges</TabsTrigger>
-          <TabsTrigger value="local-govt">Local Government</TabsTrigger>
-          <TabsTrigger value="energy-power">Energy & Power</TabsTrigger>
-          <TabsTrigger value="irrigation">Irrigation</TabsTrigger>
-          <TabsTrigger value="education">Education</TabsTrigger>
-          <TabsTrigger value="higher-education">Higher Education</TabsTrigger>
-        </TabsList>
+        <div className="w-full overflow-x-auto">
+          <TabsList className="inline-flex w-max min-w-full justify-start space-x-1 p-1">
+            <TabsTrigger value="infrastructure" className="whitespace-nowrap flex-shrink-0">Community Assets</TabsTrigger>
+            <TabsTrigger value="services" className="whitespace-nowrap flex-shrink-0">Services</TabsTrigger>
+            <TabsTrigger value="phe-assets" className="whitespace-nowrap flex-shrink-0">Public Health Schemes</TabsTrigger>
+            <TabsTrigger value="cw-roads-bridges" className="whitespace-nowrap flex-shrink-0">Roads & Bridges</TabsTrigger>
+            <TabsTrigger value="local-govt" className="whitespace-nowrap flex-shrink-0">Local Government</TabsTrigger>
+            <TabsTrigger value="energy-power" className="whitespace-nowrap flex-shrink-0">Energy & Power</TabsTrigger>
+            <TabsTrigger value="irrigation" className="whitespace-nowrap flex-shrink-0">Irrigation</TabsTrigger>
+            <TabsTrigger value="education" className="whitespace-nowrap flex-shrink-0">Education</TabsTrigger>
+            <TabsTrigger value="higher-education" className="whitespace-nowrap flex-shrink-0">Higher Education</TabsTrigger>
+          </TabsList>
+        </div>
 
         {/* Infrastructure Damage Tab */}
         <TabsContent value="infrastructure" className="space-y-6">
