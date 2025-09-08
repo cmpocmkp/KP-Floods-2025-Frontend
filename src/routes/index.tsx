@@ -1,11 +1,12 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import Protected from "./protected";
-import AppShell from "@/layouts/AppShell";
+import AppLayout from "@/layouts/AppLayout";
 import Floods2025Module from "@/modules/floods2025/Floods2025Module";
 import EarthquakeModule from "@/modules/earthquake/EarthquakeModule";
 import GLOFModule from "@/modules/glof/GLOFModule";
 import SettingsModule from "@/modules/settings/SettingsModule";
 import LoginPage from "@/pages/auth/LoginPage";
+import { UIProvider } from "@/contexts/UIContext";
 
 export const router = createBrowserRouter([
   // Public route(s)
@@ -16,7 +17,9 @@ export const router = createBrowserRouter([
     path: "/",
     element: (
       <Protected>
-        <AppShell />
+        <UIProvider>
+          <AppLayout />
+        </UIProvider>
       </Protected>
     ),
     children: [

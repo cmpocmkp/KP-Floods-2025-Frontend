@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
+import { useChartResize } from "@/hooks/useChartResize";
 
 interface Props {
   title: string;
@@ -21,6 +22,8 @@ export default function ChartWrapper({
   onExport,
   className = ""
 }: Props) {
+  const chartRef = useChartResize();
+
   return (
     <Card className={className}>
       <CardHeader className="flex flex-row items-center justify-between">
@@ -35,7 +38,7 @@ export default function ChartWrapper({
           </Button>
         )}
       </CardHeader>
-      <CardContent style={{ height }}>
+      <CardContent ref={chartRef} style={{ height }}>
         {children}
       </CardContent>
     </Card>
