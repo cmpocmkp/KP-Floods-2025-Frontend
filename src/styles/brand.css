@@ -1,0 +1,16 @@
+:root {
+  --brand-700: #2b547d;      /* sidebar base */
+  --brand-600: #2f5f8b;      /* hover/darker */
+  --brand-500: #3a72a6;      /* ring mid */
+  --brand-100: #e9f2fb;      /* pill/bg tint */
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --brand-700: #2b547d;      /* sidebar base */
+    --brand-600: #2f5f8b;      /* hover/darker */
+    --brand-500: #3a72a6;      /* ring mid */
+    --brand-100: #e9f2fb;      /* pill/bg tint */
+  }
+}

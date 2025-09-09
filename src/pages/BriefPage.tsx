@@ -3,9 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Bot, User, Send, Loader2, AlertCircle } from 'lucide-react';
+import { Bot, User, Send, Loader2, AlertCircle, Mic, MessageSquare } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { DataCoveragePeriod } from '@/components/shared/DataCoveragePeriod';
+import JarvisVoiceAssistant from '@/components/assistant/JarvisVoiceAssistant';
 
 // Import all data sources for context
 import { getCombinedInfrastructureServices } from '@/api/infrastructure';
@@ -39,6 +40,7 @@ export default function BriefPage() {
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isVoiceMode, setIsVoiceMode] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Fetch all data sources for context
@@ -101,25 +103,6 @@ export default function BriefPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const formatCurrency = (amount: number): string => {
-    if (amount >= 1_000_000_000) {
-      return `${(amount / 1_000_000_000).toFixed(2)} B PKR`;
-    } else if (amount >= 1_000_000) {
-      return `Rs ${(amount / 1_000_000).toFixed(2)}M`;
-    } else if (amount >= 1_000) {
-      return `Rs ${(amount / 1_000).toFixed(2)}K`;
-    }
-    return `Rs ${amount.toFixed(2)}`;
-  };
-
-  const formatNumber = (num: number): string => {
-    if (num >= 1_000_000) {
-      return `${(num / 1_000_000).toFixed(2)}M`;
-    } else if (num >= 1_000) {
-      return `${(num / 1_000).toFixed(2)}K`;
-    }
-    return num.toString();
-  };
 
   const prepareContextData = () => {
     // Helper function to safely compute DSR aggregates
@@ -290,16 +273,56 @@ export default function BriefPage() {
       {/* Header */}
       <div className="text-center space-y-2 p-6">
         <p className="text-gray-600">Ask questions about flood damage, infrastructure, agriculture, compensation, and recovery efforts using the new flexible assistant API</p>
+        
+        {/* Voice Assistant Toggle */}
+        <div className="flex justify-center gap-2 mt-4">
+          <Button
+            variant={!isVoiceMode ? "default" : "outline"}
+            size="sm"
+            onClick={() => setIsVoiceMode(false)}
+            className="flex items-center gap-2"
+          >
+            <MessageSquare className="h-4 w-4" />
+            Text Chat
+          </Button>
+          <Button
+            variant={isVoiceMode ? "default" : "outline"}
+            size="sm"
+            onClick={() => setIsVoiceMode(true)}
+            className="flex items-center gap-2"
+          >
+            <Mic className="h-4 w-4" />
+            Voice Assistant
+          </Button>
+        </div>
       </div>
 
-      {/* Chat Interface */}
-      <Card className="flex-1 flex flex-col min-h-0">
-        <CardHeader className="border-b flex-shrink-0">
-          <CardTitle className="flex items-center gap-2">
-            <Bot className="h-5 w-5" />
-            Assistant
-          </CardTitle>
-        </CardHeader>
+      {/* Voice Assistant Mode */}
+      {isVoiceMode ? (
+        <div className="flex-1 flex flex-col min-h-0">
+          <JarvisVoiceAssistant 
+            contextData={prepareContextData()} 
+            onMessage={(message, isUser) => {
+              // Sync voice messages with text chat
+              const newMessage: Message = {
+                id: Date.now().toString(),
+                content: message,
+                role: isUser ? 'user' : 'assistant',
+                timestamp: new Date()
+              };
+              setMessages(prev => [...prev, newMessage]);
+            }}
+          />
+        </div>
+      ) : (
+        /* Text Chat Interface */
+        <Card className="flex-1 flex flex-col min-h-0">
+          <CardHeader className="border-b flex-shrink-0">
+            <CardTitle className="flex items-center gap-2">
+              <Bot className="h-5 w-5" />
+              Assistant
+            </CardTitle>
+          </CardHeader>
         
         {/* Content area with proper scrolling */}
         <div className="flex-1 min-h-0 overflow-hidden">
@@ -391,6 +414,7 @@ export default function BriefPage() {
           </div>
         </div>
       </Card>
+      )}
 
       {/* Suggested Questions */}
       <Card>

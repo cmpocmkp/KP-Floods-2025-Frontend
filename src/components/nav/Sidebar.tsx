@@ -115,8 +115,8 @@ export default function Sidebar() {
             {collapsed && !isMobile ? <span>K³</span> : <span>KPD3</span>}
           </div>
           {(!collapsed || isMobile) && (
-            <div className="text-sm text-white/95 mt-1 font-medium tracking-wide">
-              Disaster Damages Directory
+            <div className="text-sm text-white/95 mt-1 font-medium tracking-wide text-center whitespace-nowrap">
+              KP Disaster Damages Directory
             </div>
           )}
         </div>
